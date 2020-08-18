@@ -1,0 +1,46 @@
+.flex {
+  display: flex;
+}
+
+.flex {
+  display: flex;
+}
+
+.dashboard-detailsBar {
+  width: 100vw;
+  max-width: 60rem;
+  height: calc(100vh - 70px);
+  background-color: #ffffff;
+  border-left: 1px solid rgba(38, 38, 38, 0.1);
+  padding: 2rem 0;
+}
+.dashboard-detailsBar-header {
+  height: 6rem;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  justify-content: flex-start;
+  border-bottom: 1px solid rgba(38, 38, 38, 0.1);
+}
+.dashboard-detailsBar-header .vertical_separator {
+  height: 40%;
+}
+.dashboard-detailsBar-header > * {
+  margin-right: 2rem;
+}
+.dashboard-detailsBar-header > *:last-child {
+  margin-right: 0;
+}
+.dashboard-detailsBar-header-title {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  justify-content: flex-start;
+}
+.dashboard-detailsBar-header-title-icon {
+  margin-right: 1rem;
+}
+
+/*# sourceMappingURL=dashboardDetailsBar.css.map */

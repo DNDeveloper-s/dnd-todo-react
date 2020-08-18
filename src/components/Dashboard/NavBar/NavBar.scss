@@ -1,0 +1,85 @@
+@import "../../../styles/utilities/mixins";
+@import "../../../styles/utilities/variables";
+
+header {
+  width: 100vw;
+  height: $NAVIGATION_HEIGHT;
+  background-color: $primary;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+
+  .nav {
+    height: 100%;
+    @include flexCentered();
+    justify-content: space-between;
+
+    &_item {
+      position: relative;
+      height: 100%;
+      @include flexCentered();
+      @include butLast(margin-right, 3rem);
+
+      &.milestone {
+        height: auto;
+        @include flexCentered();
+        background-color: $white-10;
+        border-radius: $generic-border-radius;
+        padding: 0.8rem 1rem;
+
+        .nav_item-icon {
+          margin-right: 1rem;
+        }
+      }
+
+      &.search {
+        .nav_item-icon {
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          left: 1.2rem;
+          width: 1.9rem;
+          height: 1.9rem;
+        }
+      }
+
+      &-input {
+        background-color: $white-10;
+        border-radius: $generic-border-radius;
+
+        input {
+          padding: 1.2rem 1rem 1rem 4rem;
+          color: $primary_text;
+          font-family: $Lato_Medium;
+
+          &::-webkit-input-placeholder {
+            color: $white-40;
+            font-family: $Lato_Medium;
+            font-size: 1.5rem;
+          }
+        }
+      }
+
+      &-label {
+        color: $primary_text;
+        font-weight: $Lato_Bold;
+        letter-spacing: 1px;
+      }
+
+      &-icon {
+        width: 2.3rem;
+        height: 2.3rem;
+        cursor: pointer;
+
+        svg {
+          width: 100%;
+          height: 100%;
+        }
+      }
+
+      &-group {
+        height: 100%;
+        @include flexCentered();
+      }
+    }
+  }
+}
+

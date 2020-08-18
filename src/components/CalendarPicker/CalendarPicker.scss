@@ -1,0 +1,336 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
+@import "../../styles/utilities/variables";
+@import "../../styles/utilities/mixins";
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+::-moz-selection { /* Code for Firefox */
+  color: $purple;
+  background: $pale_blue;
+}
+
+::selection {
+  color: $purple;
+  background: $pale_blue;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #b9b9b9;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.dnd_calendar {
+  width: 250px;
+  height: auto;
+  max-height: 700px;
+  background-color: white;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25), 0 0 1px 1px rgba(0,0,0,0.1);
+  padding: 1rem + .6rem;
+  border-radius: 4px;
+
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%);
+
+  &-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1rem + .6rem;
+    margin: 0.45rem + .6rem 0 1rem + .6rem;
+
+    &-label {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      &-text {
+        margin-right: 10px;
+        font-weight: 800;
+        color: $black-60;
+        font-size: 14px;
+
+        &.yearItem {
+          cursor: pointer;
+        }
+
+        &.active {
+          color: #676af0;
+        }
+
+        &:last-child {
+          margin-right: 0;
+        }
+      }
+    }
+
+    &-nav {
+      width: 0.75rem + .6rem;
+      height: 0.75rem + .6rem;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      svg {
+        width: 100%;
+        height: 100%;
+
+        path {
+          fill: #9f9f9f;
+        }
+      }
+    }
+  }
+
+  &-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-column-gap: 3px;
+
+    &.months {
+      grid-template-columns: repeat(4, 1fr);
+
+      .dnd_calendar-grid_item {
+        padding-top: 1rem + .6rem;
+        padding-bottom: 1rem + .6rem;
+        color: $black-70;
+
+        &.active,
+        &:hover {
+          background-color: #676af0;
+          color: $primary_text;
+        }
+
+        p {
+          font-size: .9rem + .6rem;
+        }
+      }
+    }
+
+    &_item {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: $black-30;
+      cursor: pointer;
+      //height: 30px;
+      //width: 30px;
+      border-radius: 50px;
+      font-family: $Lato_Regular;
+      font-weight: 600;
+      background-color: transparent;
+      transition: $generic-transition;
+      padding: .4rem + .1rem;
+
+      p {
+        pointer-events: none;
+        font-size: 13px;
+      }
+
+      &.currentMonth {
+        color: #363636;
+      }
+
+      &.today {
+        background-color: rgba(106, 205, 243, 0.45);
+      }
+
+      &.weekDay {
+        color: $black-40;
+        font-weight: 700;
+        cursor: auto;
+
+        p {
+          font-size: 15px;
+        }
+
+        &:hover {
+          background-color: transparent;
+          color: rgba(0,0,0,0.5);
+        }
+      }
+
+      &:hover {
+        background-color: #676af0;
+        color: $primary_text;;
+      }
+    }
+  }
+
+  &-separator {
+    height: 1px;
+    background-color: $black-10;
+    width: 100%;
+    margin: .6rem + .6rem 0;
+  }
+
+  &-dropdown_toggle {
+    width: 100%;
+    height: 100%;
+    transition: $generic-transition;
+
+    &:hover {
+      background-color: $pale_blue;
+    }
+  }
+
+  &-dropdown {
+    width: 100%;
+    height: 100%;
+
+    &.minify {
+      .dnd_calendar-dropdown-items {
+        box-sizing: border-box;
+        padding: 1rem + .6rem 0 .6rem + .6rem;
+      }
+
+      .dnd_calendar-dropdown-item {
+        color: $primary;
+        font-size: 14px;
+        padding: .4rem + .6rem 1rem + .6rem;
+        justify-content: space-between;
+
+        &.active {
+          color: $purple;
+        }
+      }
+
+      .dnd_calendar-flex_buttons {
+        margin: 0;
+        padding: 0 1rem + .6rem;
+      }
+    }
+
+    &-items {
+      position: absolute;
+      top: 110%;
+      left: 0;
+      width: 100%;
+      background-color: $primary_text;
+      z-index: 10;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+
+      &.overflowAuto {
+        overflow: auto;
+        max-height: 20rem + .6rem;
+      }
+    }
+
+    &-item {
+      color: $black-60;
+      font-weight: 400;
+      @include flexCentered();
+      padding: .6rem + .6rem 0;
+
+      svg, path {
+        fill: $purple;
+      }
+
+      &:hover {
+        background-color: rgba(103, 106, 240, 0.13);
+      }
+    }
+  }
+
+  &-button {
+    position: relative;
+    width: 100%;
+    @include flexCentered();
+    //border: 1px solid $black-20;
+    border: 1px solid $black-30;
+    border-radius: $generic-border-radius;
+    margin: .82rem + .6rem 0;
+    cursor: pointer;
+
+    .time_editor {
+      width: 100%;
+      height: 100%;
+      padding: .55rem + .6rem 0;
+      text-align: center;
+      outline: none;
+      border: none;
+      background-color: transparent;
+      cursor: pointer;
+      //color: $black-60;
+      font-size: 15px;
+      font-weight: 600;
+      color: $primary;
+      font-family: 'Lato', sans-serif;
+      border-radius: $generic-border-radius;
+    }
+
+    &-label {
+      width: 100%;
+      height: 100%;
+      padding: .45rem + .2rem 0;
+      text-align: center;
+      background-color: transparent;
+      font-size: 14px;
+      font-family: 'Lato', sans-serif;
+      color: $primary;
+      border-radius: $generic-border-radius;
+    }
+
+    input {
+      width: 100%;
+      height: 100%;
+      padding: .45rem + .2rem 0;
+      text-align: center;
+      outline: none;
+      border: none;
+      background-color: transparent;
+      cursor: pointer;
+      color: $primary;
+      //color: $black-60;
+      font-size: 14px;
+      //font-weight: 600;
+      font-family: 'Lato', sans-serif;
+      border-radius: $generic-border-radius;
+
+      &::-webkit-input-placeholder {
+        color: $primary;
+      }
+    }
+
+    &.active {
+      border: 1px solid $purple;
+      color: $purple;
+      border-radius: $generic-border-radius;
+
+      input {
+        border: 1px solid $purple;
+        color: $purple;
+        border-radius: $generic-border-radius;
+      }
+    }
+  }
+
+  &-flex_buttons {
+    display: flex;
+    margin-top: 1.2rem + .6rem;
+
+    > * {
+      @include butLast(margin-right, .85rem + .6rem);
+    }
+  }
+}

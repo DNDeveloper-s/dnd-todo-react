@@ -1,0 +1,88 @@
+.flex {
+  display: flex;
+}
+
+.flex {
+  display: flex;
+}
+
+header {
+  width: 100vw;
+  height: 70px;
+  background-color: #363636;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+header .nav {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  justify-content: space-between;
+}
+header .nav_item {
+  position: relative;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 3rem;
+}
+header .nav_item:last-child {
+  margin-right: 0;
+}
+header .nav_item.milestone {
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(251, 251, 251, 0.1);
+  border-radius: 4px;
+  padding: 0.8rem 1rem;
+}
+header .nav_item.milestone .nav_item-icon {
+  margin-right: 1rem;
+}
+header .nav_item.search .nav_item-icon {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 1.2rem;
+  width: 1.9rem;
+  height: 1.9rem;
+}
+header .nav_item-input {
+  background-color: rgba(251, 251, 251, 0.1);
+  border-radius: 4px;
+}
+header .nav_item-input input {
+  padding: 1.2rem 1rem 1rem 4rem;
+  color: #ffffff;
+  font-family: "Lato_Medium";
+}
+header .nav_item-input input::-webkit-input-placeholder {
+  color: rgba(251, 251, 251, 0.4);
+  font-family: "Lato_Medium";
+  font-size: 1.5rem;
+}
+header .nav_item-label {
+  color: #ffffff;
+  font-weight: "Lato_Bold";
+  letter-spacing: 1px;
+}
+header .nav_item-icon {
+  width: 2.3rem;
+  height: 2.3rem;
+  cursor: pointer;
+}
+header .nav_item-icon svg {
+  width: 100%;
+  height: 100%;
+}
+header .nav_item-group {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/*# sourceMappingURL=NavBar.css.map */

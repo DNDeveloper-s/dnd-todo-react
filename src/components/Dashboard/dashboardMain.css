@@ -1,0 +1,194 @@
+.flex {
+  display: flex;
+}
+
+.flex {
+  display: flex;
+}
+
+.dashboard {
+  display: flex;
+}
+.dashboard-main {
+  flex: 1;
+}
+.dashboard-main.dashboard_wrapper {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 100rem;
+  padding: 2rem;
+}
+.dashboard-header {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba(38, 38, 38, 0.1);
+  height: 6rem;
+}
+.dashboard-header-group {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.dashboard-header-icon {
+  width: 1.8rem;
+  height: 1.8rem;
+  margin-right: 3rem;
+  cursor: pointer;
+}
+.dashboard-header-icon svg {
+  width: 100%;
+  height: 100%;
+}
+.dashboard-header-icon:last-child {
+  margin-right: 0;
+}
+.dashboard-header-title {
+  font-size: 2.2rem;
+  font-family: "Lato_Bold";
+  color: #363636;
+}
+
+.add_task {
+  width: 100%;
+  height: 5rem;
+  background-color: rgba(38, 38, 38, 0.1);
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 2rem;
+  border-radius: 4px;
+  margin-top: 4rem;
+}
+.add_task .vertical_separator {
+  height: 30%;
+  background-color: #00455B;
+}
+.add_task > * {
+  margin-right: 2rem;
+}
+.add_task > *:last-child {
+  margin-right: 0;
+}
+.add_task-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.add_task-icon svg {
+  width: 100%;
+  height: 100%;
+}
+.add_task-icon.caret {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+.add_task-icon.caret svg {
+  width: 100%;
+  height: 100%;
+}
+.add_task-icon.fill svg, .add_task-icon.fill path {
+  fill: #00455B;
+}
+.add_task-input {
+  width: 100%;
+  height: 100%;
+  flex: 1;
+}
+.add_task-input input {
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  color: #00455B;
+  font-size: 1.6rem;
+  font-family: "Lato_SemiBold";
+}
+.add_task-input input::-webkit-input-placeholder {
+  color: rgba(0, 69, 91, 0.35);
+  font-size: 1.6rem;
+  font-family: "Lato_SemiBold";
+}
+
+.task_item {
+  width: 100%;
+  height: 5rem;
+  background-color: rgba(221, 233, 255, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1rem 0;
+  padding: 0 2rem;
+  cursor: pointer;
+  transition: 0.15s ease-in-out;
+}
+.task_item:hover {
+  background-color: #dae8ef;
+}
+.task_item > * {
+  margin-right: 2rem;
+}
+.task_item > *:last-child {
+  margin-right: 0;
+}
+.task_item-title {
+  width: 100%;
+  flex: 1;
+}
+.task_item-title input {
+  width: 100%;
+  height: 100%;
+  border: none;
+  outline: none;
+  color: #00455B;
+  font-size: 1.6rem;
+  font-family: "Lato_SemiBold";
+  cursor: pointer;
+}
+.task_item-groups {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.task_item-groups > * {
+  margin-right: 1.3rem;
+}
+.task_item-groups > *:last-child {
+  margin-right: 0;
+}
+.task_item-group {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.task_item-group > * {
+  margin-right: 0.4rem;
+}
+.task_item-group > *:last-child {
+  margin-right: 0;
+}
+.task_item-label.label {
+  background-color: #676af0;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  font-size: 1.1rem;
+  color: #ffffff;
+}
+.task_item-label.project {
+  font-size: 1.1rem;
+  font-family: "Lato_Regular";
+  color: rgba(38, 38, 38, 0.4);
+}
+.task_item-label.date {
+  font-size: 1.25rem;
+  font-family: "Lato_SemiBold";
+  color: rgba(38, 38, 38, 0.7);
+}
+
+/*# sourceMappingURL=dashboardMain.css.map */

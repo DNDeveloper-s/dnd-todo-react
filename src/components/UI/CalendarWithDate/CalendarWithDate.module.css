@@ -1,0 +1,32 @@
+.flex {
+  display: flex;
+}
+
+.flex {
+  display: flex;
+}
+
+.calendar_with_date {
+  width: 2.5rem;
+  height: 2.5rem;
+  position: relative;
+}
+.calendar_with_date-icon {
+  width: 100%;
+  height: 100%;
+}
+.calendar_with_date-icon svg {
+  width: 100%;
+  height: 100%;
+}
+.calendar_with_date-label {
+  position: absolute;
+  bottom: 0.3rem;
+  font-size: 1.1rem;
+  color: #ffffff;
+  font-family: "Lato_Black";
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/*# sourceMappingURL=CalendarWithDate.module.css.map */

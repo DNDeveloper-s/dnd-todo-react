@@ -1,0 +1,40 @@
+@import "../../../styles/utilities/mixins";
+@import "../../../styles/utilities/variables";
+
+.dashboard {
+
+  &-detailsBar {
+    width: 100vw;
+    max-width: 60rem;
+    height: calc(100vh - #{$NAVIGATION_HEIGHT});
+    background-color: $primary_text;
+    border-left: 1px solid $black-10;
+    padding: 2rem 0;
+
+    &-header {
+      height: 6rem;
+      padding: 1rem 2rem;
+      @include flexCentered();
+      justify-content: flex-start;
+      border-bottom: 1px solid $black-10;
+
+      .vertical_separator {
+        height: 40%;
+      }
+
+      > * {
+        @include butLast(margin-right, 2rem);
+      }
+
+      &-title {
+        flex: 1;
+        @include flexCentered();
+        justify-content: flex-start;
+
+        &-icon {
+          margin-right: 1rem;
+        }
+      }
+    }
+  }
+}

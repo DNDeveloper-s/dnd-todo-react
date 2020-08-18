@@ -1,0 +1,49 @@
+@import "../../../styles/utilities/mixins";
+@import "../../../styles/utilities/variables";
+
+.checkbox {
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid $black-40;
+  border-radius: $generic-border-radius;
+  background-color: $primary_text;
+  @include flexCentered();
+  overflow: hidden;
+
+  svg,
+  path {
+    width: 100%;
+    height: 100%;
+    fill: $success;
+    opacity: 0;
+    transition: $generic-transition;
+  }
+
+  &.anim {
+    animation: mouseDownOnCheckbox .3s cubic-bezier(.17,.78,.45,1.32);
+  }
+
+  &.active {
+    border: 1px solid $primary_text;
+
+    svg,
+    path {
+      opacity: 1;
+    }
+  }
+}
+
+@keyframes mouseDownOnCheckbox {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(0.6);
+  }
+  80% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}

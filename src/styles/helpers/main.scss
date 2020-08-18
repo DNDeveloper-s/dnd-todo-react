@@ -1,0 +1,100 @@
+@import "../utilities/variables";
+@import "../utilities/mixins";
+@import "../utilities/utilities";
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 3px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: rgba(136, 136, 136, 0.51);
+  border-radius: 200px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: $grey;
+  font-family: $Lato_Regular;
+  opacity: 1; /* Firefox */
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color: $grey;
+}
+
+::-ms-input-placeholder { /* Microsoft Edge */
+  color: $grey;
+}
+
+
+img {
+  width: 100%;
+  height: 100%;
+}
+
+html {
+  font-size: 10px;
+}
+
+body {
+  box-sizing: border-box;
+  font-family: $Lato_Regular;
+  font-size: 1.6rem;
+}
+
+a {
+  text-decoration: none;
+}
+
+a, button, input, label {
+  color: $primary;
+}
+
+textarea {
+  resize: none;
+}
+
+input,
+textarea {
+  border: none;
+  background: none;
+  outline: none;
+
+  &:disabled {
+    background-color: $black-20 !important;
+    cursor: not-allowed !important;
+  }
+}
+
+svg {
+  width: 1.6rem;
+  fill: $primary;
+  height: 1.6rem;
+}
+
+// Generic Wrapper
+.wrapper {
+  max-width: $WRAPPER_MAX_WIDTH;
+  padding: 0 4rem;
+  margin: 0 auto;
+}
+

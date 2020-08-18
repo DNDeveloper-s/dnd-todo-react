@@ -1,0 +1,297 @@
+@import url("https://fonts.googleapis.com/css2?family=Lato&display=swap");
+.flex {
+  display: flex;
+}
+
+.flex {
+  display: flex;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+::-moz-selection {
+  /* Code for Firefox */
+  color: #676af0;
+  background: #dae8ef;
+}
+
+::selection {
+  color: #676af0;
+  background: #dae8ef;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #b9b9b9;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.dnd_calendar {
+  width: 250px;
+  height: auto;
+  max-height: 700px;
+  background-color: white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25), 0 0 1px 1px rgba(0, 0, 0, 0.1);
+  padding: 1.6rem;
+  border-radius: 4px;
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%);
+}
+.dnd_calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1.6rem;
+  margin: 1.05rem 0 1.6rem;
+}
+.dnd_calendar-header-label {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.dnd_calendar-header-label-text {
+  margin-right: 10px;
+  font-weight: 800;
+  color: rgba(38, 38, 38, 0.6);
+  font-size: 14px;
+}
+.dnd_calendar-header-label-text.yearItem {
+  cursor: pointer;
+}
+.dnd_calendar-header-label-text.active {
+  color: #676af0;
+}
+.dnd_calendar-header-label-text:last-child {
+  margin-right: 0;
+}
+.dnd_calendar-header-nav {
+  width: 1.35rem;
+  height: 1.35rem;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.dnd_calendar-header-nav svg {
+  width: 100%;
+  height: 100%;
+}
+.dnd_calendar-header-nav svg path {
+  fill: #9f9f9f;
+}
+.dnd_calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-column-gap: 3px;
+}
+.dnd_calendar-grid.months {
+  grid-template-columns: repeat(4, 1fr);
+}
+.dnd_calendar-grid.months .dnd_calendar-grid_item {
+  padding-top: 1.6rem;
+  padding-bottom: 1.6rem;
+  color: rgba(38, 38, 38, 0.7);
+}
+.dnd_calendar-grid.months .dnd_calendar-grid_item.active, .dnd_calendar-grid.months .dnd_calendar-grid_item:hover {
+  background-color: #676af0;
+  color: #ffffff;
+}
+.dnd_calendar-grid.months .dnd_calendar-grid_item p {
+  font-size: 1.5rem;
+}
+.dnd_calendar-grid_item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: rgba(38, 38, 38, 0.3);
+  cursor: pointer;
+  border-radius: 50px;
+  font-family: "Lato_Regular";
+  font-weight: 600;
+  background-color: transparent;
+  transition: 0.15s ease-in-out;
+  padding: 0.5rem;
+}
+.dnd_calendar-grid_item p {
+  pointer-events: none;
+  font-size: 13px;
+}
+.dnd_calendar-grid_item.currentMonth {
+  color: #363636;
+}
+.dnd_calendar-grid_item.today {
+  background-color: rgba(106, 205, 243, 0.45);
+}
+.dnd_calendar-grid_item.weekDay {
+  color: rgba(38, 38, 38, 0.4);
+  font-weight: 700;
+  cursor: auto;
+}
+.dnd_calendar-grid_item.weekDay p {
+  font-size: 15px;
+}
+.dnd_calendar-grid_item.weekDay:hover {
+  background-color: transparent;
+  color: rgba(0, 0, 0, 0.5);
+}
+.dnd_calendar-grid_item:hover {
+  background-color: #676af0;
+  color: #ffffff;
+}
+.dnd_calendar-separator {
+  height: 1px;
+  background-color: rgba(38, 38, 38, 0.1);
+  width: 100%;
+  margin: 1.2rem 0;
+}
+.dnd_calendar-dropdown_toggle {
+  width: 100%;
+  height: 100%;
+  transition: 0.15s ease-in-out;
+}
+.dnd_calendar-dropdown_toggle:hover {
+  background-color: #dae8ef;
+}
+.dnd_calendar-dropdown {
+  width: 100%;
+  height: 100%;
+}
+.dnd_calendar-dropdown.minify .dnd_calendar-dropdown-items {
+  box-sizing: border-box;
+  padding: 1.6rem 0 1.2rem;
+}
+.dnd_calendar-dropdown.minify .dnd_calendar-dropdown-item {
+  color: #363636;
+  font-size: 14px;
+  padding: 1rem 1.6rem;
+  justify-content: space-between;
+}
+.dnd_calendar-dropdown.minify .dnd_calendar-dropdown-item.active {
+  color: #676af0;
+}
+.dnd_calendar-dropdown.minify .dnd_calendar-flex_buttons {
+  margin: 0;
+  padding: 0 1.6rem;
+}
+.dnd_calendar-dropdown-items {
+  position: absolute;
+  top: 110%;
+  left: 0;
+  width: 100%;
+  background-color: #ffffff;
+  z-index: 10;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+}
+.dnd_calendar-dropdown-items.overflowAuto {
+  overflow: auto;
+  max-height: 20.6rem;
+}
+.dnd_calendar-dropdown-item {
+  color: rgba(38, 38, 38, 0.6);
+  font-weight: 400;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1.2rem 0;
+}
+.dnd_calendar-dropdown-item svg, .dnd_calendar-dropdown-item path {
+  fill: #676af0;
+}
+.dnd_calendar-dropdown-item:hover {
+  background-color: rgba(103, 106, 240, 0.13);
+}
+.dnd_calendar-button {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid rgba(38, 38, 38, 0.3);
+  border-radius: 4px;
+  margin: 1.42rem 0;
+  cursor: pointer;
+}
+.dnd_calendar-button .time_editor {
+  width: 100%;
+  height: 100%;
+  padding: 1.15rem 0;
+  text-align: center;
+  outline: none;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+  color: #363636;
+  font-family: "Lato", sans-serif;
+  border-radius: 4px;
+}
+.dnd_calendar-button-label {
+  width: 100%;
+  height: 100%;
+  padding: 0.65rem 0;
+  text-align: center;
+  background-color: transparent;
+  font-size: 14px;
+  font-family: "Lato", sans-serif;
+  color: #363636;
+  border-radius: 4px;
+}
+.dnd_calendar-button input {
+  width: 100%;
+  height: 100%;
+  padding: 0.65rem 0;
+  text-align: center;
+  outline: none;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  color: #363636;
+  font-size: 14px;
+  font-family: "Lato", sans-serif;
+  border-radius: 4px;
+}
+.dnd_calendar-button input::-webkit-input-placeholder {
+  color: #363636;
+}
+.dnd_calendar-button.active {
+  border: 1px solid #676af0;
+  color: #676af0;
+  border-radius: 4px;
+}
+.dnd_calendar-button.active input {
+  border: 1px solid #676af0;
+  color: #676af0;
+  border-radius: 4px;
+}
+.dnd_calendar-flex_buttons {
+  display: flex;
+  margin-top: 1.8rem;
+}
+.dnd_calendar-flex_buttons > * {
+  margin-right: 1.45rem;
+}
+.dnd_calendar-flex_buttons > *:last-child {
+  margin-right: 0;
+}
+
+/*# sourceMappingURL=CalendarPicker.css.map */

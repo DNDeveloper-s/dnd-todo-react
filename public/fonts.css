@@ -1,0 +1,34 @@
+@font-face {
+  font-family: Lato_Thin;
+  src: url("./fonts/Lato/Lato-Thin.ttf");
+}
+@font-face {
+  font-family: Lato_Light;
+  src: url("./fonts/Lato/Lato-Light.ttf");
+}
+@font-face {
+  font-family: Lato_Regular;
+  src: url("./fonts/Lato/Lato-Regular.ttf");
+}
+@font-face {
+  font-family: Lato_Medium;
+  src: url("./fonts/Lato/Lato-Medium.ttf");
+}
+@font-face {
+  font-family: Lato_SemiBold;
+  src: url("./fonts/Lato/Lato-Semibold.ttf");
+}
+@font-face {
+  font-family: Lato_Bold;
+  src: url("./fonts/Lato/Lato-Bold.ttf");
+}
+@font-face {
+  font-family: Lato_Black;
+  src: url("./fonts/Lato/Lato-Black.ttf");
+}
+@font-face {
+  font-family: Maiandra_GD_Regular;
+  src: url("./fonts/Maiandra GD/Maiandra GD Regular.ttf");
+}
+
+/*# sourceMappingURL=fonts.css.map */

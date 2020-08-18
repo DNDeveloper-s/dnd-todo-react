@@ -1,0 +1,160 @@
+@import "../../../styles/utilities/mixins";
+@import "../../../styles/utilities/variables";
+
+$SIDEBAR_DROPDOWN_ITEM_HEIGHT: 45px;
+
+.dashboard {
+
+  &-sidebar {
+    width: 100%;
+    max-width: 30rem;
+    padding-top: 5rem;
+    background-color: $primary;
+    height: calc(100vh - #{$NAVIGATION_HEIGHT});
+    overflow: auto;
+    user-select: none;
+
+    &-item {
+      @include flexCentered();
+      justify-content: space-between;
+
+      position: relative;
+      padding: 2rem 4rem;
+      cursor: pointer;
+      border-bottom: 1px solid $white-10;
+
+      &.active,
+      &:hover {
+        background-color: $black-10;
+      }
+
+      &.dropdown {
+        padding: 0;
+        &:hover {
+          background-color: transparent;
+        }
+      }
+
+      &-icon {
+        @include flexCentered();
+
+        margin-right: 1.3rem;
+        width: 2rem;
+        height: 2rem;
+
+        svg {
+          width: 100%;
+          height: 100%;
+        }
+      }
+
+      &-label {
+        font-size: 1.6rem;
+        justify-self: flex-start;
+        margin-right: auto;
+        color: $primary_text;
+      }
+
+      &-caret {
+        @include flexCentered();
+        width: 1.2rem;
+        height: 1.2rem;
+        transform: rotateZ(-90deg);
+        transition: $generic-transition;
+
+        &.visible {
+          transform: rotateZ(0deg);
+        }
+
+        svg {
+          width: 100%;
+          height: 100%;
+        }
+      }
+    }
+
+    &-dropdown {
+      width: 100%;
+      height: 100%;
+
+      &-toggle_menu {
+        width: 100%;
+        height: 100%;
+        @include flexCentered();
+        justify-content: space-between;
+        padding: 2rem 4rem;
+
+        &:hover {
+          background-color: $black-10;
+        }
+      }
+
+      &-items {
+        padding: 0;
+        background-color: $black-70;
+        transition: $generic-transition;
+        overflow: hidden;
+      }
+
+      &-item {
+        padding: 0 4rem;
+        font-size: 1.4rem;
+        color: $white-70;
+        height: $SIDEBAR_DROPDOWN_ITEM_HEIGHT;
+        @include flexCentered();
+        justify-content: flex-start;
+        @include butLast(border-bottom, 1px solid $white-10);
+        user-select: none;
+
+        &:hover {
+          background-color: $black-30;
+        }
+
+        &-icon {
+          @include flexCentered();
+
+          width: 2rem;
+          height: 2rem;
+          margin-right: 1.4rem;
+
+          svg {
+            margin-top: .29rem;
+            width: 100%;
+            height: 100%;
+
+            path {
+              fill: rgb(236, 102, 102);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.dropdown {
+
+  &_items {
+    width: 100%;
+    position: absolute;
+    top: 100%;
+    left: 0;
+  }
+
+  &_item {
+    padding: 2rem 4rem;
+    cursor: pointer;
+    border-bottom: 1px solid $white-10;
+    width: 100%;
+
+    &-label {
+      color: $primary_text;
+    }
+  }
+
+  &-menu_toggle {
+    width: 100%;
+    height: 100%;
+    @include flexCentered();
+  }
+}

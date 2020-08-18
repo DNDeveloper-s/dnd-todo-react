@@ -1,0 +1,140 @@
+@import "../../styles/utilities/variables";
+@import "../../styles/utilities/mixins";
+
+.color_picker {
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  transform: translate(-50%);
+  background-color: white;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.18), 0 0 1px 1px rgba(0,0,0,0.1);
+  padding: 3rem;
+  border-radius: 4px;
+  width: 90%;
+  max-width: 50rem;
+  box-sizing: border-box;
+
+  &-grid {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    justify-self: center;
+    padding: 1rem;
+
+    .color_picker-item {
+      width: 2rem;
+      height: 2rem;
+      margin: .4rem;
+    }
+  }
+
+  &-header {
+    @include flexCentered();
+    justify-content: space-between;
+
+    &-label {
+      font-size: 1.9rem;
+      color: $primary;
+      font-family: $Lato_Bold;
+    }
+
+    &-icon {
+      width: 1rem;
+      height: 1rem;
+      @include flexCentered();
+      cursor: pointer;
+
+      svg {
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+
+  &-main {
+    margin: 3rem 0;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  &-item {
+    position: relative;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 3rem;
+    @include butLast(margin-right, 1rem);
+    margin-top: 1rem;
+    cursor: pointer;
+
+    &.null {
+      background-color: rgba(0, 0, 0, 0.16);
+
+      svg {
+        width: 2.5rem;
+        height: 2.5rem;
+        fill: rgba(0, 0, 0, 0.56);
+      }
+
+      &.active::before {
+        opacity: .7;
+      }
+    }
+
+    &-dropdown {
+      background-color: $black-10;
+
+      &-toggle_menu {
+        @include flexCentered();
+        z-index: 4;
+
+        svg,
+        path {
+          margin-top: .3px;
+          fill: $grey;
+        }
+      }
+
+      &-container {
+        position: absolute;
+        top: calc(100% + 1rem);
+        left: 0;
+        background-color: white;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.15), 0 0 1px 1px rgba(0,0,0,0.1);
+      }
+    }
+
+    @include flexCentered();
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 124%;
+      height: 124%;
+      background-color: inherit;
+      opacity: 0;
+      border-radius: inherit;
+      z-index: 2;
+      transition: $generic-transition;
+    }
+
+    &.active {
+      &::before {
+        opacity: .4;
+      }
+    }
+  }
+
+  &-footer {
+    margin-top: 4rem;
+
+    &-action_buttons {
+      > * {
+        @include butLast(margin-right, 2rem);
+      }
+    }
+  }
+
+}
