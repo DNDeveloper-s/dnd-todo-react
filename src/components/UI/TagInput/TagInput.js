@@ -21,7 +21,7 @@ const singleLinePlugin = createSingleLinePlugin({
 
 const { MentionSuggestions } = mentionPlugin;
 
-const TagInput = (props) => {
+const TagInput = ({onReturn}) => {
   const editorRef = useRef(null);
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [suggestions, setSuggestions] = useState(mentionsData);
@@ -54,7 +54,9 @@ const TagInput = (props) => {
   function handleReturn() {
     const contentState = editorState.getCurrentContent();
     const raw = convertToRaw(contentState);
-    console.log('[TagInput.js || Line no. 55 ....]', raw);
+    onReturn(raw, () => {
+      setEditorState(EditorState.createEmpty());
+    });
   }
 
   return (

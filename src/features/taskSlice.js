@@ -71,8 +71,16 @@ export const taskSlice = createSlice({
     },
     CREATE_TASK: (state, action) => {
       const taskItem = action.payload;
-      state.taskData.tasks[taskItem.id] = taskItem;
-      state.taskData.columns[taskItem.columnId].taskIds.push(taskItem.id);
+      state.taskData.tasks[taskItem.id] = {
+        id: taskItem.id,
+        status: {
+          completed: false,
+          prevColumnId: null,
+        },
+        columnId: taskItem.columnId,
+        content: taskItem.content
+      };
+      state.taskData.columns[taskItem.columnId].taskIds.splice(0, 0, taskItem.id);
     },
     TO_COLUMN: (state, action) => {
       const {taskId, toColumnId} = action.payload;
@@ -163,6 +171,7 @@ export const {
 } = taskSlice.actions;
 
 export const getTasks = state => state.task.taskData;
+export const getColumnOrder = state => state.task.taskData.columnOrder;
 
 const taskReducer = taskSlice.reducer;
 

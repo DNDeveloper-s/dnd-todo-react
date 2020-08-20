@@ -15,14 +15,6 @@ const TaskItem = ({children, task, handleProps, ...args}, ref) => {
   const dispatch = useDispatch();
   const [inputState, setInputState] = useState({});
 
-
-  function todayClicked() {
-    // dispatch(TO_COLUMN({
-    //   taskId: task.id,
-    //   toColumnId: 'completed'
-    // }));
-  }
-
   function onChange(active) {
     // console.log('[TaskItem.js || Line no. 26 ....]', active);
     if(active) {
@@ -72,7 +64,7 @@ const TaskItem = ({children, task, handleProps, ...args}, ref) => {
           </div>
         </div>
         <div className="task_item-group">
-          <div className="task_item-label date" onClick={todayClicked}>
+          <div className="task_item-label date">
             <p>Today</p>
           </div>
         </div>
