@@ -1,14 +1,15 @@
 import React from 'react';
-import DoubleAddIcon from "../../icons/DoubleAddIcon";
-import RgbCalendarIcon from "../../icons/RgbCalendarIcon";
-import CaretDownFillIcon from "../../icons/CaretDownFillIcon";
+import DoubleAddIcon from "../../../icons/DoubleAddIcon";
+import CaretDownFillIcon from "../../../icons/CaretDownFillIcon";
+import CalendarWithDate from "../../UI/CalendarWithDate/CalendarWithDate";
+import {getToday} from "../../CalendarPicker/helpers";
 
 // Components Imports
 
 
 // Images Imports
 
-const AddTask = (props) => {
+const AddTask = () => {
 
     return (
         <div className="add_task">
@@ -19,7 +20,7 @@ const AddTask = (props) => {
             <input type="text" placeholder="Add Task here..."/>
           </div>
           <div className="add_task-icon">
-            <RgbCalendarIcon/>
+            <CalendarWithDate date={getToday().day}/>
           </div>
           <div className="vertical_separator" />
           <div className="add_task-icon fill caret">

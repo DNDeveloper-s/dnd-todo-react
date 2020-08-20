@@ -9,6 +9,8 @@ $TASK_ITEM_HEIGHT: 5rem;
 
   &-main {
     flex: 1;
+    overflow: auto;
+    height: calc(100vh - #{$NAVIGATION_HEIGHT});
 
     &.dashboard_wrapper {
       margin: 0 auto;
@@ -101,20 +103,76 @@ $TASK_ITEM_HEIGHT: 5rem;
   }
 }
 
+.task_column {
+  //background-color: $purple;
+  margin-top: 2rem;
+  border-radius: .4rem;
+
+  &-header {
+    padding: 1rem 2rem;
+    background-color: rgba(255, 255, 255, 0.48);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    @include flexCentered();
+    border-radius: .4rem .4rem 0 0;
+    justify-content: flex-start;
+    cursor: pointer;
+
+    &-label {
+      font-size: 1.35rem;
+      font-family: $Lato_Bold;
+      color: $black-60;
+      margin-right: 2rem;
+    }
+
+    &-icon {
+      @include svgSize(.8rem);
+      @include flexCentered();
+      padding-top: .1rem;
+      transform: rotateZ(-90deg);
+      transition: transform $generic-transition;
+
+      &.opened {
+        transform: rotateZ(0deg);
+      }
+
+      svg, path {
+        fill: $black-30;
+      }
+    }
+  }
+}
+
+.task_container {
+  min-height: 5rem;
+  background-color: $white-60;
+}
+
 .task_item {
   width: 100%;
   height: $TASK_ITEM_HEIGHT;
-  background-color: rgba(221, 233, 255, 0.3);
+  background-color: $white-30;
   @include flexCentered();
-  margin: 1rem 0;
+  //margin: 1rem 0;
   padding: 0 2rem;
   cursor: pointer;
-  transition: $generic-transition;
+  transition: background-color $generic-transition;
 
   &:hover {
-    background-color: $pale_blue;
+    background-color: $white-10;
   }
 
+  &-drag_handle {
+    margin-top: .2rem;
+    @include flexCentered();
+    cursor: move;
+
+    svg,
+    path {
+      fill: $black-70;
+      stroke: $black-70;
+    }
+  }
 
   > * {
     @include butLast(margin-right, 2rem);

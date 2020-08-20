@@ -11,6 +11,7 @@ import useProjects from "../../../hooks/useProjects";
 import useLabels from "../../../hooks/useLabels";
 import useFilters from "../../../hooks/useFilters";
 import CalendarWithDate from "../../UI/CalendarWithDate/CalendarWithDate";
+import {getToday} from "../../CalendarPicker/helpers";
 
 // Components Imports
 
@@ -33,7 +34,7 @@ const SideBar = (props) => {
       </div>
       <div className="dashboard-sidebar-item">
         <div className="dashboard-sidebar-item-icon">
-          <CalendarWithDate fill={'#ffffff'} date={'15'} textColor={'#363636'} />
+          <CalendarWithDate fill={'#ffffff'} date={getToday().day} textColor={'#363636'} />
         </div>
         <div className="dashboard-sidebar-item-label">
           <p>Today</p>

@@ -11,6 +11,7 @@
     "lottie-react": "^2.0.0",
     "node-sass": "^4.14.1",
     "react": "^16.13.1",
+    "react-beautiful-dnd": "^13.0.0",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.3",
     "smooth-scrollbar": "^8.5.2"
