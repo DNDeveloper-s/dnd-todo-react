@@ -3,6 +3,7 @@ import DoubleAddIcon from "../../../icons/DoubleAddIcon";
 import CaretDownFillIcon from "../../../icons/CaretDownFillIcon";
 import CalendarWithDate from "../../UI/CalendarWithDate/CalendarWithDate";
 import {getToday} from "../../CalendarPicker/helpers";
+import TagInput from "../../UI/TagInput/TagInput";
 
 // Components Imports
 
@@ -17,7 +18,7 @@ const AddTask = () => {
             <DoubleAddIcon/>
           </div>
           <div className="add_task-input">
-            <input type="text" placeholder="Add Task here..."/>
+            <TagInput/>
           </div>
           <div className="add_task-icon">
             <CalendarWithDate date={getToday().day}/>

@@ -81,9 +81,10 @@ $TASK_ITEM_HEIGHT: 5rem;
   }
 
   &-input {
-    width: 100%;
+    width: 52%;
     height: 100%;
     flex: 1;
+    overflow: auto;
 
     input {
       width: 100%;
@@ -107,6 +108,7 @@ $TASK_ITEM_HEIGHT: 5rem;
   //background-color: $purple;
   margin-top: 2rem;
   border-radius: .4rem;
+  transition: $generic-transition;
 
   &-header {
     padding: 1rem 2rem;
@@ -138,6 +140,29 @@ $TASK_ITEM_HEIGHT: 5rem;
 
       svg, path {
         fill: $black-30;
+      }
+    }
+  }
+
+  &.completed {
+    .task_item {
+      opacity: 0.4;
+
+      &-title {
+        width: 100%;
+        flex: 1;
+
+        input {
+          width: 100%;
+          height: 100%;
+          border: none;
+          outline: none;
+          color: $black-60;
+          font-size: 1.6rem;
+          font-family: $Lato_SemiBold;
+          cursor: pointer;
+          text-decoration: line-through;
+        }
       }
     }
   }

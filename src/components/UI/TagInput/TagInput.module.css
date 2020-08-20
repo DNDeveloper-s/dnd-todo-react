@@ -1,0 +1,38 @@
+.flex {
+  display: flex;
+}
+
+.flex {
+  display: flex;
+}
+
+.dnd_tag-input-tag_item {
+  padding: 4px 6px;
+  font-size: 1.2rem;
+  color: #ffffff;
+  background-color: #3a84ed;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.dnd_tag-input-tag_item:hover {
+  background-color: #3577d6;
+}
+.dnd_tag-input-tag_item:active {
+  background-color: #306bc1;
+}
+.dnd_tag-input-editor {
+  padding: 16px 4px;
+  border-radius: 2px;
+  cursor: text;
+  box-sizing: border-box;
+  height: 100%;
+}
+.dnd_tag-input-editor-placeholder {
+  pointer-events: none;
+  position: absolute;
+  color: rgba(0, 69, 91, 0.35);
+  font-size: 1.6rem;
+  font-family: "Lato_SemiBold";
+}
+
+/*# sourceMappingURL=TagInput.module.css.map */

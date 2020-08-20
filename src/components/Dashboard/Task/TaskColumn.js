@@ -15,7 +15,7 @@ const TaskColumn = ({column, tasks}) => {
     return (
       <Droppable droppableId={column.id}>
         {provided => (
-        <div className="task_column"
+        <div className={["task_column", column.id].join(" ")}
          style={{backgroundColor: column.color}}
           ref={provided.innerRef}
           {...provided.droppableProps}

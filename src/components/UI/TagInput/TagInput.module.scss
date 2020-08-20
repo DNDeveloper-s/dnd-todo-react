@@ -1,0 +1,44 @@
+@import "../../../styles/utilities/mixins";
+@import "../../../styles/utilities/variables";
+
+.dnd_tag {
+
+
+  &-input {
+
+    &-tag_item {
+      padding: 4px 6px;
+      font-size: 1.2rem;
+      color:$primary_text;
+      background-color: $dark_sky_blue;
+      border-radius: $generic-border-radius;
+      cursor: pointer;
+
+      &:hover {
+        background-color: #3577d6;
+      }
+
+      &:active {
+        background-color: #306bc1;
+      }
+    }
+
+    &-editor {
+      //background: #fefefe;
+      padding: 16px 4px;
+      border-radius: 2px;
+      //border: 1px solid #ddd;
+      cursor: text;
+      box-sizing: border-box;
+      height: 100%;
+
+      &-placeholder {
+        pointer-events: none;
+        position: absolute;
+        color: rgba(0, 69, 91, 0.35);
+        font-size: 1.6rem;
+        font-family: $Lato_SemiBold;
+      }
+    }
+  }
+}

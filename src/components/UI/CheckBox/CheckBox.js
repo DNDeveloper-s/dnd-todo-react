@@ -14,10 +14,10 @@ const CheckBox = ({initialValue, onChange}) => {
   async function runAnimation(e) {
     checkBoxRef.current.classList.add(classes.anim);
     await new Promise((res) => setTimeout(res, 150));
-    setActive(!active);
+    setActive(active => !active);
     await new Promise((res) => setTimeout(res, 150));
     checkBoxRef.current.classList.remove(classes.anim);
-    onChange(active);
+    onChange(!active);
   }
 
   return (
