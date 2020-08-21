@@ -1,9 +1,10 @@
 import React, {createRef, useEffect, useRef, useState} from 'react';
 import CheckBox from "../../UI/CheckBox/CheckBox";
 import DragIcon from "../../../icons/DragIcon";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {ADD_TASK_CLASS, COMPLETE_TASK, INCOMPLETE_TASK, REMOVE_TASK_CLASS, UPDATE_TASK} from "../../../features/taskSlice";
 import {wait} from "../../../helpers/utils";
+import {getAllLabels} from "../../../features/labelSlice";
 
 // Components Imports
 
@@ -12,6 +13,7 @@ import {wait} from "../../../helpers/utils";
 
 const TaskItem = ({children, task, handleProps, ...args}, ref) => {
   const [title, setTitle] = useState(task.content);
+  const labels = useSelector(getAllLabels);
   const dispatch = useDispatch();
   // Updating Input on blur
   const [inputState, setInputState] = useState({});
@@ -55,6 +57,15 @@ const TaskItem = ({children, task, handleProps, ...args}, ref) => {
     })
   }
 
+  const labelEls = task.labelIds.map(labelId => {
+    const label = labels.data[labelId];
+    return (
+      <div key={labelId} style={{backgroundColor: label.color}} className="task_item-label label" data-label={labelId}>
+        <p>{label.content}</p>
+      </div>
+    )
+  });
+
   return (
     <div className={["task_item", ...task.elClasses].join(" ")} data-id={task.id} {...args} ref={ref}>
       <div className="task_item-drag_handle" {...handleProps}>
@@ -66,12 +77,7 @@ const TaskItem = ({children, task, handleProps, ...args}, ref) => {
       </div>
       <div className="task_item-groups">
         <div className="task_item-group">
-          <div className="task_item-label label">
-            <p>Label 1</p>
-          </div>
-          <div className="task_item-label label">
-            <p>Label 1</p>
-          </div>
+          {labelEls}
         </div>
         <div className="task_item-group">
           <div className="task_item-label project">

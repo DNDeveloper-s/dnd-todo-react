@@ -9,6 +9,7 @@ import "./TagInput.css";
 import EntryComponent from "./EntryComponent";
 import {colors} from "../../ColorPicker/helpers/colors";
 import {getRandomInt} from "../../../helpers/utils";
+import {v4 as uuidV4} from "uuid";
 
 const mentionPlugin = createMentionPlugin({
   entityMutability: 'IMMUTABLE',
@@ -62,7 +63,7 @@ const TagInput = ({mentionsData, onReturn}) => {
   function addCreateLabel(suggestions, value) {
     const newSuggestionArr = Array.from(suggestions);
     const lastObj = {
-      id: 'create-label',
+      id: uuidV4(),
       name: value.trim(),
       color: colors[getRandomInt(0, 15)].value  ,
       icon: 'LabelIcon',
@@ -80,7 +81,9 @@ const TagInput = ({mentionsData, onReturn}) => {
     const contentState = editorState.getCurrentContent();
     const raw = convertToRaw(contentState);
     onReturn(raw, () => {
-      setEditorState(EditorState.createEmpty());
+      editorRef.current.blur();
+      setEditorState(EditorState.createWithText(''));
+      editorRef.current.focus();
     });
   }
 

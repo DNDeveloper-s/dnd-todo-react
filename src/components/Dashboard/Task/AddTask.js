@@ -4,11 +4,11 @@ import CaretDownFillIcon from "../../../icons/CaretDownFillIcon";
 import CalendarWithDate from "../../UI/CalendarWithDate/CalendarWithDate";
 import {getToday} from "../../CalendarPicker/helpers";
 import TagInput from "../../UI/TagInput/TagInput";
-import { v4 as uuidv4 } from 'uuid';
+import {v4 as uuidV4} from 'uuid';
 import {useDispatch, useSelector} from "react-redux";
-import {getColumnOrder, CREATE_TASK, REMOVE_TASK_CLASS} from "../../../features/taskSlice";
+import {CREATE_TASK, getColumnOrder, REMOVE_TASK_CLASS} from "../../../features/taskSlice";
 import {wait} from "../../../helpers/utils";
-import {getAllLabels} from "../../../features/labelSlice";
+import {getAllLabels, ADD_LABEL_TASK, CREATE_LABEL} from "../../../features/labelSlice";
 
 // Components Imports
 
@@ -20,10 +20,7 @@ const AddTask = () => {
   const columnOrder = useSelector(getColumnOrder);
   const labels = useSelector(getAllLabels);
 
-  async function onReturn(content, cb) {
-    console.log('[AddTask.js || Line no. 16 ....]', content);
-    const text = content.blocks[0].text;
-    const entityRanges = content.blocks[0].entityRanges;
+  function parseTextFromRaw(entityRanges, text) {
     const parsedTextArr = [];
 
     for(let i = 0; i < text.length; i++) {
@@ -41,14 +38,53 @@ const AddTask = () => {
       return false;
     }
 
-    const taskContent = parsedTextArr.join("");
-    const taskId = uuidv4();
+    return parsedTextArr.join("");
+  }
+
+  function parseEntities(content) {
+    const entityMap = content.entityMap;
+    const keys = Object.keys(entityMap);
+    return keys.map(key => {
+      const {data} = entityMap[key];
+      // If the label entity is not yet created
+      // Create it via redux store
+      if(data.mention.creating) {
+        createNewAddedLabel(data.mention);
+      }
+      return data.mention.id;
+    });
+  }
+
+  function createNewAddedLabel(label) {
+    dispatch(CREATE_LABEL({
+      id: label.id,
+      color: label.color,
+      content: label.name,
+    }))
+  }
+
+  async function onReturn(content, cb) {
+    console.log('[AddTask.js || Line no. 16 ....]', content);
+    const text = content.blocks[0].text;
+    const entityRanges = content.blocks[0].entityRanges;
+
+    const taskContent = parseTextFromRaw(entityRanges, text);
+    const taskId = uuidV4();
+
+    const labelIds = parseEntities(content);
+    console.log('[AddTask.js || Line no. 54 ....]', labelIds);
+
+    // Updating Label tasks
+    labelIds.forEach(labelId => {
+      dispatch(ADD_LABEL_TASK({ labelId, taskId }))
+    });
 
     dispatch(CREATE_TASK({
       id: taskId,
       content: taskContent,
       columnId: columnOrder[0],
-      elClasses: ["disappearWithHeightTransition"]
+      elClasses: ["disappearWithHeightTransition"],
+      labelIds
     }));
 
     await wait(200);

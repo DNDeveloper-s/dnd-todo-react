@@ -2,19 +2,18 @@ import React from 'react';
 import classes from './TagInput.module.scss';
 import classNames from 'classnames';
 
-const EntryComponent = (props) => {
+const EntryComponent = ({mention, theme, searchValue, isFocused, ...parentProps}) => {
   const entryClasses = classNames({
     [classes['mention-entry-item']]: true,
-    [classes['focused']]: props.isFocused
+    [classes['focused']]: isFocused
   });
-
   return (
-    <div className={entryClasses}>
+    <div className={entryClasses} {...parentProps}>
       <div className={classes["mention-entry-item-icon"]}>
-        {require('../../../icons/' + props.mention.icon + '.js').default({fill: props.mention.color})}
+        {require('../../../icons/' + mention.icon + '.js').default({fill: mention.color})}
       </div>
       <div className={classes['mention-entry-item-label']}>
-        <p>{props.mention.creating ? `Create Label - "${props.mention.name}"` : props.mention.name}</p>
+        <p>{mention.creating ? `Create Label - "${mention.name}"` : mention.name}</p>
       </div>
     </div>
   );
