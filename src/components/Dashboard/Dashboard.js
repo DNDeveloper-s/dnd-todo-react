@@ -1,17 +1,15 @@
-import React, {useEffect, useState} from "react";
+import React from "react";
 import SideBar from "./SideBar/SideBar";
 import DashboardHeader from "./DashboardHeader";
 import AddTask from "./Task/AddTask";
-// import TaskColumn from "./Task/TaskColumn";
-// import {DragDropContext} from "react-beautiful-dnd";
 import DndList from "./Task/DndList";
+import DetailsBar from "./DetailsBar/DetailsBar";
 
 // Components Imports
 
 // Images Imports
 
-const Dashboard = (props) => {
-
+const Dashboard = () => {
 
   return (
     <div className="dashboard">

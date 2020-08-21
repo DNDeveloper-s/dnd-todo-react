@@ -195,7 +195,15 @@
   align-items: center;
   padding: 0 2rem;
   cursor: pointer;
-  transition: background-color 0.15s ease-in-out;
+  overflow: visible;
+  transition: background-color 0.15s ease-in-out, height 0.15s ease-in-out;
+}
+.task_item.disappearWithHeightTransition {
+  overflow: hidden;
+  height: 0;
+}
+.task_item.disappearWithHeightTransition .task_item-title {
+  height: 0;
 }
 .task_item:hover {
   background-color: rgba(251, 251, 251, 0.1);
@@ -221,6 +229,9 @@
 .task_item-title {
   width: 100%;
   flex: 1;
+  overflow: hidden;
+  height: 20px;
+  transition: background-color 0.15s ease-in-out, height 0.15s ease-in-out;
 }
 .task_item-title input {
   width: 100%;

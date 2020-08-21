@@ -9,10 +9,10 @@ const SideBarDropDownItem = ({ item }) => {
   return (
     <div className="dashboard-sidebar-dropdown-item">
       <div className="dashboard-sidebar-dropdown-item-icon">
-        <LabelIcon/>
+        <LabelIcon fill={item.color}/>
       </div>
       <div className="dashboard-sidebar-dropdown-item-label">
-        <p>{item.label}</p>
+        <p>{item.content}</p>
       </div>
     </div>
   );

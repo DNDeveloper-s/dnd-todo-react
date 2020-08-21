@@ -28,7 +28,7 @@
       padding: 16px 4px;
       border-radius: 2px;
       //border: 1px solid #ddd;
-      cursor: text;
+      //cursor: text;
       box-sizing: border-box;
       height: 100%;
 
@@ -40,5 +40,26 @@
         font-family: $Lato_SemiBold;
       }
     }
+  }
+}
+
+.mention-entry-item {
+  padding: .5rem 1rem;
+  @include flexCentered();
+  justify-content: flex-start;
+
+  &.focused {
+    background-color: $pale_blue;
+  }
+
+  &-icon {
+    margin-right: 1rem;
+    @include flexCentered();
+    @include svgSize(2rem);
+    margin-top: .3rem;
+  }
+
+  &-label {
+    font-family: $Lato_Regular;
   }
 }

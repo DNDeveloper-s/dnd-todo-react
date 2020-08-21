@@ -181,7 +181,18 @@ $TASK_ITEM_HEIGHT: 5rem;
   //margin: 1rem 0;
   padding: 0 2rem;
   cursor: pointer;
-  transition: background-color $generic-transition;
+  overflow: visible;
+  transition: background-color $generic-transition, height $generic-transition;
+
+  &.disappearWithHeightTransition {
+    overflow: hidden;
+    height: 0;
+
+    .task_item-title {
+      height: 0;
+    }
+
+  }
 
   &:hover {
     background-color: $white-10;
@@ -206,6 +217,9 @@ $TASK_ITEM_HEIGHT: 5rem;
   &-title {
     width: 100%;
     flex: 1;
+    overflow: hidden;
+    height: 20px;
+    transition: background-color $generic-transition, height $generic-transition;
 
     input {
       width: 100%;

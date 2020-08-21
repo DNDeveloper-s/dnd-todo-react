@@ -12,15 +12,18 @@ import useLabels from "../../../hooks/useLabels";
 import useFilters from "../../../hooks/useFilters";
 import CalendarWithDate from "../../UI/CalendarWithDate/CalendarWithDate";
 import {getToday} from "../../CalendarPicker/helpers";
+import {useSelector} from "react-redux";
+import {getAllLabels} from "../../../features/labelSlice";
 
 // Components Imports
 
 // Images Imports
 
 const SideBar = (props) => {
-  const [projects] = useProjects();
-  const [labels] = useLabels();
-  const [filters] = useFilters();
+  // const [projects] = useProjects();
+  // const [labels] = useLabels();
+  const labels = useSelector(getAllLabels);
+  // const [filters] = useFilters();
 
   return (
     <div className="dashboard-sidebar">
@@ -48,29 +51,29 @@ const SideBar = (props) => {
           <p>Upcoming</p>
         </div>
       </div>
-      <div className="dashboard-sidebar-item dropdown">
-        <SideBarDropDown
-          items={projects}
-          toggle_menu={(visible) => (
-            <>
-              <div className="dashboard-sidebar-item-icon">
-                <ProjectsIcon />
-              </div>
-              <div className="dashboard-sidebar-item-label">
-                <p>Projects</p>
-              </div>
-              <div
-                className={[
-                  "dashboard-sidebar-item-caret",
-                  visible ? "visible" : "",
-                ].join(" ")}
-              >
-                <CaretDownIcon />
-              </div>
-            </>
-          )}
-        />
-      </div>
+      {/*<div className="dashboard-sidebar-item dropdown">*/}
+      {/*  <SideBarDropDown*/}
+      {/*    items={projects}*/}
+      {/*    toggle_menu={(visible) => (*/}
+      {/*      <>*/}
+      {/*        <div className="dashboard-sidebar-item-icon">*/}
+      {/*          <ProjectsIcon />*/}
+      {/*        </div>*/}
+      {/*        <div className="dashboard-sidebar-item-label">*/}
+      {/*          <p>Projects</p>*/}
+      {/*        </div>*/}
+      {/*        <div*/}
+      {/*          className={[*/}
+      {/*            "dashboard-sidebar-item-caret",*/}
+      {/*            visible ? "visible" : "",*/}
+      {/*          ].join(" ")}*/}
+      {/*        >*/}
+      {/*          <CaretDownIcon />*/}
+      {/*        </div>*/}
+      {/*      </>*/}
+      {/*    )}*/}
+      {/*  />*/}
+      {/*</div>*/}
       <div className="dashboard-sidebar-item dropdown">
         <SideBarDropDown
           items={labels}
@@ -94,29 +97,29 @@ const SideBar = (props) => {
           )}
         />
       </div>
-      <div className="dashboard-sidebar-item dropdown">
-        <SideBarDropDown
-          items={filters}
-          toggle_menu={(visible) => (
-            <>
-              <div className="dashboard-sidebar-item-icon">
-                <FiltersIcon />
-              </div>
-              <div className="dashboard-sidebar-item-label">
-                <p>Filters</p>
-              </div>
-              <div
-                className={[
-                  "dashboard-sidebar-item-caret",
-                  visible ? "visible" : "",
-                ].join(" ")}
-              >
-                <CaretDownIcon />
-              </div>
-            </>
-          )}
-        />
-      </div>
+      {/*<div className="dashboard-sidebar-item dropdown">*/}
+      {/*  <SideBarDropDown*/}
+      {/*    items={filters}*/}
+      {/*    toggle_menu={(visible) => (*/}
+      {/*      <>*/}
+      {/*        <div className="dashboard-sidebar-item-icon">*/}
+      {/*          <FiltersIcon />*/}
+      {/*        </div>*/}
+      {/*        <div className="dashboard-sidebar-item-label">*/}
+      {/*          <p>Filters</p>*/}
+      {/*        </div>*/}
+      {/*        <div*/}
+      {/*          className={[*/}
+      {/*            "dashboard-sidebar-item-caret",*/}
+      {/*            visible ? "visible" : "",*/}
+      {/*          ].join(" ")}*/}
+      {/*        >*/}
+      {/*          <CaretDownIcon />*/}
+      {/*        </div>*/}
+      {/*      </>*/}
+      {/*    )}*/}
+      {/*  />*/}
+      {/*</div>*/}
     </div>
   );
 };

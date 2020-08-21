@@ -1,8 +1,9 @@
-import React, {useEffect, useState} from 'react';
+import React, {createRef, useEffect, useRef, useState} from 'react';
 import CheckBox from "../../UI/CheckBox/CheckBox";
 import DragIcon from "../../../icons/DragIcon";
 import {useDispatch} from "react-redux";
-import {COMPLETE_TASK, INCOMPLETE_TASK, UPDATE_TASK} from "../../../features/taskSlice";
+import {ADD_TASK_CLASS, COMPLETE_TASK, INCOMPLETE_TASK, REMOVE_TASK_CLASS, UPDATE_TASK} from "../../../features/taskSlice";
+import {wait} from "../../../helpers/utils";
 
 // Components Imports
 
@@ -10,18 +11,32 @@ import {COMPLETE_TASK, INCOMPLETE_TASK, UPDATE_TASK} from "../../../features/tas
 // Images Imports
 
 const TaskItem = ({children, task, handleProps, ...args}, ref) => {
-  const [active, setActive] = useState(false);
   const [title, setTitle] = useState(task.content);
   const dispatch = useDispatch();
+  // Updating Input on blur
   const [inputState, setInputState] = useState({});
 
-  function onChange(active) {
-    // console.log('[TaskItem.js || Line no. 26 ....]', active);
+  async function onChange(active) {
+    // Adding Task class for transitioned removal
+    dispatch(ADD_TASK_CLASS({
+      taskId: task.id,
+      elClasses: ['disappearWithHeightTransition']
+    }));
+    await wait(200);    // Waiting for transition to finish
+
+    // Toggling the status of the task
     if(active) {
       dispatch(COMPLETE_TASK({taskId: task.id}));
     } else {
       dispatch(INCOMPLETE_TASK({taskId: task.id}));
     }
+
+    await wait(200);    // Waiting for database to update
+    // Removing Task class for transitioned appearance
+    dispatch(REMOVE_TASK_CLASS({
+      taskId: task.id,
+      removeAll: true
+    }));
   }
 
   function onBlurInput() {
@@ -41,7 +56,7 @@ const TaskItem = ({children, task, handleProps, ...args}, ref) => {
   }
 
   return (
-    <div className="task_item" {...args} ref={ref}>
+    <div className={["task_item", ...task.elClasses].join(" ")} data-id={task.id} {...args} ref={ref}>
       <div className="task_item-drag_handle" {...handleProps}>
           <DragIcon/>
       </div>

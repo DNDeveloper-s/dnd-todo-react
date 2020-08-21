@@ -3,17 +3,18 @@ import { EditorState, convertToRaw } from "draft-js";
 import Editor from 'draft-js-plugins-editor';
 import createSingleLinePlugin from 'draft-js-single-line-plugin'
 import createMentionPlugin, { defaultSuggestionsFilter } from 'draft-js-mention-plugin';
-import mentionsData from "../../../store/mentionsData";
 import TagItemComponent from './TagItemComponent';
 import classes from "./TagInput.module.css"
 import "./TagInput.css";
+import EntryComponent from "./EntryComponent";
+import {colors} from "../../ColorPicker/helpers/colors";
+import {getRandomInt} from "../../../helpers/utils";
 
 const mentionPlugin = createMentionPlugin({
-  mentions: mentionsData,
   entityMutability: 'IMMUTABLE',
   mentionPrefix: '#',
   mentionTrigger: '#',
-  mentionComponent: TagItemComponent,
+  mentionComponent: TagItemComponent
 });
 const singleLinePlugin = createSingleLinePlugin({
   stripEntities: false
@@ -21,7 +22,7 @@ const singleLinePlugin = createSingleLinePlugin({
 
 const { MentionSuggestions } = mentionPlugin;
 
-const TagInput = ({onReturn}) => {
+const TagInput = ({mentionsData, onReturn}) => {
   const editorRef = useRef(null);
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [suggestions, setSuggestions] = useState(mentionsData);
@@ -44,7 +45,31 @@ const TagInput = ({onReturn}) => {
   }
 
   function onSearchChange({value}) {
-    setSuggestions(defaultSuggestionsFilter(value, mentionsData))
+    let filteredSuggestions = defaultSuggestionsFilter(value, mentionsData);
+
+    if(value.trim().length > 0) {
+      if(filteredSuggestions.length > 0) {
+        if(filteredSuggestions[0].name.toLowerCase() !== value.trim().toLowerCase()) {
+          filteredSuggestions = addCreateLabel(filteredSuggestions, value);
+        }
+      } else {
+          filteredSuggestions = addCreateLabel(filteredSuggestions, value);
+      }
+    }
+    setSuggestions(filteredSuggestions);
+  }
+
+  function addCreateLabel(suggestions, value) {
+    const newSuggestionArr = Array.from(suggestions);
+    const lastObj = {
+      id: 'create-label',
+      name: value.trim(),
+      color: colors[getRandomInt(0, 15)].value  ,
+      icon: 'LabelIcon',
+      creating: true
+    };
+    newSuggestionArr.push(lastObj);
+    return newSuggestionArr
   }
 
   function onAddMention(entry) {
@@ -76,6 +101,7 @@ const TagInput = ({onReturn}) => {
         onSearchChange={onSearchChange}
         suggestions={suggestions}
         onAddMention={onAddMention}
+        entryComponent={EntryComponent}
       />
     </div>
   );

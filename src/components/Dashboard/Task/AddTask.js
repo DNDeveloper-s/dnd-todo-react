@@ -6,7 +6,9 @@ import {getToday} from "../../CalendarPicker/helpers";
 import TagInput from "../../UI/TagInput/TagInput";
 import { v4 as uuidv4 } from 'uuid';
 import {useDispatch, useSelector} from "react-redux";
-import {getColumnOrder, CREATE_TASK} from "../../../features/taskSlice";
+import {getColumnOrder, CREATE_TASK, REMOVE_TASK_CLASS} from "../../../features/taskSlice";
+import {wait} from "../../../helpers/utils";
+import {getAllLabels} from "../../../features/labelSlice";
 
 // Components Imports
 
@@ -16,13 +18,13 @@ import {getColumnOrder, CREATE_TASK} from "../../../features/taskSlice";
 const AddTask = () => {
   const dispatch = useDispatch();
   const columnOrder = useSelector(getColumnOrder);
+  const labels = useSelector(getAllLabels);
 
-  function onReturn(content, cb) {
+  async function onReturn(content, cb) {
     console.log('[AddTask.js || Line no. 16 ....]', content);
     const text = content.blocks[0].text;
     const entityRanges = content.blocks[0].entityRanges;
     const parsedTextArr = [];
-    const entityArr = [];
 
     for(let i = 0; i < text.length; i++) {
       if (checkIfItComesUnder(i)) continue;
@@ -45,29 +47,48 @@ const AddTask = () => {
     dispatch(CREATE_TASK({
       id: taskId,
       content: taskContent,
-      columnId: columnOrder[0]
+      columnId: columnOrder[0],
+      elClasses: ["disappearWithHeightTransition"]
+    }));
+
+    await wait(200);
+
+    dispatch(REMOVE_TASK_CLASS({
+      taskId: taskId,
+      removeAll: true
     }));
 
     cb();
   }
 
-    return (
-        <div className="add_task">
-          <div className="add_task-icon fill">
-            <DoubleAddIcon/>
-          </div>
-          <div className="add_task-input">
-            <TagInput onReturn={onReturn}/>
-          </div>
-          <div className="add_task-icon">
-            <CalendarWithDate date={getToday().day}/>
-          </div>
-          <div className="vertical_separator" />
-          <div className="add_task-icon fill caret">
-            <CaretDownFillIcon/>
-          </div>
-        </div>
-    );
+  const labelsArr = labels.entities.map(labelId => {
+    const label = labels.data[labelId];
+    return {
+      id: label.id,
+      name: label.content,
+      avatar: '',
+      color: label.color,
+      icon: label.icon
+    }
+  });
+
+  return (
+    <div className="add_task">
+      <div className="add_task-icon fill">
+        <DoubleAddIcon/>
+      </div>
+      <div className="add_task-input">
+        <TagInput mentionsData={labelsArr} onReturn={onReturn}/>
+      </div>
+      <div className="add_task-icon">
+        <CalendarWithDate date={getToday().day}/>
+      </div>
+      <div className="vertical_separator" />
+      <div className="add_task-icon fill caret">
+        <CaretDownFillIcon/>
+      </div>
+    </div>
+  );
 };
 
 export default AddTask;

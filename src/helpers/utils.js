@@ -40,3 +40,7 @@ export const matchItemId = (item, match) => {
     if(keys.includes('_id')) return item['_id'].toString();
   }
 };
+
+export const wait = async (time) => {
+  return await new Promise((res) => setTimeout(res, time));
+};

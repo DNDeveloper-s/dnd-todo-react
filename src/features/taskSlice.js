@@ -7,21 +7,21 @@ export const taskSlice = createSlice({
   initialState: {
     taskData: {
       tasks: {
-        'task-1': {id: 'task-1', status: {completed: false, prevColumnId: null}, columnId: 'column-1', content: 'This is my first task. Be Gentle'},
-        'task-2': {id: 'task-2', status: {completed: false, prevColumnId: null}, columnId: 'column-1', content: 'This is my second task. Never mind'},
-        'task-3': {id: 'task-3', status: {completed: false, prevColumnId: null}, columnId: 'column-1', content: 'This is my third task. I am improving'},
-        'task-4': {id: 'task-4', status: {completed: false, prevColumnId: null}, columnId: 'column-2', content: 'This is my forth task. I feel confident now'},
-        'task-5': {id: 'task-5', status: {completed: false, prevColumnId: null}, columnId: 'column-2', content: 'This is my fifth task. I can control this anyhow'},
-        'task-6': {id: 'task-6', status: {completed: false, prevColumnId: null}, columnId: 'column-2', content: 'This is my sixth task, i guess. But does\'t matter now'},
-        'task-7': {id: 'task-7', status: {completed: false, prevColumnId: null}, columnId: 'column-3', content: 'This is my forth tasks. I feel confident now'},
-        'task-8': {id: 'task-8', status: {completed: false, prevColumnId: null}, columnId: 'column-3', content: 'This is my fifth tasks. I can control this anyhow'},
-        'task-9': {id: 'task-9', status: {completed: false, prevColumnId: null}, columnId: 'column-3', content: 'This is my sixth tasks, i guess. But does\'t matter now'},
-        'task-10': {id: 'task-10', status: {completed: false, prevColumnId: null}, columnId: 'column-4', content: 'This is my first tasks. Be Gentle'},
-        'task-11': {id: 'task-11', status: {completed: false, prevColumnId: null}, columnId: 'column-4', content: 'This is my second tasks. Never mind'},
-        'task-12': {id: 'task-12', status: {completed: false, prevColumnId: null}, columnId: 'column-4', content: 'This is my third tasks. I am improving'},
-        'task-13': {id: 'task-13', status: {completed: false, prevColumnId: null}, columnId: 'column-5', content: 'This is my first tasks. Be Gentle'},
-        'task-14': {id: 'task-14', status: {completed: false, prevColumnId: null}, columnId: 'column-5', content: 'This is my second tasks. Never mind'},
-        'task-15': {id: 'task-15', status: {completed: false, prevColumnId: null}, columnId: 'column-5', content: 'This is my third tasks. I am improving'},
+        'task-1': {id: 'task-1', elClasses: [], status: {completed: false, prevColumnId: null}, columnId: 'column-1', content: 'This is my first task. Be Gentle'},
+        'task-2': {id: 'task-2', elClasses: [], status: {completed: false, prevColumnId: null}, columnId: 'column-1', content: 'This is my second task. Never mind'},
+        'task-3': {id: 'task-3', elClasses: [], status: {completed: false, prevColumnId: null}, columnId: 'column-1', content: 'This is my third task. I am improving'},
+        'task-4': {id: 'task-4', elClasses: [], status: {completed: false, prevColumnId: null}, columnId: 'column-2', content: 'This is my forth task. I feel confident now'},
+        'task-5': {id: 'task-5', elClasses: [], status: {completed: false, prevColumnId: null}, columnId: 'column-2', content: 'This is my fifth task. I can control this anyhow'},
+        'task-6': {id: 'task-6', elClasses: [], status: {completed: false, prevColumnId: null}, columnId: 'column-2', content: 'This is my sixth task, i guess. But does\'t matter now'},
+        'task-7': {id: 'task-7', elClasses: [], status: {completed: false, prevColumnId: null}, columnId: 'column-3', content: 'This is my forth tasks. I feel confident now'},
+        'task-8': {id: 'task-8', elClasses: [], status: {completed: false, prevColumnId: null}, columnId: 'column-3', content: 'This is my fifth tasks. I can control this anyhow'},
+        'task-9': {id: 'task-9', elClasses: [], status: {completed: false, prevColumnId: null}, columnId: 'column-3', content: 'This is my sixth tasks, i guess. But does\'t matter now'},
+        'task-10': {id: 'task-10', elClasses: [], status: {completed: false, prevColumnId: null}, columnId: 'column-4', content: 'This is my first tasks. Be Gentle'},
+        'task-11': {id: 'task-11', elClasses: [], status: {completed: false, prevColumnId: null}, columnId: 'column-4', content: 'This is my second tasks. Never mind'},
+        'task-12': {id: 'task-12', elClasses: [], status: {completed: false, prevColumnId: null}, columnId: 'column-4', content: 'This is my third tasks. I am improving'},
+        'task-13': {id: 'task-13', elClasses: [], status: {completed: false, prevColumnId: null}, columnId: 'column-5', content: 'This is my first tasks. Be Gentle'},
+        'task-14': {id: 'task-14', elClasses: [], status: {completed: false, prevColumnId: null}, columnId: 'column-5', content: 'This is my second tasks. Never mind'},
+        'task-15': {id: 'task-15', elClasses: [], status: {completed: false, prevColumnId: null}, columnId: 'column-5', content: 'This is my third tasks. I am improving'},
       },
       columns: {
         'column-1': {
@@ -66,6 +66,18 @@ export const taskSlice = createSlice({
     }
   },
   reducers: {
+    ADD_TASK_CLASS: (state, action) => {
+      const {elClasses: classes, taskId, replaceAll} = action.payload;
+      if(replaceAll) state.taskData.tasks[taskId].elClasses = classes;
+      else state.taskData.tasks[taskId].elClasses.push(classes);
+    },
+    REMOVE_TASK_CLASS: (state, action) => {
+      const {elClasses: classes, taskId, removeAll} = action.payload;
+      if(removeAll) state.taskData.tasks[taskId].elClasses = [];
+      else classes.forEach(className => {
+        state.taskData.tasks[taskId].elClasses = removeItemByIdInArray(state.taskData.tasks[taskId].elClasses, className);
+      })
+    },
     UPDATE_WHOLE: (state, action) => {
       state.taskData = action.payload
     },
@@ -77,6 +89,7 @@ export const taskSlice = createSlice({
           completed: false,
           prevColumnId: null,
         },
+        elClasses: taskItem.elClasses,
         columnId: taskItem.columnId,
         content: taskItem.content
       };
@@ -159,12 +172,14 @@ export const taskSlice = createSlice({
 });
 
 export const {
+  ADD_TASK_CLASS,
   COMPLETE_TASK,
   CREATE_COLUMN,
   CREATE_TASK,
   DELETE_COLUMN,
   DELETE_TASK_BY_ID,
   INCOMPLETE_TASK,
+  REMOVE_TASK_CLASS,
   TO_COLUMN,
   UPDATE_TASK,
   UPDATE_WHOLE,
