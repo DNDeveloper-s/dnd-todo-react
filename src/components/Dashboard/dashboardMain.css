@@ -276,11 +276,21 @@
   font-size: 1.1rem;
   font-family: "Lato_Regular";
   color: rgba(38, 38, 38, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .task_item-label.date {
   font-size: 1.25rem;
   font-family: "Lato_SemiBold";
   color: rgba(38, 38, 38, 0.7);
+}
+.task_item-label-highlighter {
+  width: 6px;
+  height: 6px;
+  margin-right: 3px;
+  border-radius: 20px;
+  margin-top: 1px;
 }
 
 /*# sourceMappingURL=dashboardMain.css.map */

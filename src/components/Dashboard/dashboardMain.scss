@@ -262,11 +262,21 @@ $TASK_ITEM_HEIGHT: 5rem;
       font-size: 1.1rem;
       font-family: $Lato_Regular;
       color: $black-40;
+      @include flexCentered();
     }
+
     &.date {
       font-size: 1.25rem;
       font-family: $Lato_SemiBold;
       color: $black-70;
+    }
+
+    &-highlighter {
+      width: 6px;
+      height: 6px;
+      margin-right: 3px;
+      border-radius: 20px;
+      margin-top: 1px;
     }
   }
 }

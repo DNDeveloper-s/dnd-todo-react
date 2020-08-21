@@ -5,6 +5,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {ADD_TASK_CLASS, COMPLETE_TASK, INCOMPLETE_TASK, REMOVE_TASK_CLASS, UPDATE_TASK} from "../../../features/taskSlice";
 import {wait} from "../../../helpers/utils";
 import {getAllLabels} from "../../../features/labelSlice";
+import {getAllProjects} from "../../../features/projectSlice";
 
 // Components Imports
 
@@ -14,6 +15,7 @@ import {getAllLabels} from "../../../features/labelSlice";
 const TaskItem = ({children, task, handleProps, ...args}, ref) => {
   const [title, setTitle] = useState(task.content);
   const labels = useSelector(getAllLabels);
+  const projects = useSelector(getAllProjects);
   const dispatch = useDispatch();
   // Updating Input on blur
   const [inputState, setInputState] = useState({});
@@ -66,6 +68,16 @@ const TaskItem = ({children, task, handleProps, ...args}, ref) => {
     )
   });
 
+  const projectEls = task.projectIds.map(projectId => {
+    const project = projects.data[projectId];
+    return (
+      <div key={projectId} className="task_item-label project" data-label={projectId}>
+        <span className="task_item-label-highlighter" style={{backgroundColor: project.color}} />
+        <p>{project.content}</p>
+      </div>
+    )
+  });
+
   return (
     <div className={["task_item", ...task.elClasses].join(" ")} data-id={task.id} {...args} ref={ref}>
       <div className="task_item-drag_handle" {...handleProps}>
@@ -80,9 +92,7 @@ const TaskItem = ({children, task, handleProps, ...args}, ref) => {
           {labelEls}
         </div>
         <div className="task_item-group">
-          <div className="task_item-label project">
-            <p>Inbox</p>
-          </div>
+          {projectEls}
         </div>
         <div className="task_item-group">
           <div className="task_item-label date">

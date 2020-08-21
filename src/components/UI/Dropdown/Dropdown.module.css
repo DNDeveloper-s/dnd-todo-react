@@ -1,0 +1,47 @@
+.flex {
+  display: flex;
+}
+
+.flex {
+  display: flex;
+}
+
+.Dropdown {
+  position: relative;
+}
+.Dropdown-handle {
+  height: 100%;
+  width: 100%;
+  cursor: pointer;
+}
+.Dropdown-container {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: 200;
+  background-color: #ffffff;
+  border-radius: 4px;
+  width: auto;
+  min-width: 20rem;
+  max-width: 30rem;
+  box-shadow: 0 8px 20px rgba(38, 38, 38, 0.2), 0 0 5px rgba(38, 38, 38, 0.1);
+  opacity: 0;
+  transform: translateY(-5px);
+  transition: background-color 0.25s cubic-bezier(0, 1.11, 0.68, 1.15), transform 0.25s cubic-bezier(0, 1.11, 0.68, 1.15);
+}
+.Dropdown-container.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.Dropdown-item {
+  padding: 1rem 1.6rem;
+  font-size: 1.4rem;
+  color: #363636;
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out;
+}
+.Dropdown-item:hover {
+  background-color: #dae8ef;
+}
+
+/*# sourceMappingURL=Dropdown.module.css.map */

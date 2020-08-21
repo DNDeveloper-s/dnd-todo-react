@@ -1,0 +1,45 @@
+@import "../../../../styles/utilities/variables";
+@import "../../../../styles/utilities/mixins";
+
+
+.AddTask {
+
+  &_project {
+
+    &_dropdown {
+
+      &_handle {
+        padding: 1rem 1.6rem;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        transition: $generic-transition;
+
+        &:hover {
+          background-color: $very_light_blue;
+        }
+
+        &_label {
+          font-size: 1.4rem;
+          color: $black-60;
+
+          &_highlighted_span {
+            font-weight: 800;
+            color: $primary;
+          }
+        }
+
+        &_icon {
+          margin-right: 1.5rem;
+          @include flexCentered();
+          @include svgSize(1.8rem);
+
+          svg,
+          path{
+            fill: $primary !important;
+          }
+        }
+      }
+    }
+  }
+}

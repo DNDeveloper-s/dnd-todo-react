@@ -42,6 +42,13 @@ $SIDEBAR_DROPDOWN_ITEM_HEIGHT: 45px;
         width: 2rem;
         height: 2rem;
 
+        &.white {
+
+          path {
+            fill: $white;
+          }
+        }
+
         svg {
           width: 100%;
           height: 100%;

@@ -44,17 +44,12 @@
 }
 
 .dnd_calendar {
-  width: 250px;
   height: auto;
+  width: 25rem;
   max-height: 700px;
-  background-color: white;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25), 0 0 1px 1px rgba(0, 0, 0, 0.1);
   padding: 1.6rem;
   border-radius: 4px;
-  position: absolute;
-  top: 20%;
-  left: 50%;
-  transform: translate(-50%);
+  position: relative;
 }
 .dnd_calendar-header {
   display: flex;
@@ -215,6 +210,8 @@
 }
 .dnd_calendar-dropdown-item svg, .dnd_calendar-dropdown-item path {
   fill: #676af0;
+  width: 1.4rem;
+  height: 1.4rem;
 }
 .dnd_calendar-dropdown-item:hover {
   background-color: rgba(103, 106, 240, 0.13);

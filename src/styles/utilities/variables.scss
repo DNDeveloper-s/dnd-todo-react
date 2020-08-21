@@ -2,6 +2,7 @@
 $generic-border-radius: 4px;
 $generic-box-shadow: 0 1px 2px rgba(0,0,0,0.22);
 $generic-transition: .15s ease-in-out;
+$fashioned-transition: .25s cubic-bezier(0,1.11,.68,1.15);
 
 // Colors
 $denim_blue: #37538c;
@@ -14,6 +15,7 @@ $black-40: rgba(38, 38, 38, 0.4);
 $grey: rgba(38, 38, 38, 0.5);
 $black-60: rgba(38, 38, 38, 0.6);
 $black-70: rgba(38, 38, 38, 0.7);
+$white: #ffffff;
 $white-10: rgba(251, 251, 251, 0.1);
 $white-20: rgba(251, 251, 251, 0.2);
 $white-30: rgba(251, 251, 251, 0.3);

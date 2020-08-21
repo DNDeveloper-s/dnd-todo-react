@@ -4,9 +4,9 @@ import React from "react";
 
 // Images Imports
 
-const AppButton = ({ label, onClick, primary }) => {
+const AppButton = ({ label, onClick, primary, ...props }) => {
   return (
-    <div className={`app_btn ${primary ? "primary" : ""}`} onClick={onClick}>
+    <div className={`app_btn ${primary ? "primary" : ""}`} onClick={onClick} {...props}>
       <p>{label}</p>
     </div>
   );

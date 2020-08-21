@@ -1,0 +1,46 @@
+@import "../../../styles/utilities/variables";
+@import "../../../styles/utilities/mixins";
+
+.HorizontalSelect {
+  padding: .6rem 1.6rem;
+  border-bottom: 1px solid $black-10;
+
+  &_header {
+    padding: 1rem .6rem 0;
+    font-size: 1.2rem;
+    font-family: $Lato_Black;
+    font-weight: 900;
+    text-transform: uppercase;
+    color: $black-40;
+  }
+
+  &_container {
+    margin: 1rem 0;
+    @include flexCentered();
+    justify-content: space-between;
+  }
+
+  &_item {
+    margin: 0;
+    padding: .3rem .5rem;
+    width: 3rem;
+    height: 3rem;
+    @include flexCentered();
+    border-radius: $generic-border-radius;
+    transition: $generic-transition;
+    cursor: pointer;
+
+    &:hover {
+      background-color: rgba(0,0,0,0.04);
+    }
+
+    &.active {
+      background-color: $black-10;
+    }
+
+    &_icon {
+      @include svgSize(1.3rem);
+      @include flexCentered();
+    }
+  }
+}

@@ -38,18 +38,21 @@
 }
 
 .dnd_calendar {
-  width: 250px;
+  //width: 250px;
   height: auto;
+  width: 25rem;
   max-height: 700px;
-  background-color: white;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.25), 0 0 1px 1px rgba(0,0,0,0.1);
+  //background-color: white;
+  //box-shadow: 0 4px 10px rgba(0,0,0,0.25), 0 0 1px 1px rgba(0,0,0,0.1);
+  //box-shadow: 0 8px 20px $black-20, 0 0 5px $black-10;
   padding: 1rem + .6rem;
   border-radius: 4px;
 
-  position: absolute;
-  top: 20%;
-  left: 50%;
-  transform: translate(-50%);
+  position: relative;
+  //position: absolute;
+  //top: 20%;
+  //left: 50%;
+  //transform: translate(-50%);
 
   &-header {
     display: flex;
@@ -244,6 +247,8 @@
 
       svg, path {
         fill: $purple;
+        width: 1.4rem;
+        height: 1.4rem;
       }
 
       &:hover {

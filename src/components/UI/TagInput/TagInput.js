@@ -23,7 +23,7 @@ const singleLinePlugin = createSingleLinePlugin({
 
 const { MentionSuggestions } = mentionPlugin;
 
-const TagInput = ({mentionsData, onReturn}) => {
+const TagInput = ({mentionsData, onReturn, placeholder}) => {
   const editorRef = useRef(null);
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [suggestions, setSuggestions] = useState(mentionsData);
@@ -90,7 +90,7 @@ const TagInput = ({mentionsData, onReturn}) => {
   return (
     <div className={classes['dnd_tag-input-editor']} onFocus={focusEditor} onBlur={blurEditor}>
       {!focused && <div className={classes['dnd_tag-input-editor-placeholder']}>
-        <p>Add Task here...</p>
+        <p>{placeholder}</p>
       </div>}
       <Editor
         editorState={editorState}

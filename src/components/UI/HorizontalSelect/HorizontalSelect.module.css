@@ -1,0 +1,58 @@
+.flex {
+  display: flex;
+}
+
+.flex {
+  display: flex;
+}
+
+.HorizontalSelect {
+  padding: 0.6rem 1.6rem;
+  border-bottom: 1px solid rgba(38, 38, 38, 0.1);
+}
+.HorizontalSelect_header {
+  padding: 1rem 0.6rem 0;
+  font-size: 1.2rem;
+  font-family: "Lato_Black";
+  font-weight: 900;
+  text-transform: uppercase;
+  color: rgba(38, 38, 38, 0.4);
+}
+.HorizontalSelect_container {
+  margin: 1rem 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  justify-content: space-between;
+}
+.HorizontalSelect_item {
+  margin: 0;
+  padding: 0.3rem 0.5rem;
+  width: 3rem;
+  height: 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+  transition: 0.15s ease-in-out;
+  cursor: pointer;
+}
+.HorizontalSelect_item:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+.HorizontalSelect_item.active {
+  background-color: rgba(38, 38, 38, 0.1);
+}
+.HorizontalSelect_item_icon {
+  width: 1.3rem;
+  height: 1.3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.HorizontalSelect_item_icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+/*# sourceMappingURL=HorizontalSelect.module.css.map */
