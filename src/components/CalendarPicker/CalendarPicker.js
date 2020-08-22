@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import "./CalendarPicker.css";
 import CalendarPickerHeader from "./CalendarPickerHeader";
 import CalendarPickerMain from "./CalendarPickerMain";
@@ -9,11 +9,27 @@ import CalendarPickerFooter from "./CalendarPickerFooter";
 
 // Images Imports
 
-const CalendarPicker = () => {
+const CalendarPicker = ({initialDate, onDateChange}) => {
   const [month, setMonth] = useState(getToday().month);
   const [year, setYear] = useState(getToday().year);
   const [yearMode, setYearMode] = useState(false);
   const [time, setTime] = useState("");
+  const [activeDate, setActiveDate] = useState({
+    day: initialDate.rawData.data.monthDay,
+    month: initialDate.rawData.data.month
+  });
+
+  useEffect(() => {
+    console.log('[CalendarPicker.js || Line no. 19 ....]', time);
+  }, [time]);
+
+  function onDateClick(e) {
+    setActiveDate({
+      day: e.rawData.data.monthDay,
+      month: e.rawData.data.month
+    });
+    onDateChange(e);
+  }
 
   return (
     <div className="dnd_calendar">
@@ -28,9 +44,10 @@ const CalendarPicker = () => {
       <CalendarPickerMain
         curMonth={month}
         curYear={year}
-        {...{ yearMode }}
+        {...{ yearMode, activeDate }}
         onMonthChange={setMonth}
         onYearModeChange={setYearMode}
+        onDateChange={onDateClick}
       />
       <CalendarPickerFooter onTimeChange={setTime} />
     </div>

@@ -152,6 +152,10 @@
   background-color: #676af0;
   color: #ffffff;
 }
+.dnd_calendar-grid_item.active {
+  background-color: #676af0;
+  color: #ffffff;
+}
 .dnd_calendar-separator {
   height: 1px;
   background-color: rgba(38, 38, 38, 0.1);

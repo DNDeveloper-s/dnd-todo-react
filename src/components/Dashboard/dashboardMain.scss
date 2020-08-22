@@ -266,9 +266,10 @@ $TASK_ITEM_HEIGHT: 5rem;
     }
 
     &.date {
-      font-size: 1.25rem;
-      font-family: $Lato_SemiBold;
-      color: $black-70;
+      font-size: 1.13rem;
+      /* font-family: "Lato_SemiBold"; */
+      color: rgb(54 54 54 / 70%);
+      font-weight: 800;
     }
 
     &-highlighter {

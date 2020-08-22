@@ -4,14 +4,10 @@ import HorizontalSelect from "../../../UI/HorizontalSelect/HorizontalSelect";
 import ProjectsIcon from "../../../../icons/ProjectsIcon";
 import CaretDownFillIcon from "../../../../icons/CaretDownFillIcon";
 import classes from "./AddTask.module.css";
-import PriorityHighIcon from "../../../../icons/PriorityHighIcon";
-import PriorityMediumIcon from "../../../../icons/PriorityMediumIcon";
-import PriorityLowIcon from "../../../../icons/PriorityLowIcon";
-import PriorityNoneIcon from "../../../../icons/PriorityNoneIcon";
 import {useSelector} from "react-redux";
 import {getAllProjects} from "../../../../features/projectSlice";
 
-const AddTaskOptions = ({onPrioritySelect, onProjectSelect, selectedProject}) => {
+const AddTaskOptions = ({onPrioritySelect, onProjectSelect, priority, priorities, selectedProject}) => {
   const projects = useSelector(getAllProjects);
 
   function projectsArr() {
@@ -36,12 +32,7 @@ const AddTaskOptions = ({onPrioritySelect, onProjectSelect, selectedProject}) =>
   }
 
   function itemHeader() {
-    return <HorizontalSelect items={[
-      {id: '1', label: 'High Priority', IconComponent: PriorityHighIcon},
-      {id: '2', label: 'Medium Priority', IconComponent: PriorityMediumIcon},
-      {id: '3', label: 'Low Priority', IconComponent: PriorityLowIcon},
-      {id: '4', label: 'No Priority', IconComponent: PriorityNoneIcon},
-    ]} headerText="Priority" onItemSelect={onHorizontalSelect} />;
+    return <HorizontalSelect items={priorities} headerText="Priority" activeItem={priority} onItemSelect={onHorizontalSelect} />;
   }
 
   return (

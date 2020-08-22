@@ -281,9 +281,10 @@
   align-items: center;
 }
 .task_item-label.date {
-  font-size: 1.25rem;
-  font-family: "Lato_SemiBold";
-  color: rgba(38, 38, 38, 0.7);
+  font-size: 1.13rem;
+  /* font-family: "Lato_SemiBold"; */
+  color: rgba(54, 54, 54, 0.7);
+  font-weight: 800;
 }
 .task_item-label-highlighter {
   width: 6px;

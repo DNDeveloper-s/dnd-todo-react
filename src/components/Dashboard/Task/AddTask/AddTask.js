@@ -1,6 +1,5 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import DoubleAddIcon from "../../../../icons/DoubleAddIcon";
-import CaretDownFillIcon from "../../../../icons/CaretDownFillIcon";
 import CalendarWithDate from "../../../UI/CalendarWithDate/CalendarWithDate";
 import { getToday } from "../../../CalendarPicker/helpers";
 import TagInput from "../../../UI/TagInput/TagInput";
@@ -11,31 +10,59 @@ import {
   getColumnOrder,
   REMOVE_TASK_CLASS,
 } from "../../../../features/taskSlice";
-import { wait } from "../../../../helpers/utils";
+import {
+  getDayDifference,
+  getPriorityByInd,
+  wait,
+} from "../../../../helpers/utils";
 import {
   getAllLabels,
   ADD_LABEL_TASK,
   CREATE_LABEL,
 } from "../../../../features/labelSlice";
 import Dropdown from "../../../UI/Dropdown/Dropdown";
-import HorizontalSelect from "../../../UI/HorizontalSelect/HorizontalSelect";
 import CalendarPicker from "../../../CalendarPicker/CalendarPicker";
-import ProjectsIcon from "../../../../icons/ProjectsIcon";
 import AddTaskOptions from "./AddTaskOptions";
-import {colors} from "../../../ColorPicker/helpers/colors";
-import {getAllProjects} from "../../../../features/projectSlice";
+import { getAllProjects } from "../../../../features/projectSlice";
+import PriorityHighIcon from "../../../../icons/PriorityHighIcon";
+import PriorityMediumIcon from "../../../../icons/PriorityMediumIcon";
+import PriorityLowIcon from "../../../../icons/PriorityLowIcon";
+import PriorityNoneIcon from "../../../../icons/PriorityNoneIcon";
+import { colors } from "../../../ColorPicker/helpers/colors";
 
 // Components Imports
 
 // Images Imports
+
+const priorities = [
+  { id: "1", ind: 3, label: "High Priority", IconComponent: PriorityHighIcon },
+  {
+    id: "2",
+    ind: 2,
+    label: "Medium Priority",
+    IconComponent: PriorityMediumIcon,
+  },
+  { id: "3", ind: 1, label: "Low Priority", IconComponent: PriorityLowIcon },
+  { id: "4", ind: 0, label: "No Priority", IconComponent: PriorityNoneIcon },
+];
 
 const AddTask = () => {
   const dispatch = useDispatch();
   const columnOrder = useSelector(getColumnOrder);
   const labels = useSelector(getAllLabels);
   const projects = useSelector(getAllProjects);
-  const [selectedProject, setSelectedProject] = useState(projects.data[projects.entities[0]]);
-  const [priority, setPriority] = useState(null);
+  const [selectedProject, setSelectedProject] = useState(
+    projects.data[projects.entities[0]]
+  );
+  const [priority, setPriority] = useState(priorities[3]);
+  const [date, setDate] = useState({
+    rawData: {
+      data: {
+        monthDay: getToday().day,
+        month: getToday().month,
+      },
+    },
+  });
 
   function parseTextFromRaw(entityRanges, text) {
     const parsedTextArr = [];
@@ -110,7 +137,10 @@ const AddTask = () => {
         columnId: columnOrder[0],
         elClasses: ["disappearWithHeightTransition"],
         labelIds,
-        projectIds
+        projectIds,
+        priority: priority.ind,
+        createdTime: Date.now(),
+        repeatFirstDate: date.date,
       })
     );
 
@@ -134,8 +164,47 @@ const AddTask = () => {
       avatar: "",
       color: label.color,
       icon: label.icon,
+      type: "label",
     };
   });
+
+  const projectsArr = projects.entities.map((projectId) => {
+    const project = projects.data[projectId];
+    return {
+      id: projectId,
+      name: project.content,
+      avatar: "",
+      color: project.color,
+      icon: "ProjectsIcon",
+      type: "project",
+    };
+  });
+
+  const priorityArr = priorities.map((p) => {
+    const priority = getPriorityByInd(p.ind);
+    return {
+      id: priority.ind,
+      name: priority.label.split(" ")[0],
+      avatar: "",
+      color: priority.color,
+      icon: priority.iconName,
+      type: "priority",
+    };
+  });
+
+  function onDateChange(data) {
+    const dayDiff = getDayDifference({
+      dateObj: data.date,
+      day: data.rawData.data.monthDay,
+      month: data.rawData.data.month,
+      year: data.rawData.data.year,
+    });
+    setDate({
+      ...data,
+      diff: dayDiff.momentDate,
+      dueOver: dayDiff.dueOver,
+    });
+  }
 
   return (
     <div className="add_task">
@@ -145,20 +214,41 @@ const AddTask = () => {
       <div className="add_task-input">
         <TagInput
           mentionsData={labelsArr}
-          placeholder={`Add Task to "${selectedProject.label || selectedProject.content}", Please Enter to save...`}
-          onReturn={onReturn} />
+          projectsData={projectsArr}
+          priorityData={priorityArr}
+          placeholder={`Add Task to "${
+            selectedProject.label || selectedProject.content
+          }" ${
+            date.date ? 'on "' + date.diff + '"' : 'on "Today"'
+          }, Please Enter to save...`}
+          onReturn={onReturn}
+        />
       </div>
       <div className="add_task-icon">
         <Dropdown
-          handle={<CalendarWithDate date={getToday().day} />}
+          handle={
+            <CalendarWithDate
+              dueOver={date.dueOver}
+              date={date.rawData.data.monthDay}
+            />
+          }
           ItemComponent={() => {
-            return <CalendarPicker />;
+            return (
+              <CalendarPicker initialDate={date} onDateChange={onDateChange} />
+            );
           }}
         />
       </div>
+
       <div className="vertical_separator" />
       <div className="add_task-icon fill caret">
-        <AddTaskOptions selectedProject={selectedProject} onPrioritySelect={setPriority} onProjectSelect={setSelectedProject} />
+        <AddTaskOptions
+          priority={priority}
+          priorities={priorities}
+          selectedProject={selectedProject}
+          onPrioritySelect={setPriority}
+          onProjectSelect={setSelectedProject}
+        />
       </div>
     </div>
   );

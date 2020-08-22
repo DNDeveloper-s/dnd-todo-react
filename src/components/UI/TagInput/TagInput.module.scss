@@ -21,6 +21,12 @@
       &:active {
         background-color: #306bc1;
       }
+
+      &.project {
+        background-color: transparent;
+        font-size: 1.6rem;
+        color: $purple;
+      }
     }
 
     &-editor {

@@ -8,10 +8,10 @@ import LabelsIcon from "../../../icons/LabelsIcon";
 import FiltersIcon from "../../../icons/FiltersIcon";
 import SideBarDropDown from "./SideBarDropDown";
 import CalendarWithDate from "../../UI/CalendarWithDate/CalendarWithDate";
-import {getToday} from "../../CalendarPicker/helpers";
-import {useSelector} from "react-redux";
-import {getAllLabels} from "../../../features/labelSlice";
-import {getAllProjects} from "../../../features/projectSlice";
+import { getToday } from "../../CalendarPicker/helpers";
+import { useSelector } from "react-redux";
+import { getAllLabels } from "../../../features/labelSlice";
+import { getAllProjects } from "../../../features/projectSlice";
 
 // Components Imports
 
@@ -34,7 +34,11 @@ const SideBar = (props) => {
       </div>
       <div className="dashboard-sidebar-item">
         <div className="dashboard-sidebar-item-icon">
-          <CalendarWithDate fill={'#ffffff'} date={getToday().day} textColor={'#363636'} />
+          <CalendarWithDate
+            fill={"#ffffff"}
+            date={getToday().day}
+            textColor={"#363636"}
+          />
         </div>
         <div className="dashboard-sidebar-item-label">
           <p>Today</p>

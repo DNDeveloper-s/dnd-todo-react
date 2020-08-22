@@ -175,7 +175,12 @@
 
       &:hover {
         background-color: #676af0;
-        color: $primary_text;;
+        color: $primary_text;
+      }
+
+      &.active {
+        background-color: $purple;
+        color: $primary_text;
       }
     }
   }

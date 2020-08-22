@@ -10,11 +10,13 @@ import classNames from "classnames";
 // Images Imports
 
 const CalendarPickerMain = ({
+  activeDate,
   curMonth,
   curYear,
   yearMode,
   onYearModeChange,
   onMonthChange,
+  onDateChange,
 }) => {
   const calendarGridClass = classNames({
     "dnd_calendar-grid": true,
@@ -51,7 +53,7 @@ const CalendarPickerMain = ({
       data: {
         monthDay: getFirstDateOfTheGrid(month, year),
         weekDayCount: 1,
-        month: month,
+        month: getFirstDateOfTheGrid(month, year) === 1 ? month : month - 1,
         year: year,
       },
       cur: getFirstDateOfTheGrid(month, year) === 1,
@@ -64,12 +66,14 @@ const CalendarPickerMain = ({
 
       if (dateData.data.monthDay === lastDayOfThePrevMonth && dateData.prev) {
         dateData.data.monthDay = 0;
+        dateData.data.month += 1;
         dateData.prev = false;
         dateData.cur = true;
       }
       if (dateData.data.monthDay === lastDayOfTheCurMonth && dateData.cur) {
         dateData.data.monthDay = 0;
         dateData.cur = false;
+        dateData.data.month += 1;
         dateData.next = true;
       }
       if (dateData.data.weekDayCount === 7) {
@@ -88,6 +92,16 @@ const CalendarPickerMain = ({
     onYearModeChange(false);
   }
 
+  function onDateClick(e, date) {
+    if(!date.data.cur) {
+      onMonthChange(date.data.month);
+    }
+    onDateChange({
+      date: new Date(date.data.year, date.data.month - 1, date.data.monthDay, 9, 0, 0),
+      rawData: date
+    })
+  }
+
   const dates = getGridDates(curMonth, curYear);
 
   let gridItems = [];
@@ -96,8 +110,10 @@ const CalendarPickerMain = ({
     gridItems = dates.map((date, ind) => {
       return (
         <CalendarPickerGridItem
+          {...{activeDate}}
           key={date.data.monthDay + ind + Math.random()}
           {...{ date }}
+          onClick={onDateClick}
         />
       );
     });

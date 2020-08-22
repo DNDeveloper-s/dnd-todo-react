@@ -2,13 +2,7 @@ import React, {useState} from 'react';
 import classes from './HorizontalSelect.module.css';
 import HorizontalSelectItem from "./HorizontalSelectItem";
 
-const HorizontalSelect = ({headerText, items, onItemSelect}) => {
-  const [active, setActive] = useState({});
-
-  function onItemClick(...e) {
-    setActive(e[0]);
-    onItemSelect(...e);
-  }
+const HorizontalSelect = ({headerText, items, onItemSelect, activeItem}) => {
 
   return (
     <div className={classes.HorizontalSelect}>
@@ -17,7 +11,7 @@ const HorizontalSelect = ({headerText, items, onItemSelect}) => {
       </div>
       <div className={classes.HorizontalSelect_container}>
         {items.map(item => (
-          <HorizontalSelectItem key={item.id} item={item} active={item.id === active.id} onClick={onItemClick} />
+          <HorizontalSelectItem key={item.id} item={item} active={item.id === activeItem.id} onClick={onItemSelect} />
         ))}
       </div>
     </div>

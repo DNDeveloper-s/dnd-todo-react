@@ -1,15 +1,19 @@
-import React from 'react';
-import "./dashboardDetailsBar.css";
+import React, {useState} from "react";
+import "./dashboardDetailsBar.scss";
 import PriorityHighIcon from "../../../icons/PriorityHighIcon";
 import CalendarWithDate from "../../UI/CalendarWithDate/CalendarWithDate";
 import CheckBox from "../../UI/CheckBox/CheckBox";
+import CaretDownIcon from "../../../icons/CaretDownIcon";
+import CaretRightIcon from "../../../icons/CaretRightIcon";
+import ListIcon from "../../../icons/ListIcon";
+import ParagraphIcon from "../../../icons/ParagraphIcon";
 
 // Components Imports
-
 
 // Images Imports
 
 const DetailsBar = () => {
+  const [title, setTitle] = useState("");
 
   return (
     <div className="dashboard-detailsBar">
@@ -25,8 +29,25 @@ const DetailsBar = () => {
           </div>
         </div>
         <div className="dashboard-detailsBar-header-icon">
-          <PriorityHighIcon/>
+          <PriorityHighIcon />
         </div>
+      </div>
+      <div className="dashboard-detailsBar-parent_task">
+        <div className="dashboard-detailsBar-parent_task-title">
+          <p>Parent Task</p>
+        </div>
+        <div className="dashboard-detailsBar-parent_task-icon">
+          <CaretRightIcon />
+        </div>
+      </div>
+      <div className="dashboard-detailsBar-title">
+        <input type="text" value={title} onChange={e => setTitle(e.target.value)}/>
+        <div className="dashboard-detailsBar-title-toggle_task_mode">
+          <ParagraphIcon/>
+        </div>
+      </div>
+      <div className="dashboard-detailsBar-desc">
+        <textarea name="" id="" cols="30" rows="10" placeholder={"Description"} />
       </div>
     </div>
   );

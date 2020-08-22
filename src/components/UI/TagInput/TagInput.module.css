@@ -20,6 +20,11 @@
 .dnd_tag-input-tag_item:active {
   background-color: #306bc1;
 }
+.dnd_tag-input-tag_item.project {
+  background-color: transparent;
+  font-size: 1.6rem;
+  color: #676af0;
+}
 .dnd_tag-input-editor {
   padding: 16px 4px;
   border-radius: 2px;

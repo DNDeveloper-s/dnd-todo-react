@@ -18,7 +18,7 @@ const Dashboard = () => {
         <AddTask />
         <DndList />
       </div>
-      {/*<DetailsBar />*/}
+      <DetailsBar />
     </div>
   );
 };
