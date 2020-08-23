@@ -36,5 +36,197 @@
         }
       }
     }
+
+    &-parent_task {
+      width: 100%;
+      @include flexCentered();
+      justify-content: flex-start;
+      padding: 1rem 1.5rem;
+
+      &-title {
+        color: $black-60;
+        margin-right: .7rem;
+        font-size: 1.3rem;
+        cursor: pointer;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+
+      &-icon {
+        @include svgSize(.7rem);
+        @include flexCentered();
+        margin-top: 1px;
+
+        svg {
+          fill: $black-40;
+        }
+      }
+    }
+
+    &-title {
+      padding: 1rem 1.5rem;
+      @include flexCentered();
+      justify-content: flex-start;
+
+      input {
+        flex: 1;
+        font-size: 2.1rem;
+        font-family: $Lato_Bold;
+        margin-right: 1rem;
+      }
+
+      &-toggle_task_mode {
+        @include svgSize(1.8rem);
+        cursor: pointer;
+
+        svg {
+          fill: $black-20;
+        }
+      }
+    }
+
+    &-desc {
+      padding: 0 1.5rem;
+      margin: .5rem 0;
+      width: 100%;
+      color: $black-60;
+      overflow: auto;
+      line-height: 1.5;
+    }
+
+    &-innerItems {
+      padding: 1rem 1.5rem 2rem;
+      border-bottom: 1px solid $black-10;
+
+      &-checkListItem {
+        @include butLast(margin-bottom, 2rem);
+        @include flexCentered();
+
+        input {
+          flex: 1;
+          font-size: 1.5rem;
+          font-family: $Lato_Regular;
+          color: $black-70;
+        }
+      }
+    }
+
+    &-labelsList {
+      padding: 1rem 1.5rem;
+      @include flexCentered();
+      justify-content: flex-start;
+      flex-wrap: wrap;
+
+      > * {
+        margin-top: 1rem;
+      }
+
+      &-labelItem {
+        @include flexCentered();
+        justify-content: flex-start;
+        border-radius: $generic-border-radius;
+        background-color: $purple;
+        padding: 0 .7rem;
+        height: 3rem;
+        @include butLast(margin-right, 1rem);
+        position: relative;
+        transition: $generic-transition;
+        cursor: pointer;
+
+        &:hover {
+          background-color: darken($purple, 5%);
+
+          .dashboard-detailsBar-labelsList-labelItem-close_icon {
+            opacity: 1;
+          }
+        }
+
+        &-close_icon {
+          position: absolute;
+          top: -.3rem;
+          right: -.3rem;
+          background-color: $black-60;
+          padding: .3rem;
+          border-radius: 20rem;
+          @include svgSize(1.2rem);
+          @include flexCentered();
+          opacity: 0;
+          transition: $generic-transition;
+        }
+
+        &-icon {
+          @include flexCentered();
+          margin-right: .6rem;
+          margin-top: 3px;
+        }
+
+        &-title {
+          font-size: 1.2rem;
+          color: $primary_text;
+          font-family: $Lato_Regular;
+        }
+      }
+
+      &-addLabel {
+        position: relative;
+        padding: 0 1rem;
+        height: 3rem;
+        @include flexCentered();
+        border-radius: $generic-border-radius;
+        background-color: $warning;
+        cursor: pointer;
+
+        svg {
+          zoom: .8;
+        }
+
+        input {
+          width: 8rem;
+        }
+      }
+    }
+  }
+}
+
+.add_label {
+
+  &-popover {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: $primary_text;
+    box-shadow: 0 8px 20px $black-20, 0 0 5px $black-10;
+    border: 1px solid $black-40;
+    border-radius: $generic-border-radius;
+    transition: $fashioned-transition;
+    padding: .4rem 0;
+    max-height: 30rem;
+    overflow: auto;
+    width: 15rem;
+
+    &-item {
+      padding: .6rem 1rem;
+      @include flexCentered();
+      justify-content: flex-start;
+
+      &.isFocused,
+      &:hover {
+        background-color: $pale_blue;
+      }
+
+      &-title {
+        white-space: nowrap;
+        font-size: 1.5rem;
+      }
+
+      &-icon {
+        @include flexCentered();
+        margin-top: 3px;
+        margin-right: .6rem;
+        @include svgSize(1.6rem)
+      }
+    }
   }
 }

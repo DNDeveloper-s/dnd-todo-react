@@ -3,17 +3,30 @@ import "./dashboardDetailsBar.scss";
 import PriorityHighIcon from "../../../icons/PriorityHighIcon";
 import CalendarWithDate from "../../UI/CalendarWithDate/CalendarWithDate";
 import CheckBox from "../../UI/CheckBox/CheckBox";
-import CaretDownIcon from "../../../icons/CaretDownIcon";
 import CaretRightIcon from "../../../icons/CaretRightIcon";
-import ListIcon from "../../../icons/ListIcon";
 import ParagraphIcon from "../../../icons/ParagraphIcon";
+import DescriptionEditor from "./DescriptionEditor";
+import {useSelector} from "react-redux";
+import {getAllLabels} from "../../../features/labelSlice";
+import CheckListItemHandle from "./CheckListItemHandle";
+import LabelsWrapper from "./Labels/LabelsWrapper";
 
-// Components Imports
-
-// Images Imports
 
 const DetailsBar = () => {
-  const [title, setTitle] = useState("");
+  const [title, setTitle] = useState("Task title");
+  const labels = useSelector(getAllLabels);
+
+  const labelsArr = labels.entities.map((labelId) => {
+    const label = labels.data[labelId];
+    return {
+      id: label.id,
+      name: label.content,
+      avatar: "",
+      color: label.color,
+      icon: label.icon,
+      type: "label",
+    };
+  });
 
   return (
     <div className="dashboard-detailsBar">
@@ -34,7 +47,7 @@ const DetailsBar = () => {
       </div>
       <div className="dashboard-detailsBar-parent_task">
         <div className="dashboard-detailsBar-parent_task-title">
-          <p>Parent Task</p>
+          <p>Parent task</p>
         </div>
         <div className="dashboard-detailsBar-parent_task-icon">
           <CaretRightIcon />
@@ -47,7 +60,13 @@ const DetailsBar = () => {
         </div>
       </div>
       <div className="dashboard-detailsBar-desc">
-        <textarea name="" id="" cols="30" rows="10" placeholder={"Description"} />
+        <DescriptionEditor labelsData={labelsArr}/>
+      </div>
+      <div className="dashboard-detailsBar-innerItems">
+        <CheckListItemHandle />
+      </div>
+      <div className="dashboard-detailsBar-labelsList">
+        <LabelsWrapper labels={labelsArr}/>
       </div>
     </div>
   );

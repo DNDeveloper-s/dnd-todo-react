@@ -11,14 +11,25 @@
 }
 .dashboard-main {
   flex: 1;
-  overflow: auto;
   height: calc(100vh - 70px);
+  overflow: auto;
+  transition: 0.4s ease-in-out;
+}
+.dashboard-main::-webkit-scrollbar-thumb {
+  background-color: #fff;
+}
+.dashboard-main::-webkit-scrollbar-track {
+  background-color: #fff;
+}
+.dashboard-main:hover::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  transition: 0.4s ease-in-out;
 }
 .dashboard-main.dashboard_wrapper {
   margin: 0 auto;
   width: 100%;
   max-width: 100rem;
-  padding: 2rem;
+  padding: 2rem 1.5rem 2rem 2rem;
 }
 .dashboard-header {
   width: 100%;

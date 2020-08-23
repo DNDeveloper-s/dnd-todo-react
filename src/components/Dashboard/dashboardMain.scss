@@ -9,14 +9,30 @@ $TASK_ITEM_HEIGHT: 5rem;
 
   &-main {
     flex: 1;
-    overflow: auto;
     height: calc(100vh - #{$NAVIGATION_HEIGHT});
+    overflow: auto;
+    transition: .4s ease-in-out;
+
+    &::-webkit-scrollbar-thumb {
+      background-color: #fff;
+    }
+
+    &::-webkit-scrollbar-track {
+      background-color: #fff;
+    }
+
+    &:hover {
+      &::-webkit-scrollbar-thumb {
+        background-color: #ccc;
+        transition: .4s ease-in-out;
+      }
+    }
 
     &.dashboard_wrapper {
       margin: 0 auto;
       width: 100%;
       max-width: 100rem;
-      padding: 2rem;
+      padding: 2rem 1.5rem 2rem 2rem;
     }
   }
 

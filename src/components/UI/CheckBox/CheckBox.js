@@ -7,7 +7,7 @@ import { getPriorityByInd } from "../../../helpers/utils";
 
 // Images Imports
 
-const CheckBox = ({ initialValue, onChange, priority = 0 }) => {
+const CheckBox = ({ initialValue, onChange, priority = 0 , style, ...props}) => {
   const checkBoxRef = useRef(null);
   const [active, setActive] = useState(initialValue);
   const { color } = getPriorityByInd(priority);
@@ -24,9 +24,10 @@ const CheckBox = ({ initialValue, onChange, priority = 0 }) => {
   return (
     <div
       className={[classes.checkbox, active ? classes.active : ""].join(" ")}
-      style={{ borderColor: color }}
+      style={{ borderColor: color, ...style }}
       ref={checkBoxRef}
       onClick={runAnimation}
+      {...props}
     >
       <TickFillRectIcon />
     </div>
