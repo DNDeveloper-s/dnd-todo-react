@@ -132,7 +132,7 @@ const TaskItem = ({ children, task, handleProps, ...args }, ref) => {
         <div className="task_item-group">
           <div className="task_item-label date">
             <p>
-              {getCommonFormatDate(task.repeatFirstDate, {
+              {getCommonFormatDate(task.repeatFirstDate ? JSON.parse(task.repeatFirstDate) : '', {
                 nextWeek: "ddd",
                 sameElse: "D MMM",
               })}

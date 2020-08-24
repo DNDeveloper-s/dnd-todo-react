@@ -4,21 +4,31 @@ import DashboardHeader from "./DashboardHeader";
 import AddTask from "./Task/AddTask/AddTask";
 import DndList from "./Task/DndList";
 import DetailsBar from "./DetailsBar/DetailsBar";
+import {Route} from "react-router-dom";
+import {Switch} from "react-router";
+import NoMatchedTask from "./Task/NoMatchedTask";
 
 // Components Imports
 
 // Images Imports
 
-const Dashboard = () => {
+const Dashboard = (props) => {
   return (
     <div className="dashboard">
       <SideBar />
       <div className="dashboard-main dashboard_wrapper">
-        <DashboardHeader />
-        <AddTask />
-        <DndList />
+        <Route path={"/app/inbox"} >
+          <DashboardHeader />
+          <AddTask />
+          <DndList />
+        </Route>
       </div>
-      <DetailsBar />
+      <div className="dashboard-detailsBar">
+        <Switch>
+          <Route exact path={"/app/inbox/:taskId"} component={DetailsBar}/>
+          <Route component={NoMatchedTask} />
+        </Switch>
+      </div>
     </div>
   );
 };

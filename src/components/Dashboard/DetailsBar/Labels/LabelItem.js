@@ -2,18 +2,18 @@ import React from 'react';
 import CloseIcon from "../../../../icons/CloseIcon";
 import LabelIcon from "../../../../icons/LabelIcon";
 
-const LabelItem = (props) => {
+const LabelItem = ({label, onCloseClick}) => {
 
   return (
-    <div className="dashboard-detailsBar-labelsList-labelItem">
-      <div className="dashboard-detailsBar-labelsList-labelItem-close_icon">
+    <div className="dashboard-detailsBar-labelsList-labelItem" style={{backgroundColor: label.color}}>
+      <div className="dashboard-detailsBar-labelsList-labelItem-close_icon" onClick={() => onCloseClick(label.id)}>
         <CloseIcon fill={'#fff'}/>
       </div>
       <div className="dashboard-detailsBar-labelsList-labelItem-icon">
         <LabelIcon fill={'#fff'} />
       </div>
       <div className="dashboard-detailsBar-labelsList-labelItem-title">
-        <p>5 minutes</p>
+        <p>{label.content}</p>
       </div>
     </div>
   );

@@ -19,10 +19,10 @@ const DashboardHeader = () => {
             </div>
             <div className="dashboard-header-group">
                 <div className="dashboard-header-icon">
-                    <CommentsFillIcon/>
+                    <CommentsFillIcon />
                 </div>
                 <div className="dashboard-header-icon">
-                    <DotsMenuHorizontal/>
+                    <DotsMenuHorizontal />
                 </div>
             </div>
         </div>

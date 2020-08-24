@@ -3,10 +3,7 @@ import DraggableTaskItem from "./DraggableTaskItem";
 import { Droppable } from "react-beautiful-dnd";
 import CaretDownFillIcon from "../../../icons/CaretDownFillIcon";
 
-// Components Imports
 const TASK_ITEM_HEIGHT = 50;
-
-// Images Imports
 
 const TaskColumn = ({ column, tasks }) => {
   const [visible, setVisible] = useState(true);

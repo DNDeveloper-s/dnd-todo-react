@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { convertToRaw, convertFromRaw, EditorState } from "draft-js";
+import { convertToRaw, EditorState } from "draft-js";
 import Editor from "draft-js-plugins-editor";
 import createSingleLinePlugin from "draft-js-single-line-plugin";
 import createMentionPlugin, {
@@ -9,14 +9,7 @@ import LabelItemComponent from "./LabelItemComponent";
 import classes from "./TagInput.module.css";
 import "./TagInput.css";
 import EntryComponent from "./EntryComponent";
-import { colors } from "../../ColorPicker/helpers/colors";
-import {
-  getRandomInt,
-  removeItemByIdInArray,
-  spliceText,
-  wait,
-} from "../../../helpers/utils";
-import { v4 as uuidV4 } from "uuid";
+import { getFilteredLabels } from "../../../helpers/utils";
 import ProjectItemComponent from "./ProjectItemComponent";
 
 const mentionPlugin = createMentionPlugin({
@@ -81,21 +74,8 @@ const TagInput = ({
   }
 
   function onLabelSearchChange({ value }) {
-    let filteredSuggestions = defaultSuggestionsFilter(value, labelsData);
 
-    if (value.trim().length > 0) {
-      if (filteredSuggestions.length > 0) {
-        if (
-          filteredSuggestions[0].name.toLowerCase() !==
-          value.trim().toLowerCase()
-        ) {
-          filteredSuggestions = addCreateLabel(filteredSuggestions, value);
-        }
-      } else {
-        filteredSuggestions = addCreateLabel(filteredSuggestions, value);
-      }
-    }
-    setLabelSuggestions(filteredSuggestions);
+    setLabelSuggestions(getFilteredLabels(value, labelsData));
   }
 
   function onProjectSearchChange({ value }) {
@@ -106,18 +86,6 @@ const TagInput = ({
     setPrioritySuggestions(defaultSuggestionsFilter(value, priorityData));
   }
 
-  function addCreateLabel(suggestions, value) {
-    const newSuggestionArr = Array.from(suggestions);
-    const lastObj = {
-      id: uuidV4(),
-      name: value.trim(),
-      color: colors[getRandomInt(0, 15)].value,
-      icon: "LabelIcon",
-      creating: true,
-    };
-    newSuggestionArr.push(lastObj);
-    return newSuggestionArr;
-  }
 
   function onAddLabel(entry) {
     console.log("Mention added!", entry);

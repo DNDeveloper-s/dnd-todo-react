@@ -3,14 +3,14 @@ import { DragDropContext } from "react-beautiful-dnd";
 import TaskColumn from "./TaskColumn";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  getTasks,
+  getAllTasks,
   COMPLETE_TASK,
   INCOMPLETE_TASK,
   UPDATE_WHOLE,
 } from "../../../features/taskSlice";
 
 const DndList = () => {
-  const taskData = useSelector(getTasks);
+  const taskData = useSelector(getAllTasks);
   const dispatch = useDispatch();
 
   const columns = taskData.columnOrder.map((columnId) => {

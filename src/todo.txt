@@ -1,0 +1,18 @@
+
+Day - 9
+1. Refactoring the code | TagFilters                                                        -- Done
+2. Calendar Icon and its functionality move to its own component to make it more reusable   -- Done
+-- Moving all logic to CalendarDropdown                                                     -- Done
+-- TODO: Still need to refactor and make the calendar logic more readable and flexible and rearrange the data structure inside the calendar dropdown
+3. Make Details bar fully functional                                                        -- In Progress
+Steps:
+    1. Wrap CheckList Items in DragNDrop Context                    -- Done
+    2. Make it draggable and droppable in its own area only.        -- Done
+    3. Handle Enter and backspace to remove and add checklist item  -- Done
+    4. Toggle in Item mode with editor state                        -- Done
+    5. Fetching the current labels                                  -- Done
+    6. Add Functionality to add and delete labels                   -- Done
+        a. Deleting Labels                          -- Done
+        b. Adding Labels                            -- Done
+            i. Add label by plus icon   -- Done
+            j. Add label by editor      -- Done

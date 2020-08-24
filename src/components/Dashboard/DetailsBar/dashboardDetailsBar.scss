@@ -1,6 +1,8 @@
 @import "../../../styles/utilities/mixins";
 @import "../../../styles/utilities/variables";
 
+$TASK_ITEM_HEIGHT: 50px;
+
 .dashboard {
 
   &-detailsBar {
@@ -101,23 +103,34 @@
       border-bottom: 1px solid $black-10;
 
       &-checkListItem {
-        @include butLast(margin-bottom, 2rem);
+        height: $TASK_ITEM_HEIGHT;
         @include flexCentered();
+
+        .task_item-drag_handle {
+          margin-top: .3rem;
+          margin-right: 1rem;
+
+          &:focus {
+            outline: none;
+            border: none;
+          }
+        }
 
         input {
           flex: 1;
           font-size: 1.5rem;
           font-family: $Lato_Regular;
-          color: $black-70;
+          color: $primary;
         }
       }
     }
 
     &-labelsList {
-      padding: 1rem 1.5rem;
+      padding: 1rem 1.5rem 2rem;
       @include flexCentered();
       justify-content: flex-start;
       flex-wrap: wrap;
+      border-bottom: 1px solid $black-10;
 
       > * {
         margin-top: 1rem;
@@ -136,7 +149,7 @@
         cursor: pointer;
 
         &:hover {
-          background-color: darken($purple, 5%);
+          filter: contrast(0.8);
 
           .dashboard-detailsBar-labelsList-labelItem-close_icon {
             opacity: 1;
@@ -184,6 +197,25 @@
 
         input {
           width: 8rem;
+        }
+      }
+    }
+
+    &-subTasks {
+      padding: 1rem 1.5rem;
+
+      &-header {
+        margin: 1rem 0 2rem;
+        @include flexCentered();
+        justify-content: flex-start;
+
+        &-icon {
+          margin-right: 1rem;
+          @include svgSize(2rem);
+        }
+
+        &-title {
+          font-size: 2rem;
         }
       }
     }

@@ -12,21 +12,27 @@ export const taskSlice = createSlice({
           schedule: {},
           priority: 0,
           projectIds: [],
-          labelIds: [],
+          labelIds: ["label-1", "label-2"],
           elClasses: [],
           status: { completed: false, prevColumnId: null },
           columnId: "column-1",
           content: "This is my first task. Be Gentle",
+          repeatFirstDate: JSON.stringify(new Date(2020, 8, 25)),
+          inItemMode: true,
+          items: [{id: '1', content: 'First Item', status: 0}, {id: '2', content: 'Second Item', status: 0}, {id: '3', content: 'Third Item', status: 0}]
         },
         "task-2": {
           id: "task-2",
           priority: 0,
           projectIds: [],
-          labelIds: [],
+          labelIds: ["label-3", "label-4"],
           elClasses: [],
           status: { completed: false, prevColumnId: null },
           columnId: "column-1",
           content: "This is my second task. Never mind",
+          repeatFirstDate: JSON.stringify(new Date(2020, 8, 25)),
+          inItemMode: false,
+          items: []
         },
         "task-3": {
           id: "task-3",
@@ -37,6 +43,9 @@ export const taskSlice = createSlice({
           status: { completed: false, prevColumnId: null },
           columnId: "column-1",
           content: "This is my third task. I am improving",
+          repeatFirstDate: JSON.stringify(new Date(2020, 8, 25)),
+          inItemMode: false,
+          items: []
         },
         "task-4": {
           id: "task-4",
@@ -47,6 +56,9 @@ export const taskSlice = createSlice({
           status: { completed: false, prevColumnId: null },
           columnId: "column-2",
           content: "This is my forth task. I feel confident now",
+          repeatFirstDate: JSON.stringify(new Date(2020, 8, 25)),
+          inItemMode: false,
+          items: []
         },
         "task-5": {
           id: "task-5",
@@ -57,6 +69,9 @@ export const taskSlice = createSlice({
           status: { completed: false, prevColumnId: null },
           columnId: "column-2",
           content: "This is my fifth task. I can control this anyhow",
+          repeatFirstDate: JSON.stringify(new Date(2020, 8, 25)),
+          inItemMode: false,
+          items: []
         },
         "task-6": {
           id: "task-6",
@@ -67,6 +82,9 @@ export const taskSlice = createSlice({
           status: { completed: false, prevColumnId: null },
           columnId: "column-2",
           content: "This is my sixth task, i guess. But does't matter now",
+          repeatFirstDate: JSON.stringify(new Date(2020, 8, 25)),
+          inItemMode: false,
+          items: []
         },
         "task-7": {
           id: "task-7",
@@ -77,6 +95,9 @@ export const taskSlice = createSlice({
           status: { completed: false, prevColumnId: null },
           columnId: "column-3",
           content: "This is my forth tasks. I feel confident now",
+          repeatFirstDate: JSON.stringify(new Date(2020, 8, 25)),
+          inItemMode: false,
+          items: []
         },
         "task-8": {
           id: "task-8",
@@ -87,6 +108,9 @@ export const taskSlice = createSlice({
           status: { completed: false, prevColumnId: null },
           columnId: "column-3",
           content: "This is my fifth tasks. I can control this anyhow",
+          repeatFirstDate: JSON.stringify(new Date(2020, 8, 25)),
+          inItemMode: false,
+          items: []
         },
         "task-9": {
           id: "task-9",
@@ -97,6 +121,9 @@ export const taskSlice = createSlice({
           status: { completed: false, prevColumnId: null },
           columnId: "column-3",
           content: "This is my sixth tasks, i guess. But does't matter now",
+          repeatFirstDate: JSON.stringify(new Date(2020, 8, 25)),
+          inItemMode: false,
+          items: []
         },
         "task-10": {
           id: "task-10",
@@ -107,6 +134,9 @@ export const taskSlice = createSlice({
           status: { completed: false, prevColumnId: null },
           columnId: "column-4",
           content: "This is my first tasks. Be Gentle",
+          repeatFirstDate: JSON.stringify(new Date(2020, 8, 25)),
+          inItemMode: false,
+          items: []
         },
         "task-11": {
           id: "task-11",
@@ -117,6 +147,9 @@ export const taskSlice = createSlice({
           status: { completed: false, prevColumnId: null },
           columnId: "column-4",
           content: "This is my second tasks. Never mind",
+          repeatFirstDate: JSON.stringify(new Date(2020, 8, 25)),
+          inItemMode: false,
+          items: []
         },
         "task-12": {
           id: "task-12",
@@ -127,6 +160,9 @@ export const taskSlice = createSlice({
           status: { completed: false, prevColumnId: null },
           columnId: "column-4",
           content: "This is my third tasks. I am improving",
+          repeatFirstDate: JSON.stringify(new Date(2020, 8, 25)),
+          inItemMode: false,
+          items: []
         },
         "task-13": {
           id: "task-13",
@@ -137,6 +173,9 @@ export const taskSlice = createSlice({
           status: { completed: false, prevColumnId: null },
           columnId: "column-5",
           content: "This is my first tasks. Be Gentle",
+          repeatFirstDate: JSON.stringify(new Date(2020, 8, 25)),
+          inItemMode: false,
+          items: []
         },
         "task-14": {
           id: "task-14",
@@ -147,6 +186,9 @@ export const taskSlice = createSlice({
           status: { completed: false, prevColumnId: null },
           columnId: "column-5",
           content: "This is my second tasks. Never mind",
+          repeatFirstDate: JSON.stringify(new Date(2020, 8, 25)),
+          inItemMode: false,
+          items: []
         },
         "task-15": {
           id: "task-15",
@@ -157,6 +199,9 @@ export const taskSlice = createSlice({
           status: { completed: false, prevColumnId: null },
           columnId: "column-5",
           content: "This is my third tasks. I am improving",
+          repeatFirstDate: JSON.stringify(new Date(2020, 8, 25)),
+          inItemMode: false,
+          items: []
         },
       },
       columns: {
@@ -347,8 +392,12 @@ export const taskSlice = createSlice({
       );
     },
     UPDATE_TASK: (state, action) => {
-      const { taskId, title } = action.payload;
-      state.taskData.tasks[taskId].content = title;
+      const { taskId, items, inItemMode, labelIds, title } = action.payload;
+      const curTask = state.taskData.tasks[taskId];
+      curTask.content = title || curTask.content;
+      curTask.inItemMode = inItemMode !== undefined && inItemMode !== null ? inItemMode : curTask.inItemMode;
+      curTask.items = items || curTask.items;
+      curTask.labelIds = labelIds || curTask.labelIds;
     },
   },
 });
@@ -367,7 +416,7 @@ export const {
   UPDATE_WHOLE,
 } = taskSlice.actions;
 
-export const getTasks = (state) => state.task.taskData;
+export const getAllTasks = (state) => state.task.taskData;
 export const getColumnOrder = (state) => state.task.taskData.columnOrder;
 
 const taskReducer = taskSlice.reducer;

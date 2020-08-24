@@ -1,6 +1,9 @@
 import produce from "immer";
 import moment from "moment";
 import { getToday } from "../components/CalendarPicker/helpers";
+import {defaultSuggestionsFilter} from "draft-js-mention-plugin";
+import {v4 as uuidV4} from "uuid";
+import {colors} from "../components/ColorPicker/helpers/colors";
 
 /**
  *
@@ -24,23 +27,24 @@ export const getRandomInt = (min, max) => {
  */
 
 export const removeItemByIdInArray = (arr = [], id = "2", match = "") => {
-  const matchItemId = (item, match) => {
-    if (typeof item === "string") return item;
-    if (match.length > 0) {
-      return item[match].toString();
-    }
-    if (typeof item === "object") {
-      const keys = Object.keys(item);
-      if (keys.includes("id")) return item["id"].toString();
-      if (keys.includes("_id")) return item["_id"].toString();
-    }
-  };
   return produce(arr, (draftArr) => {
     const itemIndex = draftArr.findIndex(
       (item) => matchItemId(item, match) === id.toString()
     );
     draftArr.splice(itemIndex, 1);
   });
+};
+
+const matchItemId = (item, match) => {
+  if (typeof item === "string") return item;
+  if (match.length > 0) {
+    return item[match].toString();
+  }
+  if (typeof item === "object") {
+    const keys = Object.keys(item);
+    if (keys.includes("id")) return item["id"].toString();
+    if (keys.includes("_id")) return item["_id"].toString();
+  }
 };
 
 /**
@@ -176,4 +180,69 @@ export const getCommonFormatDate = (date, format = {}) =>
     lastDay: format.lastDay || "[Yesterday]",
     lastWeek: format.lastWeek || "[Last] dddd",
     sameElse: format.sameElse || "ddd, MMM D",
-  });
+});
+
+/**
+ *
+ * @param value {String}
+ * @param labelsData {Array}
+ * @returns {Array}
+ */
+
+export const getFilteredLabels = (value, labelsData) => {
+  let filteredSuggestions = defaultSuggestionsFilter(value, labelsData);
+
+  if (value.trim().length > 0) {
+    if (filteredSuggestions.length > 0) {
+      if (
+        filteredSuggestions[0].name.toLowerCase() !==
+        value.trim().toLowerCase()
+      ) {
+        filteredSuggestions = addCreateLabel(filteredSuggestions, value);
+      }
+    } else {
+      filteredSuggestions = addCreateLabel(filteredSuggestions, value);
+    }
+  }
+
+  function addCreateLabel(suggestions, value) {
+    const newSuggestionArr = Array.from(suggestions);
+    const lastObj = {
+      id: uuidV4(),
+      name: value.trim(),
+      color: colors[getRandomInt(0, 15)].value,
+      icon: "LabelIcon",
+      creating: true,
+    };
+    newSuggestionArr.push(lastObj);
+    return newSuggestionArr;
+  }
+
+  return filteredSuggestions;
+};
+
+/**
+ *
+ * @param arr
+ * @param itemToPush
+ * @param config {Object: {allowDuplicates: {Boolean}, match: {String}}}
+ * @returns {*[]}
+ */
+
+export const pushToArray = (arr, itemToPush, config = {}) => {
+  // const config = {
+  //   allowDuplicates: false,
+  //   match: 'id'
+  // }
+  const newArr = [...arr];
+  if(config.allowDuplicates) {
+    newArr.push(itemToPush);
+    return newArr;
+  }
+  const isPresent = arr.findIndex(item => matchItemId(item, config.match) === matchItemId(itemToPush, config.match));
+  if(isPresent < 0) {
+    newArr.push(itemToPush);
+    return newArr;
+  }
+  return newArr;
+}

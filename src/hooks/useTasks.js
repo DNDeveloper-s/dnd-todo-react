@@ -4,10 +4,10 @@ import produce from "immer";
 import { colors } from "../components/ColorPicker/helpers/colors";
 import { getRandomInt, removeItemByIdInArray } from "../helpers/utils";
 import { useDispatch, useSelector } from "react-redux";
-import { getTasks } from "../features/taskSlice";
+import { getAllTasks } from "../features/taskSlice";
 
 const useTasks = () => {
-  const taskData = useSelector(getTasks);
+  const taskData = useSelector(getAllTasks);
   const dispatch = useDispatch();
 
   function createTask(taskItem) {

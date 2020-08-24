@@ -12,6 +12,7 @@ import { getToday } from "../../CalendarPicker/helpers";
 import { useSelector } from "react-redux";
 import { getAllLabels } from "../../../features/labelSlice";
 import { getAllProjects } from "../../../features/projectSlice";
+import {Link} from "react-router-dom";
 
 // Components Imports
 
@@ -24,14 +25,17 @@ const SideBar = (props) => {
 
   return (
     <div className="dashboard-sidebar">
-      <div className="dashboard-sidebar-item">
-        <div className="dashboard-sidebar-item-icon">
-          <InboxIcon />
+      <Link to={"/app/inbox"} >
+        <div className="dashboard-sidebar-item">
+          <div className="dashboard-sidebar-item-icon">
+            <InboxIcon />
+          </div>
+          <div className="dashboard-sidebar-item-label">
+            <p>Inbox</p>
+          </div>
         </div>
-        <div className="dashboard-sidebar-item-label">
-          <p>Inbox</p>
-        </div>
-      </div>
+      </Link>
+      <Link to={"/app/today"} >
       <div className="dashboard-sidebar-item">
         <div className="dashboard-sidebar-item-icon">
           <CalendarWithDate
@@ -44,14 +48,17 @@ const SideBar = (props) => {
           <p>Today</p>
         </div>
       </div>
-      <div className="dashboard-sidebar-item">
-        <div className="dashboard-sidebar-item-icon">
-          <RgbCalendarIcon />
+      </Link>
+      <Link to={"/app/upcoming"} >
+        <div className="dashboard-sidebar-item">
+          <div className="dashboard-sidebar-item-icon">
+            <RgbCalendarIcon />
+          </div>
+          <div className="dashboard-sidebar-item-label">
+            <p>Upcoming</p>
+          </div>
         </div>
-        <div className="dashboard-sidebar-item-label">
-          <p>Upcoming</p>
-        </div>
-      </div>
+      </Link>
       <div className="dashboard-sidebar-item dropdown">
         <SideBarDropDown
           items={projects}

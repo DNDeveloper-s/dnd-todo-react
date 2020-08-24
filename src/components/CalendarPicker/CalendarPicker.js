@@ -10,8 +10,9 @@ import CalendarPickerFooter from "./CalendarPickerFooter";
 // Images Imports
 
 const CalendarPicker = ({initialDate, onDateChange}) => {
-  const [month, setMonth] = useState(getToday().month);
-  const [year, setYear] = useState(getToday().year);
+  console.log('[CalendarPicker.js || Line no. 13 ....]', initialDate);
+  const [month, setMonth] = useState(initialDate.rawData.data.month);
+  const [year, setYear] = useState(initialDate.rawData.data.year);
   const [yearMode, setYearMode] = useState(false);
   const [time, setTime] = useState("");
   const [activeDate, setActiveDate] = useState({

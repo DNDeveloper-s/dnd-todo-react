@@ -1,14 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import Editor from "draft-js-plugins-editor";
 import {EditorState, convertFromRaw, convertToRaw} from "draft-js";
-import createMentionPlugin, {
-  defaultSuggestionsFilter,
-} from "draft-js-mention-plugin";
+import createMentionPlugin from "draft-js-mention-plugin";
 import EntryComponent from "../../UI/TagInput/EntryComponent";
-import {v4 as uuidV4} from "uuid";
-import {colors} from "../../ColorPicker/helpers/colors";
-import {getRandomInt, spliceText} from "../../../helpers/utils";
+import {getFilteredLabels, pushToArray, spliceText} from "../../../helpers/utils";
 import LabelItemComponent from "../../UI/TagInput/LabelItemComponent";
+import {UPDATE_TASK} from "../../../features/taskSlice";
+import {CREATE_LABEL} from "../../../features/labelSlice";
+import {useDispatch} from "react-redux";
 
 // const {hasCommandModifier} = KeyBindingUtil;
 
@@ -21,10 +20,10 @@ const mentionPlugin = createMentionPlugin({
 const { MentionSuggestions } = mentionPlugin;
 
 
-const DescriptionEditor = ({labelsData}) => {
-  const [editorState, setEditorState] = useState(EditorState.createEmpty());
+const DescriptionEditor = ({editorState, setEditorState, labelsData, task}) => {
   const [labelSuggestions, setLabelSuggestions] = useState(labelsData);
   const plugins = [mentionPlugin];
+  const dispatch = useDispatch();
 
   function onChange(editorState) {
     setEditorState(editorState);
@@ -49,39 +48,42 @@ const DescriptionEditor = ({labelsData}) => {
   }, [editorState]);
 
   function onLabelSearchChange({ value }) {
-    let filteredSuggestions = defaultSuggestionsFilter(value, labelsData);
-
-    if (value.trim().length > 0) {
-      if (filteredSuggestions.length > 0) {
-        if (
-          filteredSuggestions[0].name.toLowerCase() !==
-          value.trim().toLowerCase()
-        ) {
-          filteredSuggestions = addCreateLabel(filteredSuggestions, value);
-        }
-      } else {
-        filteredSuggestions = addCreateLabel(filteredSuggestions, value);
-      }
-    }
-    setLabelSuggestions(filteredSuggestions);
-  }
-
-  function addCreateLabel(suggestions, value) {
-    const newSuggestionArr = Array.from(suggestions);
-    const lastObj = {
-      id: uuidV4(),
-      name: value.trim(),
-      color: colors[getRandomInt(0, 15)].value,
-      icon: "LabelIcon",
-      creating: true,
-    };
-    newSuggestionArr.push(lastObj);
-    return newSuggestionArr;
+    setLabelSuggestions(getFilteredLabels(value, labelsData));
   }
 
   function addLabelToTask(entity) {
     console.log('[DescriptionEditor.js || Line no. 83 ....]', entity);
     // TODO: Add label to task from description editor
+    onAddLabel(entity.mention);
+  }
+
+  function onAddLabel(labelItem) {
+    const taskLabels = task.labelIds;
+
+    if(labelItem.creating) {
+      createNewAddedLabel(labelItem);
+    }
+
+    const newTaskLabelIds = pushToArray(taskLabels, labelItem.id, {
+      allowDuplicates: false
+    });
+
+    console.log('[LabelsWrapper.js || Line no. 25 ....]', newTaskLabelIds);
+
+    dispatch(UPDATE_TASK({
+      taskId: task.id,
+      labelIds: newTaskLabelIds
+    }));
+  }
+
+  function createNewAddedLabel(label) {
+    dispatch(
+      CREATE_LABEL({
+        id: label.id,
+        color: label.color,
+        content: label.name,
+      })
+    );
   }
 
   return (

@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import DoubleAddIcon from "../../../../icons/DoubleAddIcon";
-import CalendarWithDate from "../../../UI/CalendarWithDate/CalendarWithDate";
 import { getToday } from "../../../CalendarPicker/helpers";
 import TagInput from "../../../UI/TagInput/TagInput";
 import { v4 as uuidV4 } from "uuid";
@@ -20,15 +19,13 @@ import {
   ADD_LABEL_TASK,
   CREATE_LABEL,
 } from "../../../../features/labelSlice";
-import Dropdown from "../../../UI/Dropdown/Dropdown";
-import CalendarPicker from "../../../CalendarPicker/CalendarPicker";
 import AddTaskOptions from "./AddTaskOptions";
 import { getAllProjects } from "../../../../features/projectSlice";
 import PriorityHighIcon from "../../../../icons/PriorityHighIcon";
 import PriorityMediumIcon from "../../../../icons/PriorityMediumIcon";
 import PriorityLowIcon from "../../../../icons/PriorityLowIcon";
 import PriorityNoneIcon from "../../../../icons/PriorityNoneIcon";
-import { colors } from "../../../ColorPicker/helpers/colors";
+import CalendarDropdown from "../../../UI/CalendarDropdown/CalendarDropdown";
 
 // Components Imports
 
@@ -60,6 +57,7 @@ const AddTask = () => {
       data: {
         monthDay: getToday().day,
         month: getToday().month,
+        year: getToday().year
       },
     },
   });
@@ -130,6 +128,8 @@ const AddTask = () => {
     // Project Content
     const projectIds = [selectedProject.id];
 
+    console.log('[AddTask.js || Line no. 133 ....]', date);
+
     dispatch(
       CREATE_TASK({
         id: taskId,
@@ -140,7 +140,7 @@ const AddTask = () => {
         projectIds,
         priority: priority.ind,
         createdTime: Date.now(),
-        repeatFirstDate: date.date,
+        repeatFirstDate: JSON.stringify(date.date),
       })
     );
 
@@ -225,19 +225,7 @@ const AddTask = () => {
         />
       </div>
       <div className="add_task-icon">
-        <Dropdown
-          handle={
-            <CalendarWithDate
-              dueOver={date.dueOver}
-              date={date.rawData.data.monthDay}
-            />
-          }
-          ItemComponent={() => {
-            return (
-              <CalendarPicker initialDate={date} onDateChange={onDateChange} />
-            );
-          }}
-        />
+        <CalendarDropdown initialDate={date} onDateChange={onDateChange} />
       </div>
 
       <div className="vertical_separator" />
