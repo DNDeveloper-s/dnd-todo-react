@@ -1,31 +1,27 @@
-import { useEffect, useState } from "react";
+import {ADD_LABEL_TASK, CREATE_LABEL} from "../features/labelSlice";
+import {useDispatch} from "react-redux";
 
 const useLabels = () => {
-  const [labels, setLabels] = useState([]);
+  const dispatch = useDispatch();
 
-  useEffect(() => {
-    // Fetch Projects from the database here
-    setLabels([
-      {
-        color: "orange",
-        label: "5 mins",
-      },
-      {
-        color: "red",
-        label: "School",
-      },
-      {
-        color: "lightgreen",
-        label: "Working",
-      },
-      {
-        color: "dodgerblue",
-        label: "Upcoming",
-      },
-    ]);
-  }, []);
+  function createLabel(label, taskId) {
+    console.log('[useLabels().js || Line no. 8 ....]', taskId);
+    dispatch(
+      CREATE_LABEL({
+        id: label.id,
+        color: label.color,
+        content: label.name,
+        taskIds: taskId ? [taskId] : []
+      })
+    );
+  }
 
-  return [labels];
-};
+  function addTaskToLabel(labelId, taskId) {
+    dispatch(ADD_LABEL_TASK({ labelId, taskId }));
+  }
+
+
+  return {addTaskToLabel, createLabel};
+}
 
 export default useLabels;
