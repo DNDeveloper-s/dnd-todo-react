@@ -14,7 +14,7 @@ export const projectSlice = createSlice({
         'project-5': {id: 'project-5', type: 'project', color: colors[14].value, taskIds: [], content: 'Fifth Project'},
         'project-6': {id: 'project-5', type: 'project', color: colors[13].value, taskIds: [], content: 'Sixth Project'},
       },
-      entities: ['inbox', 'project-1', 'project-2', 'project-3', 'project-4', 'project-5', 'project-6']
+      entities: ['project-1', 'project-2', 'project-3', 'project-4', 'project-5', 'project-6']
     }
   },
   reducers: {
@@ -40,6 +40,7 @@ export const {
 
 // Selectors
 export const getAllProjects = store => store.project.projects;
+export const getProjectState = store => store.project;
 
 const projectReducer = projectSlice.reducer;
 export default projectReducer;

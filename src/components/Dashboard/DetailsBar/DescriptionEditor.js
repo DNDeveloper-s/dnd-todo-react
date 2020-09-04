@@ -8,6 +8,7 @@ import LabelItemComponent from "../../UI/TagInput/LabelItemComponent";
 import {UPDATE_TASK} from "../../../features/taskSlice";
 import {CREATE_LABEL} from "../../../features/labelSlice";
 import {useDispatch} from "react-redux";
+import useLabels from "../../../hooks/useLabels";
 
 // const {hasCommandModifier} = KeyBindingUtil;
 
@@ -24,6 +25,7 @@ const DescriptionEditor = ({editorState, setEditorState, labelsData, task}) => {
   const [labelSuggestions, setLabelSuggestions] = useState(labelsData);
   const plugins = [mentionPlugin];
   const dispatch = useDispatch();
+  const { createLabel } = useLabels();
 
   function onChange(editorState) {
     setEditorState(editorState);
@@ -61,7 +63,7 @@ const DescriptionEditor = ({editorState, setEditorState, labelsData, task}) => {
     const taskLabels = task.labelIds;
 
     if(labelItem.creating) {
-      createNewAddedLabel(labelItem);
+      createLabel(labelItem, task.id);
     }
 
     const newTaskLabelIds = pushToArray(taskLabels, labelItem.id, {
@@ -76,15 +78,6 @@ const DescriptionEditor = ({editorState, setEditorState, labelsData, task}) => {
     }));
   }
 
-  function createNewAddedLabel(label) {
-    dispatch(
-      CREATE_LABEL({
-        id: label.id,
-        color: label.color,
-        content: label.name,
-      })
-    );
-  }
 
   return (
     <div>

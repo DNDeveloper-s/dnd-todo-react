@@ -364,3 +364,18 @@
     }
   }
 }
+
+.dnd-progress_bar {
+  width: 100%;
+  position: relative;
+  height: 3px;
+  background-color: $black-10;
+
+  &-item {
+    @include absoluteFill();
+    width: 30%;
+    background-color: $success;
+    border-radius: 0 20rem 20rem 0;
+    transition: $generic-transition;
+  }
+}

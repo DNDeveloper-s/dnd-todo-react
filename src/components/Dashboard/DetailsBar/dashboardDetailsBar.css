@@ -15,6 +15,7 @@
   padding: 2rem 0;
 }
 .dashboard-detailsBar-header {
+  position: relative;
   height: 6rem;
   padding: 1rem 2rem;
   display: flex;
@@ -41,6 +42,12 @@
 }
 .dashboard-detailsBar-header-title-icon {
   margin-right: 1rem;
+}
+.dashboard-detailsBar-progress_bar {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
 }
 .dashboard-detailsBar-parent_task {
   width: 100%;
@@ -112,10 +119,17 @@
   border-bottom: 1px solid rgba(38, 38, 38, 0.1);
 }
 .dashboard-detailsBar-innerItems-checkListItem {
-  height: 50px;
+  height: 40px;
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-bottom: 1rem;
+}
+.dashboard-detailsBar-innerItems-checkListItem[data-completed="1"] {
+  opacity: 0.5;
+}
+.dashboard-detailsBar-innerItems-checkListItem[data-completed="1"] input {
+  text-decoration: line-through;
 }
 .dashboard-detailsBar-innerItems-checkListItem .task_item-drag_handle {
   margin-top: 0.3rem;

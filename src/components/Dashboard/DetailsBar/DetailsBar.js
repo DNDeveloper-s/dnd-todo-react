@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from "react";
 import moment from 'moment';
 import {useDispatch, useSelector} from "react-redux";
-import {getAllLabels} from "../../../features/labelSlice";
 import {getAllTasks, UPDATE_TASK} from "../../../features/taskSlice";
 import "./dashboardDetailsBar.scss";
 import PriorityHighIcon from "../../../icons/PriorityHighIcon";
@@ -20,22 +19,45 @@ import CheckList from "./CheckListItems/CheckList";
 import ListIcon from "../../../icons/ListIcon";
 import {convertFromRaw, convertToRaw, EditorState} from "draft-js";
 import {v4 as uuidV4} from "uuid";
+import ProgressBar from "../../UI/ProgressBar";
+import useLabels from "../../../hooks/useLabels";
+import useTasks from "../../../hooks/useTasks";
+import ListItem from "../Task/TaskList/ListItem";
+import {constants} from "../../../helpers/constants";
+import useTreeDataUtils from "../../../hooks/useTreeDataUtils";
 
 
 const DetailsBar = (props) => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [title, setTitle] = useState("Task title");
-  const labels = useSelector(getAllLabels);
+  const {fetchLabelState} = useLabels();
+  const {getExpandedTreeArr, setDragState} = useTreeDataUtils();
+  const {curTask, fetchActiveTask, fetchTaskState, updateActiveTask} = useTasks();
   const {match: {params}} = props;
-  const tasks = useSelector(getAllTasks);
   const [task, setTask] = useState(null);
   const [date, setDate] = useState(null);
   const dispatch = useDispatch();
+  const [progress, setProgress] = useState(0);
+
+  // Using for just validating the changes for the use Effect
+  const currentTask = curTask(fetchActiveTask());
+
+  useEffect(() => {
+    if(currentTask) {
+      const completedItems = currentTask.items.filter(item => item.status === 1).length;
+      const totalItems = currentTask.items.length;
+      const newProgress = (completedItems / totalItems) * 100;
+      setProgress(newProgress);
+    }
+  }, [currentTask]);
 
   useEffect(() => {
     if(typeof params === 'object') {
+      // Updating the task
+      updateActiveTask(params.taskId);
+
       const taskId = params.taskId;
-      const curTask = tasks.tasks[taskId];
+      const curTask = fetchTaskState().tasks[taskId];
       if(curTask) {
         const repeatFirstDate = JSON.parse(curTask.repeatFirstDate);
         let a = moment(repeatFirstDate);
@@ -73,10 +95,10 @@ const DetailsBar = (props) => {
         });
       }
     }
-  }, [tasks.tasks, params]);
+  }, [params]);
 
-  const labelsArr = labels.entities.map((labelId) => {
-    const label = labels.data[labelId];
+  const labelsArr = fetchLabelState().labels.entities.map((labelId) => {
+    const label = fetchLabelState().labels.data[labelId];
     return {
       id: label.id,
       name: label.content,
@@ -114,7 +136,7 @@ const DetailsBar = (props) => {
       }));
       setEditorState(EditorState.createEmpty());
     } else {
-      content.blocks = task.items.map(item => ({
+      content.blocks.push(...task.items.map(item => ({
         data: {},
         depth: 0,
         entityRanges: [],
@@ -122,7 +144,7 @@ const DetailsBar = (props) => {
         key: item.id,
         text: item.content,
         type: "unstyled",
-      }));
+      })));
       const newContentState = convertFromRaw(content);
       setEditorState(EditorState.createWithContent(newContentState));
     }
@@ -151,6 +173,9 @@ const DetailsBar = (props) => {
             <div className="dashboard-detailsBar-header-icon">
               <PriorityHighIcon />
             </div>
+            <div className="dashboard-detailsBar-progress_bar">
+              <ProgressBar progress={progress} />
+            </div>
           </div>
           <div className="dashboard-detailsBar-parent_task">
             <div className="dashboard-detailsBar-parent_task-title">
@@ -171,25 +196,46 @@ const DetailsBar = (props) => {
           </div>
           {task.inItemMode && (
             <div className="dashboard-detailsBar-innerItems">
-              <CheckList task={task} />
+              <CheckList task={curTask(fetchActiveTask())} />
             </div>
           )}
           <div className="dashboard-detailsBar-labelsList">
-            <LabelsWrapper taskLabels={task.labelIds} taskId={task.id} labels={labelsArr}/>
+            <LabelsWrapper taskLabels={curTask(fetchActiveTask()).labelIds} taskId={fetchActiveTask()} labels={labelsArr}/>
           </div>
-          <div className="dashboard-detailsBar-subTasks">
-            <div className="dashboard-detailsBar-subTasks-header">
-              <div className="dashboard-detailsBar-subTasks-header-icon">
-                <SubTaskIcon />
+          {
+            curTask(fetchActiveTask()).childTasks.length > 0 && <div className="dashboard-detailsBar-subTasks">
+              <div className="dashboard-detailsBar-subTasks-header">
+                <div className="dashboard-detailsBar-subTasks-header-icon">
+                  <SubTaskIcon />
+                </div>
+                <div className="dashboard-detailsBar-subTasks-header-title">
+                  <p>SubTask</p>
+                </div>
               </div>
-              <div className="dashboard-detailsBar-subTasks-header-title">
-                <p>SubTask</p>
+              <div className="dashboard-detailsBar-subTasks-items">
+                {
+                  getExpandedTreeArr(constants.DRAG_FROM.DETAIL, 'incomplete', {
+                    forTaskId: fetchActiveTask(),
+                    onlySubTasks: true,
+                  }).map((taskId, index) => {
+                    return (
+                      <ListItem
+                        key={taskId}
+                        config={{
+                          dragFrom: constants.DRAG_FROM.DETAIL
+                        }}
+                        index={index}
+                        active={false}
+                        item={curTask(taskId)}
+                        startsDragging={setDragState}
+                        onTitleClick={() => console.log('Title clicked!!')}
+                      />
+                    )
+                  })
+                }
               </div>
             </div>
-            <div className="dashboard-detailsBar-subTasks-items">
-              <CheckListItemHandle />
-            </div>
-          </div>
+          }
         </> :
         <NoMatchedTask />
   );

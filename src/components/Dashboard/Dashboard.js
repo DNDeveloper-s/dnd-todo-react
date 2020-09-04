@@ -2,7 +2,7 @@ import React from "react";
 import SideBar from "./SideBar/SideBar";
 import DashboardHeader from "./DashboardHeader";
 import AddTask from "./Task/AddTask/AddTask";
-import DndList from "./Task/DndList";
+import DndList from "./Task/TaskList/DndList";
 import DetailsBar from "./DetailsBar/DetailsBar";
 import {Route} from "react-router-dom";
 import {Switch} from "react-router";

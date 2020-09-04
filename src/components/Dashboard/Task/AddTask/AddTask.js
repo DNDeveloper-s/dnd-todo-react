@@ -7,18 +7,13 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   CREATE_TASK,
   getColumnOrder,
-  REMOVE_TASK_CLASS,
+  // REMOVE_TASK_CLASS,
 } from "../../../../features/taskSlice";
 import {
   getDayDifference,
   getPriorityByInd,
   wait,
 } from "../../../../helpers/utils";
-import {
-  getAllLabels,
-  ADD_LABEL_TASK,
-  CREATE_LABEL,
-} from "../../../../features/labelSlice";
 import AddTaskOptions from "./AddTaskOptions";
 import { getAllProjects } from "../../../../features/projectSlice";
 import PriorityHighIcon from "../../../../icons/PriorityHighIcon";
@@ -26,10 +21,8 @@ import PriorityMediumIcon from "../../../../icons/PriorityMediumIcon";
 import PriorityLowIcon from "../../../../icons/PriorityLowIcon";
 import PriorityNoneIcon from "../../../../icons/PriorityNoneIcon";
 import CalendarDropdown from "../../../UI/CalendarDropdown/CalendarDropdown";
+import useLabels from "../../../../hooks/useLabels";
 
-// Components Imports
-
-// Images Imports
 
 const priorities = [
   { id: "1", ind: 3, label: "High Priority", IconComponent: PriorityHighIcon },
@@ -46,8 +39,9 @@ const priorities = [
 const AddTask = () => {
   const dispatch = useDispatch();
   const columnOrder = useSelector(getColumnOrder);
-  const labels = useSelector(getAllLabels);
+  const {fetchLabelState} = useLabels();
   const projects = useSelector(getAllProjects);
+  const {addTaskToLabel, createLabel} = useLabels();
   const [selectedProject, setSelectedProject] = useState(
     projects.data[projects.entities[0]]
   );
@@ -83,7 +77,7 @@ const AddTask = () => {
     return parsedTextArr.join("");
   }
 
-  function parseEntities(content) {
+  function parseEntities(content, taskId) {
     const entityMap = content.entityMap;
     const keys = Object.keys(entityMap);
     return keys.map((key) => {
@@ -91,20 +85,10 @@ const AddTask = () => {
       // If the label entity is not yet created
       // Create it via redux store
       if (data.mention.creating) {
-        createNewAddedLabel(data.mention);
+        createLabel(data.mention, taskId);
       }
       return data.mention.id;
     });
-  }
-
-  function createNewAddedLabel(label) {
-    dispatch(
-      CREATE_LABEL({
-        id: label.id,
-        color: label.color,
-        content: label.name,
-      })
-    );
   }
 
   async function onReturn(content, cb) {
@@ -117,16 +101,16 @@ const AddTask = () => {
     const taskId = uuidV4();
 
     // Label Content
-    const labelIds = parseEntities(content);
+    const labelIds = parseEntities(content, taskId);
     console.log("[AddTask.js || Line no. 54 ....]", labelIds);
 
     // Updating Label tasks
     labelIds.forEach((labelId) => {
-      dispatch(ADD_LABEL_TASK({ labelId, taskId }));
+      addTaskToLabel(labelId, taskId);
     });
 
     // Project Content
-    const projectIds = [selectedProject.id];
+    const projectId = selectedProject.id;
 
     console.log('[AddTask.js || Line no. 133 ....]', date);
 
@@ -137,7 +121,7 @@ const AddTask = () => {
         columnId: columnOrder[0],
         elClasses: ["disappearWithHeightTransition"],
         labelIds,
-        projectIds,
+        projectId,
         priority: priority.ind,
         createdTime: Date.now(),
         repeatFirstDate: JSON.stringify(date.date),
@@ -147,17 +131,17 @@ const AddTask = () => {
     await wait(200);
 
     dispatch(
-      REMOVE_TASK_CLASS({
-        taskId: taskId,
-        removeAll: true,
-      })
+      // REMOVE_TASK_CLASS({
+      //   taskId: taskId,
+      //   removeAll: true,
+      // })
     );
 
     cb();
   }
 
-  const labelsArr = labels.entities.map((labelId) => {
-    const label = labels.data[labelId];
+  const labelsArr = fetchLabelState().labels.entities.map((labelId) => {
+    const label = fetchLabelState().labels.data[labelId];
     return {
       id: label.id,
       name: label.content,

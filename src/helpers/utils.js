@@ -246,3 +246,35 @@ export const pushToArray = (arr, itemToPush, config = {}) => {
   }
   return newArr;
 }
+
+/**
+ *
+ * @param variable
+ * @returns {boolean|boolean}
+ */
+export const isDefined = (variable) =>
+  variable !== undefined && variable !== null;
+
+
+/**
+ *
+ * @param args
+ * @returns {string}
+ */
+export const classNames = (...args) => {
+  let classArr = [];
+  let classObj;
+  for(let i = 0; i < args.length; i++) {
+    let arg = args[i];
+    if(typeof arg === "string" || typeof arg === 'number') {
+      classArr.push(arg.toString());
+      continue;
+    }
+    if(typeof arg === "object") {
+      classObj = arg;
+    }
+  }
+  const mappedClassObj = Object.keys(classObj);
+  let arr = mappedClassObj.filter((c) => classObj[c]);
+  return [...classArr, ...arr].join(" ");
+};

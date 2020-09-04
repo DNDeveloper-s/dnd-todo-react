@@ -16,3 +16,15 @@ Steps:
         b. Adding Labels                            -- Done
             i. Add label by plus icon   -- Done
             j. Add label by editor      -- Done
+
+
+Day - 10
+3. TODO: Make Details bar fully functional                                -- On Hold
+4. Make taskItems toggleStatus and progress bar                     -- Done
+5. Make Subtask possible in main bar first                                    // Taking Snapshot of the project
+
+
+Day - 11
+
+6. Subtask are intimatated and fully functional now
+7. TODO: Make Subtask drop functionality come alive

@@ -68,13 +68,13 @@ export const labelSlice = createSlice({
   },
   reducers: {
     CREATE_LABEL: (state, action) => {
-      const { id, color, content } = action.payload;
+      const { id, color, content, taskIds } = action.payload;
       state.labels.data[id] = {
         id,
         color,
         content,
         icon: "LabelIcon",
-        taskIds: [],
+        taskIds: taskIds,
         type: "label",
       };
       state.labels.entities.push(id);
@@ -100,7 +100,8 @@ export const {
 } = labelSlice.actions;
 
 // Selectors
-export const getAllLabels = (store) => store.label.labels;
+// export const getAllLabels = (store) => store.label.labels;
+export const getLabelState = (store) => store.label;
 
 const labelReducer = labelSlice.reducer;
 

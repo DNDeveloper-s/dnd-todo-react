@@ -871,6 +871,24 @@
   top: -6px;
 }
 
+.dnd-progress_bar {
+  width: 100%;
+  position: relative;
+  height: 3px;
+  background-color: rgba(38, 38, 38, 0.1);
+}
+.dnd-progress_bar-item {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  width: 30%;
+  background-color: #23CD90;
+  border-radius: 0 20rem 20rem 0;
+  transition: 0.15s ease-in-out;
+}
+
 * {
   margin: 0;
   padding: 0;

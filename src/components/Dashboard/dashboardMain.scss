@@ -195,6 +195,7 @@ $TASK_ITEM_HEIGHT: 5rem;
   background-color: $white-30;
   @include flexCentered();
   //margin: 1rem 0;
+  margin-bottom: 1rem;
   padding: 0 2rem;
   cursor: pointer;
   overflow: visible;

@@ -1,7 +1,7 @@
 @import "../../../styles/utilities/mixins";
 @import "../../../styles/utilities/variables";
 
-$TASK_ITEM_HEIGHT: 50px;
+$TASK_ITEM_HEIGHT: 40px;
 
 .dashboard {
 
@@ -12,8 +12,10 @@ $TASK_ITEM_HEIGHT: 50px;
     background-color: $primary_text;
     border-left: 1px solid $black-10;
     padding: 2rem 0;
+    overflow: hidden;
 
     &-header {
+      position: relative;
       height: 6rem;
       padding: 1rem 2rem;
       @include flexCentered();
@@ -37,6 +39,13 @@ $TASK_ITEM_HEIGHT: 50px;
           margin-right: 1rem;
         }
       }
+    }
+
+    &-progress_bar {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
     }
 
     &-parent_task {
@@ -105,6 +114,15 @@ $TASK_ITEM_HEIGHT: 50px;
       &-checkListItem {
         height: $TASK_ITEM_HEIGHT;
         @include flexCentered();
+        margin-bottom: 1rem;
+
+        &[data-completed="1"] {
+          opacity: 0.5;
+
+          input {
+            text-decoration: line-through;
+          }
+        }
 
         .task_item-drag_handle {
           margin-top: .3rem;
@@ -217,6 +235,10 @@ $TASK_ITEM_HEIGHT: 50px;
         &-title {
           font-size: 2rem;
         }
+      }
+
+      &-items {
+        position: relative;
       }
     }
   }

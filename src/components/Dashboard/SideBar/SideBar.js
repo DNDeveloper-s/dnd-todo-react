@@ -5,22 +5,20 @@ import RgbCalendarIcon from "../../../icons/RgbCalendarIcon";
 import ProjectsIcon from "../../../icons/ProjectsIcon";
 import CaretDownIcon from "../../../icons/CaretDownIcon";
 import LabelsIcon from "../../../icons/LabelsIcon";
-import FiltersIcon from "../../../icons/FiltersIcon";
 import SideBarDropDown from "./SideBarDropDown";
 import CalendarWithDate from "../../UI/CalendarWithDate/CalendarWithDate";
 import { getToday } from "../../CalendarPicker/helpers";
-import { useSelector } from "react-redux";
-import { getAllLabels } from "../../../features/labelSlice";
-import { getAllProjects } from "../../../features/projectSlice";
 import {Link} from "react-router-dom";
+import useLabels from "../../../hooks/useLabels";
+import useProjects from "../../../hooks/useProjects";
 
 // Components Imports
 
 // Images Imports
 
 const SideBar = (props) => {
-  const labels = useSelector(getAllLabels);
-  const projects = useSelector(getAllProjects);
+  const {fetchLabelState} = useLabels();
+  const {fetchProjectState} = useProjects();
   // const [filters] = useFilters();
 
   return (
@@ -61,7 +59,7 @@ const SideBar = (props) => {
       </Link>
       <div className="dashboard-sidebar-item dropdown">
         <SideBarDropDown
-          items={projects}
+          items={fetchProjectState().projects}
           toggle_menu={(visible) => (
             <>
               <div className="dashboard-sidebar-item-icon white">
@@ -84,7 +82,7 @@ const SideBar = (props) => {
       </div>
       <div className="dashboard-sidebar-item dropdown">
         <SideBarDropDown
-          items={labels}
+          items={fetchLabelState().labels}
           toggle_menu={(visible) => (
             <>
               <div className="dashboard-sidebar-item-icon">
