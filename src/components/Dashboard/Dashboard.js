@@ -1,31 +1,47 @@
-import React from "react";
+import React, { useState } from "react";
 import SideBar from "./SideBar/SideBar";
 import DashboardHeader from "./DashboardHeader";
 import AddTask from "./Task/AddTask/AddTask";
 import DndList from "./Task/TaskList/DndList";
 import DetailsBar from "./DetailsBar/DetailsBar";
-import {Route} from "react-router-dom";
-import {Switch} from "react-router";
+import { Route } from "react-router-dom";
+import { Switch } from "react-router";
 import NoMatchedTask from "./Task/NoMatchedTask";
+import CaretRightIcon from "../../icons/CaretRightIcon";
+import { classNames } from "../../helpers/utils";
 
 // Components Imports
 
 // Images Imports
 
 const Dashboard = (props) => {
+  const [visible, setVisible] = useState(true);
+
   return (
     <div className="dashboard">
       <SideBar />
       <div className="dashboard-main dashboard_wrapper">
-        <Route path={"/app/inbox"} >
+        <Route path={"/app/inbox"}>
           <DashboardHeader />
           <AddTask />
           <DndList />
         </Route>
       </div>
-      <div className="dashboard-detailsBar">
+      <div
+        className={classNames("dashboard-detailsBar", {
+          closed: !visible,
+        })}
+      >
+        <div
+          className={classNames("dashboard-detailsBar-toggle", {
+            closed: !visible,
+          })}
+          onClick={() => setVisible(!visible)}
+        >
+          <CaretRightIcon />
+        </div>
         <Switch>
-          <Route exact path={"/app/inbox/:taskId"} component={DetailsBar}/>
+          <Route exact path={"/app/inbox/:taskId"} component={DetailsBar} />
           <Route component={NoMatchedTask} />
         </Switch>
       </div>

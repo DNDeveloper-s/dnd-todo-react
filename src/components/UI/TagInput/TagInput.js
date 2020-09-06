@@ -1,5 +1,5 @@
-import React, { useRef, useState } from "react";
-import { convertToRaw, EditorState } from "draft-js";
+import React, {useEffect, useRef, useState} from "react";
+import {convertFromRaw, convertToRaw, EditorState} from "draft-js";
 import Editor from "draft-js-plugins-editor";
 import createSingleLinePlugin from "draft-js-single-line-plugin";
 import createMentionPlugin, {
@@ -57,6 +57,28 @@ const TagInput = ({
   const [focused, setFocused] = useState(false);
   // const plugins = [mentionPlugin, projectsPlugin, priorityPlugin, singleLinePlugin];
   const plugins = [mentionPlugin, singleLinePlugin];
+
+  // Temporary variables
+  const stateRef = useRef(null);
+
+  useEffect(() => {
+    if(stateRef.current === 'empty') {
+      const contentState = editorState.getCurrentContent();
+      const raw = convertToRaw(contentState);
+      console.log(raw);
+    }
+  }, [editorState]);
+
+  function handleReturn() {
+    const contentState = editorState.getCurrentContent();
+    const raw = convertToRaw(contentState);
+
+    // Calling onReturn to handle the asynchronous task and then
+    // having a callback to wait for the task to finish
+    onReturn(raw, () => {
+      setEditorState(EditorState.createWithText(" "));
+    });
+  }
 
   function focusEditor() {
     editorRef.current.focus();
@@ -128,15 +150,6 @@ const TagInput = ({
     // console.log('Mention added!', content, entry);
   }
 
-  function handleReturn() {
-    const contentState = editorState.getCurrentContent();
-    const raw = convertToRaw(contentState);
-    onReturn(raw, () => {
-      editorRef.current.blur();
-      setEditorState(EditorState.createWithText(""));
-      editorRef.current.focus();
-    });
-  }
 
   return (
     <div

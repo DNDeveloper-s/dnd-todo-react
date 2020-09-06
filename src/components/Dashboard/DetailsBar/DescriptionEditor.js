@@ -55,7 +55,6 @@ const DescriptionEditor = ({editorState, setEditorState, labelsData, task}) => {
 
   function addLabelToTask(entity) {
     console.log('[DescriptionEditor.js || Line no. 83 ....]', entity);
-    // TODO: Add label to task from description editor
     onAddLabel(entity.mention);
   }
 

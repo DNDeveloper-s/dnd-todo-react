@@ -28,15 +28,30 @@ const useTreeDataUtils = (props) => {
     return path;
   };
 
-  const levelInTree = (taskId) => {
-    return getPath(taskId).length - 1;
+  const levelInTree = (taskId, originTask, includeOrigin) => {
+    if(!originTask)
+      return getPath(taskId).length - 1;
+    // Grabbing full path
+    // eg, ['task-1', 'task-2', 'task-3', 'task-4', 'task-5']
+    const fullPath = getPath(taskId);
+    // let say origin task is 'task-3'
+    // origin index of 'task-3' is "2"
+    // finding the index of the origin task
+    const originIndex = fullPath.findIndex(c => c === originTask);
+    // we will get the level from origin Task
+    // by using fullPath.length - 1 - originIndex
+    if(includeOrigin)
+      return fullPath.length - 1 - originIndex;
+
+    // Removing originTask by subtracting 1
+    return fullPath.length - 1 - originIndex - 1;
   };
 
   const getExpandedTreeArr = (dragFrom, include = 'all', config = {}) => {
     // include = 'complete' or = 'incomplete'
     const treeArr = [];
     const {forTaskId, onlySubTasks} = config;
-    console.log(config);
+    // console.log(config);
 
     if(!forTaskId) {
       taskState.taskOrder.map((taskId) => {
@@ -68,14 +83,31 @@ const useTreeDataUtils = (props) => {
       }
     }
 
-    console.log(treeArr);
-
     return treeArr;
   };
 
+
   const curTask = (taskId) => taskState.tasks[taskId];
 
-  const hasChildTasks = (taskId) => Boolean(curTask(taskId).childTasks.length);
+  /**
+   *
+   * @param taskId
+   * @param filter {String}
+   * @returns {boolean}
+   */
+  const hasChildTasks = (taskId, filter: ['all', 'complete', 'incomplete']) => {
+    if(!filter || filter === 'all') {
+      return Boolean(curTask(taskId).childTasks.length);
+    }
+    if(filter === 'complete') {
+      const hasCompletedTask = curTask(taskId).childTasks.find(c => curTask(c).status.completed);
+      return Boolean(hasCompletedTask);
+    }
+    if(filter === 'incomplete') {
+      const hasCompletedTask = curTask(taskId).childTasks.find(c => !curTask(c).status.completed);
+      return Boolean(hasCompletedTask);
+    }
+  };
 
   const onExpandToggle = (dragFrom, taskId, expandIt) => () => {
     // Handling the case if the task handle has no child tasks
@@ -90,68 +122,21 @@ const useTreeDataUtils = (props) => {
       taskId,
       expanded
     }))
-    // const path = getPath(taskId);
-    // const reversedPath = path.reverse();
-    // const childCountOfToggledTask = taskState.tasks[taskId].childTasks.length;
-    //
-    // const childExpandedCount = taskState.tasks[taskId].childTasks
-    //   .map((childTaskId) => taskState.tasks[childTaskId].expandCount)
-    //   .reduce((total, sum) => total + sum);
-    //
-    // reversedPath.map((pathTaskId) => {
-    //   let expandCount = taskState.tasks[pathTaskId].expandCount;
-    //   expanded
-    //     ? (expandCount += childExpandedCount + childCountOfToggledTask)
-    //     : (expandCount -= childExpandedCount + childCountOfToggledTask);
-    //
-    //   dispatch(
-    //     TOGGLE_EXPAND({
-    //       taskId: pathTaskId,
-    //       expandCount: expandCount,
-    //     })
-    //   );
-    // });
   };
 
   const allTaskIds = () => Object.keys(taskState.tasks);
 
   const getCompletedTasks = () => allTaskIds().filter(taskId => curTask(taskId).status.completed);
 
-  const completeTask = taskId => {
-    const taskArr = [];
-
-    completeTaskRecursively(taskId);
-
-    function completeTaskRecursively(taskId) {
-      taskArr.push({taskId: taskId, completed: true, prevPath: getPath(taskId)});
-
-      curTask(taskId).childTasks.map(completeTaskRecursively);
-    }
-
-    taskArr.forEach(payload => {
-      dispatch(UPDATE_STATUS(payload));
-    })
-  }
-
-  const inCompleteTask = taskId => {
-    dispatch(UPDATE_STATUS({
-      taskId,
-      completed: false,
-      prevPath: curTask(taskId).status.prevPath
-    }));
-  }
-
   const setDragState = (dragState) => {
     dispatch(UPDATE_DRAGGING_STATE(dragState));
   }
 
   return {
-    completeTask,
     getExpandedTreeArr,
     getCompletedTasks,
     getPath,
     hasChildTasks,
-    inCompleteTask,
     getDragState,
     levelInTree,
     onExpandToggle,

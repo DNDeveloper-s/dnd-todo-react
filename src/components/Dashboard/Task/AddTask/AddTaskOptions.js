@@ -4,15 +4,14 @@ import HorizontalSelect from "../../../UI/HorizontalSelect/HorizontalSelect";
 import ProjectsIcon from "../../../../icons/ProjectsIcon";
 import CaretDownFillIcon from "../../../../icons/CaretDownFillIcon";
 import classes from "./AddTask.module.css";
-import {useSelector} from "react-redux";
-import {getAllProjects} from "../../../../features/projectSlice";
+import useProjects from "../../../../hooks/useProjects";
 
 const AddTaskOptions = ({onPrioritySelect, onProjectSelect, priority, priorities, selectedProject}) => {
-  const projects = useSelector(getAllProjects);
+  const {curProject, fetchAllProjectIds} = useProjects();
 
   function projectsArr() {
-    return projects.entities.map(projectId => {
-      const project = projects.data[projectId];
+    return fetchAllProjectIds(true).map(projectId => {
+      const project = curProject(projectId);
       return {
         id: projectId,
         label: project.content,
@@ -24,7 +23,7 @@ const AddTaskOptions = ({onPrioritySelect, onProjectSelect, priority, priorities
   function onItemSelect(setWholeVisible, item, setVisible, e) {
     setVisible(false);
     setWholeVisible(false);
-    onProjectSelect(item);
+    onProjectSelect(item.id);
   }
 
   function onHorizontalSelect(item, e) {
@@ -50,7 +49,7 @@ const AddTaskOptions = ({onPrioritySelect, onProjectSelect, priority, priorities
                 </div>
                 <div className={classes.AddTask_project_dropdown_handle_label}>
                   <p><span>Add to </span><span className={classes.AddTask_project_dropdown_handle_label_highlighted_span}>
-                    {selectedProject ? selectedProject.label || selectedProject.content : "Select Project"}
+                    {curProject(selectedProject) ? curProject(selectedProject).label || curProject(selectedProject).content : "Select Project"}
                   </span></p>
                 </div>
               </div>

@@ -6,13 +6,55 @@ $TASK_ITEM_HEIGHT: 40px;
 .dashboard {
 
   &-detailsBar {
-    width: 100vw;
-    max-width: 60rem;
+    position: relative;
+    width: 60rem;
+    //max-width: 60rem;
     height: calc(100vh - #{$NAVIGATION_HEIGHT});
     background-color: $primary_text;
     border-left: 1px solid $black-10;
     padding: 2rem 0;
     overflow: hidden;
+    transition: .5s cubic-bezier(.18,.91,.4,1.01);
+
+    &.closed {
+      width: 10px;
+    }
+
+    &-toggle {
+      width: 6px;
+      height: 100%;
+      background-color: $black-10;
+      backdrop-filter: blur(10px);
+      position: absolute;
+      top: 0;
+      left: 0;
+      @include flexCentered();
+      transition: $fashioned-transition;
+      cursor: pointer;
+
+      &:hover {
+        width: 14px;
+
+        svg {
+          width: 1rem;
+          height: 1rem;
+        }
+      }
+
+      &.closed {
+        right: 0;
+        left: auto;
+        svg {
+          transform: rotateZ(180deg);
+        }
+      }
+
+      svg {
+        width: .5rem;
+        height: .5rem;
+        transition: $fashioned-transition;
+      }
+    }
 
     &-header {
       position: relative;
@@ -110,6 +152,7 @@ $TASK_ITEM_HEIGHT: 40px;
     &-innerItems {
       padding: 1rem 1.5rem 2rem;
       border-bottom: 1px solid $black-10;
+      position: relative;
 
       &-checkListItem {
         height: $TASK_ITEM_HEIGHT;
@@ -259,6 +302,7 @@ $TASK_ITEM_HEIGHT: 40px;
     max-height: 30rem;
     overflow: auto;
     width: 15rem;
+    z-index: 20;
 
     &-item {
       padding: .6rem 1rem;

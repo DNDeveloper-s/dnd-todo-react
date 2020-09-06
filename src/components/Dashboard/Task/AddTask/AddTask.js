@@ -22,6 +22,8 @@ import PriorityLowIcon from "../../../../icons/PriorityLowIcon";
 import PriorityNoneIcon from "../../../../icons/PriorityNoneIcon";
 import CalendarDropdown from "../../../UI/CalendarDropdown/CalendarDropdown";
 import useLabels from "../../../../hooks/useLabels";
+import useProjects from "../../../../hooks/useProjects";
+import useTasks from "../../../../hooks/useTasks";
 
 
 const priorities = [
@@ -37,14 +39,11 @@ const priorities = [
 ];
 
 const AddTask = () => {
-  const dispatch = useDispatch();
-  const columnOrder = useSelector(getColumnOrder);
   const {fetchLabelState} = useLabels();
-  const projects = useSelector(getAllProjects);
+  const {createTask} = useTasks();
+  const {curProject} = useProjects();
   const {addTaskToLabel, createLabel} = useLabels();
-  const [selectedProject, setSelectedProject] = useState(
-    projects.data[projects.entities[0]]
-  );
+  const [selectedProject, setSelectedProject] = useState('inbox');
   const [priority, setPriority] = useState(priorities[3]);
   const [date, setDate] = useState({
     rawData: {
@@ -102,7 +101,6 @@ const AddTask = () => {
 
     // Label Content
     const labelIds = parseEntities(content, taskId);
-    console.log("[AddTask.js || Line no. 54 ....]", labelIds);
 
     // Updating Label tasks
     labelIds.forEach((labelId) => {
@@ -112,30 +110,13 @@ const AddTask = () => {
     // Project Content
     const projectId = selectedProject.id;
 
-    console.log('[AddTask.js || Line no. 133 ....]', date);
-
-    dispatch(
-      CREATE_TASK({
-        id: taskId,
-        content: taskContent,
-        columnId: columnOrder[0],
-        elClasses: ["disappearWithHeightTransition"],
-        labelIds,
-        projectId,
-        priority: priority.ind,
-        createdTime: Date.now(),
-        repeatFirstDate: JSON.stringify(date.date),
-      })
-    );
-
-    await wait(200);
-
-    dispatch(
-      // REMOVE_TASK_CLASS({
-      //   taskId: taskId,
-      //   removeAll: true,
-      // })
-    );
+    createTask({
+      id: taskId,
+      content: taskContent,
+      labelIds,
+      projectId,
+      priority: priority.ind
+    })
 
     cb();
   }
@@ -152,29 +133,29 @@ const AddTask = () => {
     };
   });
 
-  const projectsArr = projects.entities.map((projectId) => {
-    const project = projects.data[projectId];
-    return {
-      id: projectId,
-      name: project.content,
-      avatar: "",
-      color: project.color,
-      icon: "ProjectsIcon",
-      type: "project",
-    };
-  });
-
-  const priorityArr = priorities.map((p) => {
-    const priority = getPriorityByInd(p.ind);
-    return {
-      id: priority.ind,
-      name: priority.label.split(" ")[0],
-      avatar: "",
-      color: priority.color,
-      icon: priority.iconName,
-      type: "priority",
-    };
-  });
+  // const projectsArr = projects.entities.map((projectId) => {
+  //   const project = projects.data[projectId];
+  //   return {
+  //     id: projectId,
+  //     name: project.content,
+  //     avatar: "",
+  //     color: project.color,
+  //     icon: "ProjectsIcon",
+  //     type: "project",
+  //   };
+  // });
+  //
+  // const priorityArr = priorities.map((p) => {
+  //   const priority = getPriorityByInd(p.ind);
+  //   return {
+  //     id: priority.ind,
+  //     name: priority.label.split(" ")[0],
+  //     avatar: "",
+  //     color: priority.color,
+  //     icon: priority.iconName,
+  //     type: "priority",
+  //   };
+  // });
 
   function onDateChange(data) {
     const dayDiff = getDayDifference({
@@ -198,10 +179,10 @@ const AddTask = () => {
       <div className="add_task-input">
         <TagInput
           mentionsData={labelsArr}
-          projectsData={projectsArr}
-          priorityData={priorityArr}
+          projectsData={[]}
+          priorityData={[]}
           placeholder={`Add Task to "${
-            selectedProject.label || selectedProject.content
+            curProject(selectedProject).label || curProject(selectedProject).content
           }" ${
             date.date ? 'on "' + date.diff + '"' : 'on "Today"'
           }, Please Enter to save...`}

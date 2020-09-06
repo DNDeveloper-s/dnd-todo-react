@@ -1,48 +1,52 @@
 import React from "react";
 import { DragSource } from "react-dnd";
-import PropTypes from 'prop-types';
-import {constants} from "../../../../helpers/constants";
-import SiblingDropTarget from "./SiblingDropTarget";
-import ChildDropTarget from "./ChildDropTarget";
+import PropTypes from "prop-types";
+import { constants } from "../../../../helpers/constants";
+import TaskDropTarget from "./TaskDropTarget";
 import useDropUtils from "../../../../hooks/useDropUtils";
 import TaskInput from "./TaskInput";
 import TaskLabel from "./TaskLabel";
 import useTreeDataUtils from "../../../../hooks/useTreeDataUtils";
-import {classNames, isDefined} from "../../../../helpers/utils";
+import { classNames } from "../../../../helpers/utils";
 import CaretDownIcon from "../../../../icons/CaretDownIcon";
 import CheckBox from "../../../UI/CheckBox/CheckBox";
 import MoveIcon from "../../../../icons/MoveIcon";
 import useProjects from "../../../../hooks/useProjects";
 import useGlobalState from "../../../../hooks/useGlobalState";
+import useTasks from "../../../../hooks/useTasks";
 
 /**
  * Specifies the drag source contract.
  * Only `beginDrag` function is required.
  */
 const cardSource = {
-  beginDrag({item, config, startsDragging}) {
+  beginDrag({ item, config, startsDragging }) {
     // Return the data describing the dragged item
-    const draggedItem = { type: constants.ITEM_TYPES.TASK, id: item.id, dragFrom: config.dragFrom };
+    const draggedItem = {
+      type: config.itemType,
+      id: item.id,
+      dragFrom: config.dragFrom,
+    };
     startsDragging({
       isDragging: true,
-      dragItem: draggedItem
+      dragItem: draggedItem,
     });
     console.log(draggedItem);
     return draggedItem;
   },
 
-  endDrag({startsDragging}, monitor, component) {
+  endDrag({ startsDragging }, monitor, component) {
     startsDragging({
       isDragging: false,
-      dragItem: null
+      dragItem: null,
     });
-    if (!monitor.didDrop()) {
-      return;
-    }
+    // if (!monitor.didDrop()) {
+    //   return;
+    // }
 
     // When dropped on a compatible target, do something
-    const item = monitor.getItem();
-    const dropResult = monitor.getDropResult();
+    // const item = monitor.getItem();
+    // const dropResult = monitor.getDropResult();
     // CardActions.moveCardToList(item.id, dropResult.listId)
   },
 };
@@ -64,56 +68,45 @@ function collect(connect, monitor) {
 
 function ListItem({
   active,
+  filter,
   index,
   item,
   config = {},
   onTitleClick,
+  originTask,
+  elementStyle,
+  expandBtnStyle,
+  handleStyle,
+  bgStyle,
   ...otherProps
 }) {
-  const { onDropItem } = useDropUtils();
-  const {curProject} = useProjects();
-  const {fetchToggleCollapse} = useGlobalState();
+  const { onDropItem: onDropItemUtil } = useDropUtils();
+  const { curProject } = useProjects();
+  const { fetchToggleCollapse } = useGlobalState();
+  const { curTask, updateStatus } = useTasks();
   const {
-    completeTask,
-    inCompleteTask,
     onExpandToggle,
     getPath,
     hasChildTasks,
     levelInTree,
-    getDragState
+    getDragState,
   } = useTreeDataUtils();
-  const { noTreeStyle } = config;
 
-  const {
-    connectDragSource,
-    connectDragPreview,
-  } = otherProps;
+  const { itemType, noTreeStyle } = config;
 
-  function onDropAsSibling(droppedItem) {
-    onDropItem({
+  const { connectDragSource, connectDragPreview } = otherProps;
+
+  function onDropItem(droppedItem, dropAsType) {
+    onDropItemUtil({
       draggedId: droppedItem.id,
       droppedId: item.id,
-      dropAsType: constants.DROP_AS_SIBLING,
-      dragFrom: droppedItem.dragFrom
-    });
-  }
-
-  function onDropAsChild(droppedItem) {
-    onDropItem({
-      draggedId: droppedItem.id,
-      droppedId: item.id,
-      dropAsType: constants.DROP_AS_CHILD,
-      dragFrom: droppedItem.dragFrom
+      dropAsType: dropAsType,
+      dragFrom: droppedItem.dragFrom,
     });
   }
 
   function onToggleCheckBox(isActive) {
-    if(isActive) {
-      completeTask(item.id);
-    } else
-    if(isDefined(isActive) && !isActive) {
-      inCompleteTask(item.id);
-    }
+    updateStatus(item.id, isActive);
   }
 
   return connectDragPreview(
@@ -129,18 +122,23 @@ function ListItem({
       }}
     >
       <div
-        className="dnd_list-item-element"
+        className="dnd_list-item-element pl-40"
         style={{
-          marginLeft: noTreeStyle ? '0px' : `${levelInTree(item.id) * constants.SCAFFOLD_WIDTH}px`,
-          transition: `.3s cubic-bezier(0,.86,.61,1.15)`,
+          marginLeft: noTreeStyle
+            ? "0px"
+            : `${
+                levelInTree(item.id, originTask) * constants.SCAFFOLD_WIDTH
+              }px`,
+          ...elementStyle,
         }}
       >
-        <div className="dnd_list-item-element-bg" />
-        {hasChildTasks(item.id) && !noTreeStyle && (
+        <div className="dnd_list-item-element-bg" style={bgStyle} />
+        {hasChildTasks(item.id, filter) && !noTreeStyle && (
           <div
             className={classNames("dnd_list-item--toggle_child", {
-              expanded: fetchToggleCollapse(config.dragFrom, item.id)
+              expanded: fetchToggleCollapse(config.dragFrom, item.id),
             })}
+            style={expandBtnStyle}
             onClick={onExpandToggle(config.dragFrom, item.id)}
           >
             <CaretDownIcon fill="#ddd" />
@@ -152,28 +150,29 @@ function ListItem({
             marginLeft: "15px",
             marginRight: "15px",
           }}
-          initialValue={item.status.completed}
+          initialValue={curTask(item.id).status.completed}
           onChange={onToggleCheckBox}
         />
         {connectDragSource(
-          <div className="dnd_list-item-element--handle">
+          <div className="dnd_list-item-element--handle" style={handleStyle}>
             <MoveIcon fill="#ddd" />
           </div>
         )}
         <TaskInput onClick={onTitleClick} task={item} />
         <div className="dnd_list-item-element--group">
-          {item.labelIds.map(labelId => (
+          {item.labelIds.map((labelId) => (
             <TaskLabel key={labelId} labelId={labelId} />
           ))}
         </div>
         <div className="dnd_list-item-element--group">
           <div className="dnd_list-item-element--project">
-            <div className="dnd_list-item-element--project--highlighter"
+            <div
+              className="dnd_list-item-element--project--highlighter"
               style={{
-                backgroundColor: curProject(item.projectId || 'inbox').color
+                backgroundColor: curProject(item.projectId || "inbox").color,
               }}
             />
-            <p>{curProject(item.projectId || 'inbox').content}</p>
+            <p>{curProject(item.projectId || "inbox").content}</p>
           </div>
         </div>
         <div className="dnd_list-item-element--group">
@@ -183,39 +182,27 @@ function ListItem({
         </div>
         <span className="dnd_list-item-element--line" />
       </div>
-      {
-        !noTreeStyle && (
-          <>
-            <SiblingDropTarget
-              style={{
-                transform: `translate(${
-                  levelInTree(item.id) * constants.SCAFFOLD_WIDTH + 30
-                }px, ${
-                  0
-                }px)`,
-              }}
-              expandToggle={() =>
-                !fetchToggleCollapse(config.dragFrom, item.id) &&
-                item.childTasks.length > 0 &&
-                onExpandToggle(config.dragFrom,  item.id,true)()
-              }
-              targetPath={getPath(item.id)}
-              onDrop={onDropAsSibling}
-              somethingIsDragging={getDragState().isDragging}
-            />
-            <ChildDropTarget
-              style={{
-                transform: `translateX(${
-                  levelInTree(item.id) * constants.SCAFFOLD_WIDTH + 30
-                }px)`,
-              }}
-              targetPath={getPath(item.id)}
-              onDrop={onDropAsChild}
-              somethingIsDragging={getDragState().isDragging}
-            />
-          </>
-        )
-      }
+      {!noTreeStyle &&
+        [constants.DROP_AS_SIBLING, constants.DROP_AS_CHILD].map((dropAs) => (
+          <TaskDropTarget
+            style={{
+              transform: `translateX(${
+                levelInTree(item.id, originTask) * constants.SCAFFOLD_WIDTH + 30
+              }px)`,
+            }}
+            itemType={itemType}
+            expandToggle={() =>
+              !fetchToggleCollapse(config.dragFrom, item.id) &&
+              item.childTasks.length > 0 &&
+              onExpandToggle(config.dragFrom, item.id, true)()
+            }
+            key={dropAs}
+            dropAs={dropAs}
+            targetPath={getPath(item.id)}
+            onDrop={onDropItem}
+            somethingIsDragging={getDragState().isDragging}
+          />
+        ))}
     </div>
   );
 }
@@ -229,7 +216,11 @@ ListItem.propTypes = {
   setSomethingIsDragging: PropTypes.func,
   index: PropTypes.number,
   item: PropTypes.object,
-}
+};
 
 // Export the wrapped version
-export default DragSource(constants.ITEM_TYPES.TASK, cardSource, collect)(ListItem);
+export default DragSource(
+  constants.ITEM_TYPES.TASK,
+  cardSource,
+  collect
+)(ListItem);

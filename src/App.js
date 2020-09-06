@@ -7,10 +7,7 @@ import store from "./store/store";
 import { Provider } from "react-redux";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 function App() {
   return (
@@ -18,12 +15,15 @@ function App() {
       <Provider store={store}>
         <DndProvider backend={HTML5Backend}>
           <Switch>
-            <Route path="/app" render={(props) => (
-              <>
-                <NavBar {...props} />
-                <Dashboard {...props} />
-              </>
-            )} />
+            <Route
+              path="/app"
+              render={(props) => (
+                <>
+                  <NavBar {...props} />
+                  <Dashboard {...props} />
+                </>
+              )}
+            />
           </Switch>
         </DndProvider>
       </Provider>

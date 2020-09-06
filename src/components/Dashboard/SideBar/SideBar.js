@@ -74,7 +74,7 @@ const SideBar = (props) => {
                   visible ? "visible" : "",
                 ].join(" ")}
               >
-                <CaretDownIcon />
+                <CaretDownIcon fill={"#fff"} />
               </div>
             </>
           )}
@@ -97,7 +97,7 @@ const SideBar = (props) => {
                   visible ? "visible" : "",
                 ].join(" ")}
               >
-                <CaretDownIcon />
+                <CaretDownIcon fill={"#fff"} />
               </div>
             </>
           )}

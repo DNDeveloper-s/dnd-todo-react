@@ -229,7 +229,6 @@ export const taskSlice = createSlice({
         priority: 0,
         projectId: null,
         labelIds: [],
-        elClasses: [],
         status: { completed: false, prevPath: null },
         content: "This is my third tasks. I am improving",
         repeatFirstDate: JSON.stringify(new Date(2020, 8, 25)),
@@ -255,7 +254,7 @@ export const taskSlice = createSlice({
     },
     CREATE_TASK: (state, action) => {
       const taskItem = action.payload;
-      state.taskData.tasks[taskItem.id] = {
+      state.tasks[taskItem.id] = {
         id: taskItem.id,
         status: {
           completed: false,
@@ -263,14 +262,13 @@ export const taskSlice = createSlice({
         },
         labelIds: taskItem.labelIds || [],
         projectId: taskItem.projectId || null,
-        elClasses: taskItem.elClasses,
-        columnId: taskItem.columnId,
         priority: taskItem.priority,
         content: taskItem.content,
-        createdTime: taskItem.createdTime,
-        repeatFirstDate: taskItem.repeatFirstDate,
+        inItemMode: false,
+        items: [],
+        childTasks: [],
       };
-      state.taskData.columns[taskItem.columnId].taskIds.splice(
+      state.taskOrder.splice(
         0,
         0,
         taskItem.id
@@ -286,12 +284,19 @@ export const taskSlice = createSlice({
       );
     },
     UPDATE_TASK: (state, action) => {
-      const { taskId, items, inItemMode, labelIds, title } = action.payload;
+      const { taskId, items, inItemMode, labelIds, content } = action.payload;
       const curTask = state.tasks[taskId];
-      curTask.content = title || curTask.content;
+      curTask.content = content || curTask.content;
       curTask.inItemMode = inItemMode !== undefined && inItemMode !== null ? inItemMode : curTask.inItemMode;
       curTask.items = items || curTask.items;
       curTask.labelIds = labelIds || curTask.labelIds;
+    },
+    UPDATE_ITEM: (state,action) => {
+      const {taskId, itemId, content, status} = action.payload;
+      const itemIndex = state.tasks[taskId].items.findIndex(i => i.id === itemId);
+      const curItem = state.tasks[taskId].items[itemIndex];
+      curItem.content = content || curItem.content;
+      curItem.status = status || curItem.status;
     },
     TOGGLE_EXPAND: (state, action) => {
       const { taskId, expandCount } = action.payload;
@@ -319,13 +324,13 @@ export const taskSlice = createSlice({
           draggedId
         );
         // 2. Updating the expand Count
-        const poppedDestPath = [...dest.path];
-        poppedDestPath.pop();
-        console.log(poppedDestPath);
-        poppedDestPath.forEach((destId) => {
-          state.tasks[destId].expandCount +=
-            state.tasks[draggedId].expandCount + 1;
-        });
+        // const poppedDestPath = [...dest.path];
+        // poppedDestPath.pop();
+        // console.log(poppedDestPath);
+        // poppedDestPath.forEach((destId) => {
+        //   state.tasks[destId].expandCount +=
+        //     state.tasks[draggedId].expandCount + 1;
+        // });
         // 3. Updating the parent task
         state.tasks[draggedId].parentTask = droppedToParentId;
       }
@@ -340,25 +345,23 @@ export const taskSlice = createSlice({
         );
         pastSiblingTasks.splice(draggedIndex, 1);
         // 2. Updating the expand Count
-        const poppedSrcPath = [...source.path];
-        poppedSrcPath.pop();
-        console.log(poppedSrcPath);
-        poppedSrcPath.forEach((srcId) => {
-          state.tasks[srcId].expandCount -=
-            state.tasks[draggedId].expandCount + 1;
-        });
+        // const poppedSrcPath = [...source.path];
+        // poppedSrcPath.pop();
+        // console.log(poppedSrcPath);
+        // poppedSrcPath.forEach((srcId) => {
+        //   state.tasks[srcId].expandCount -=
+        //     state.tasks[draggedId].expandCount + 1;
+        // });
       }
 
       // Case 1 - Moving inside Top Level
       if (source.path.length === 1 && dest.path.length === 1) {
         // Removing Part
         // Removing from taskOrder
-        if(dragFrom !== constants.DRAG_FROM.COMPLETED) {
-          const draggedIndex = state.taskOrder.findIndex(
-            (c) => c.toString() === draggedId
-          );
-          state.taskOrder.splice(draggedIndex, 1);
-        }
+        const draggedIndex = state.taskOrder.findIndex(
+          (c) => c.toString() === draggedId
+        );
+        state.taskOrder.splice(draggedIndex, 1);
 
         // Adding Part
         if (dropAsType === constants.DROP_AS_SIBLING) {
@@ -373,12 +376,10 @@ export const taskSlice = createSlice({
       else if (source.path.length === 1 && dest.path.length >= 2) {
         // Removing Part
         // Removing from taskOrder
-        if(dragFrom !== constants.DRAG_FROM.COMPLETED) {
-          const draggedIndex = state.taskOrder.findIndex(
-            (c) => c.toString() === draggedId
-          );
-          state.taskOrder.splice(draggedIndex, 1);
-        }
+        const draggedIndex = state.taskOrder.findIndex(
+          (c) => c.toString() === draggedId
+        );
+        state.taskOrder.splice(draggedIndex, 1);
 
         // Adding Part
         if (dropAsType === constants.DROP_AS_SIBLING) {
@@ -389,9 +390,7 @@ export const taskSlice = createSlice({
       // Case 3 - Moving from Inner Lever to Top Level
       else if (source.path.length >= 2 && dest.path.length === 1) {
         // Removing Part
-        if(dragFrom !== constants.DRAG_FROM.COMPLETED) {
-          removeFromInnerLevel();
-        }
+        removeFromInnerLevel();
 
         // Adding Part
         if (dropAsType === constants.DROP_AS_SIBLING) {
@@ -409,9 +408,7 @@ export const taskSlice = createSlice({
       // Case 4 - Moving inside Inner Level
       else if (source.path.length >= 2 && dest.path.length >= 2) {
         // Removing Part
-        if(dragFrom !== constants.DRAG_FROM.COMPLETED) {
-          removeFromInnerLevel();
-        }
+        removeFromInnerLevel();
 
         // Adding Part
         if (dropAsType === constants.DROP_AS_SIBLING) {
@@ -423,126 +420,43 @@ export const taskSlice = createSlice({
       // Handling case for dropping as child
       if (dropAsType === constants.DROP_AS_CHILD) {
         // Adding to childTasks array
-        const droppedToParentId =
-          state.tasks[dest.path[dest.path.length - 1]].id;
+        const droppedToParentId = state.tasks[dest.path[dest.path.length - 1]].id;
         state.tasks[droppedToParentId].childTasks.splice(0, 0, draggedId);
         // 2. Updating the expand Count
-        const poppedDestPath = [...dest.path];
-        console.log(poppedDestPath);
-        poppedDestPath.forEach((destId) => {
-          state.tasks[destId].expandCount +=
-            state.tasks[draggedId].expandCount + 1;
-        });
+        // const poppedDestPath = [...dest.path];
+        // console.log(poppedDestPath);
+        // poppedDestPath.forEach((destId) => {
+        //   state.tasks[destId].expandCount +=
+        //     state.tasks[draggedId].expandCount + 1;
+        // });
         // 3. Updating the parent task
         state.tasks[draggedId].parentTask = droppedToParentId;
       }
     },
     UPDATE_STATUS: (state, action) => {
-      const {taskId, completed, prevPath} = action.payload;
+      const {taskId, completed, curPath} = action.payload;
 
       if(completed) {
-        // Case 1. Inner Level
-        // Removing from Inner Level
-        const parentTaskId = state.tasks[taskId].parentTask;
-        if(parentTaskId) {
-          const pastSiblingTasks = state.tasks[parentTaskId].childTasks;
-          const draggedIndex = pastSiblingTasks.findIndex(
-            (c) => c.toString() === taskId
-          );
-          pastSiblingTasks.splice(draggedIndex, 1);
-
-          // 2. Updating the expand Count
-          const poppedSrcPath = [...prevPath];
-          poppedSrcPath.pop();
-          poppedSrcPath.forEach((srcId) => {
-            // Here, We are preventing to update the expand count of the
-            // task those are already completed
-            // So, the tasks which is completed are being reset to "0" expand count
-            if(state.tasks[srcId].status.completed) {
-              state.tasks[srcId].expandCount = 0;
-            } else {
-              state.tasks[srcId].expandCount -=
-                state.tasks[taskId].expandCount + 1;
-            }
-          });
-
-          // Resetting the parent task of the completed task
-          state.tasks[taskId].parentTask = null;
-        }
-
-        // Case 2. Top Level
-        // Removing from Top Level
-        if(!parentTaskId) {
-          const draggedIndex = state.taskOrder.findIndex(
-            (c) => c.toString() === taskId
-          );
-          state.taskOrder.splice(draggedIndex, 1);
-        }
-
-        state.tasks[taskId].status.completed = completed;
-        state.tasks[taskId].status.prevPath = prevPath;
+        state.tasks[taskId].status.completed = true;
       }
 
       // Handling the case if the task is moving from completed to incomplete
       if(isDefined(completed) && !completed) {
-        const {taskId, completed, prevPath} = action.payload;
+        // Check here if the task's parent is not completed
+        // and check that also as incompleted
+        // the whole tree
+        // curPath eg, ["task-9", "task-1", "task-2", "task-4"]
+        // let say "task-9" is incomplete
+        // but "task-1" is completed
+        // so we need to check all the tasks after first complete task in the array
 
-        console.log(action.payload);
+        let firstCompletedTask = curPath.findIndex(c => state.tasks[c].status.completed);
 
-        // Case 1. the incomplete task to be moved to top level [Task Order]
-        if(prevPath.length === 1) {
-          state.taskOrder.splice(0, 0, taskId);
-          state.tasks[taskId].status.completed = false;
-          state.tasks[taskId].status.prevPath = null;
-        }
-
-        // Case 2. the incomplete task to be moved to inner level [ChildTasks]
-        if(prevPath.length >= 2) {
-          // eg, prevPath = ['task-1', 'task-2', 'task-3']
-          // here 'task-3' is the currentTask
-          // so we dont wanna go through this
-          // so removing from the arr
-          const poppedPrevPath = [...prevPath];
-          poppedPrevPath.pop();
-
-          // Now, looping through the array and we will stop where we will find the first completed task
-          // And, we will add it to that one [first completed] on first place in its child tasks
-          const resultArr = [];   // Result array will hold the items those are not completed and they will the child array of prevPath
-          for(let i = 0; i < poppedPrevPath.length; i++) {
-            const curTask = state.tasks[poppedPrevPath[i]];
-            if(isDefined(curTask.status.completed) && !curTask.status.completed) resultArr.push(poppedPrevPath[i]);
-            if(curTask.status.completed) break;
-          }
-
-          // Checking if the resultArr is empty
-          // if its empty that does mean there is nothing to be add into a parent task
-          // So will add it to the top to the top level [Task Order]
-          if(resultArr.length === 0) {
-            state.taskOrder.splice(0, 0, taskId);
-          }
-
-          // If result array has having some items in it
-          // Then we will put our item into the last item's childTasks
-          if(resultArr.length >= 1) {
-            const targetTask = resultArr[resultArr.length - 1];
-
-            // Adding to the childTasks Array on to the top
-            state.tasks[targetTask].childTasks.splice(0, 0, taskId);
-            state.tasks[taskId].parentTask = targetTask;
-
-            // Updating the expand count of targetTask
-            // And the parentTask of the upper level of this task
-            // recursively
-            updateExpandCount(targetTask);
-            function updateExpandCount(taskId) {
-              state.tasks[taskId].expandCount += 1;
-              const parentTaskId = state.tasks[taskId].parentTask;
-              if(isDefined(parentTaskId)) updateExpandCount(parentTaskId);
-            }
-          }
-          state.tasks[taskId].status.completed = false;
-          state.tasks[taskId].status.prevPath = null;
-
+        // Now as we found the first index of completed task
+        // we will start loop from there
+        for(let i = firstCompletedTask; i < curPath.length; i++) {
+          state.tasks[curPath[i]].status.completed = false;
+          state.tasks[curPath[i]].status.prevPath = null;
         }
       }
     },
@@ -567,6 +481,7 @@ export const {
   UPDATE_DRAGGING_STATE,
   TOGGLE_EXPAND,
   UPDATE_ACTIVE_TASK,
+  UPDATE_ITEM,
   UPDATE_STATUS
 } = taskSlice.actions;
 

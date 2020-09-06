@@ -111,7 +111,10 @@ $ITEM_HEIGHT: 40px;
       height: 100%;
       @include flexCentered();
       justify-content: flex-start;
-      padding: 0 20px 0 35px;
+      padding-right: 20px;
+      padding-top: 0;
+      padding-bottom: 0;
+      transition: .3s cubic-bezier(0,.86,.61,1.15);
 
       &-bg {
         position: absolute;

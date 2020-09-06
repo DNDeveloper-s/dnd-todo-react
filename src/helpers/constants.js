@@ -7,10 +7,17 @@ export const constants = {
 	DRAG_FROM: {
 		COMPLETED: 'completed',
 		MAIN: "main",
-		DETAIL: 'detail'
+		DETAIL: 'detail',
+		ITEM: "item"
 	},
 	ITEM_TYPES: {
-		TASK: "task"
+		TASK: "task",
+		ITEM: "item"
+	},
+	TASK_FILTER: {
+		COMPLETE: "complete",
+		INCOMPLETE: "incomplete",
+		ALL: "all"
 	},
 	UI_CONSTANTS: {
 		TASK_ITEM_HEIGHT: 50
