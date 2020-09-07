@@ -1,5 +1,5 @@
 import React from "react";
-import { DROP_TASK } from "../features/taskSlice";
+import { DROP_TASK, DROP_ITEM } from "../features/taskSlice";
 import { useDispatch } from "react-redux";
 import useTreeDataUtils from "./useTreeDataUtils";
 
@@ -7,7 +7,7 @@ const useDropUtils = (props) => {
   const dispatch = useDispatch();
   const { getPath } = useTreeDataUtils();
 
-  const onDropItem = ({ dragFrom, draggedId, droppedId, dropAsType }) => {
+  const onDropTask = ({ dragFrom, draggedId, droppedId, dropAsType }) => {
     // Handling the case for the highest level
     console.log(getPath(draggedId), getPath(droppedId));
     // console.log(draggedId, droppedId);
@@ -28,7 +28,11 @@ const useDropUtils = (props) => {
     );
   };
 
-  return { onDropItem };
+  const onDropItem = ({ taskId, draggedId, droppedId }) => {
+    dispatch(DROP_ITEM({ taskId, draggedId, droppedId }));
+  };
+
+  return { onDropTask, onDropItem };
 };
 
 export default useDropUtils;

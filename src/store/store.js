@@ -9,7 +9,7 @@ const store = configureStore({
     label: labelReducer,
     project: projectReducer,
     task: taskReducer,
-    global: globalReducer
+    global: globalReducer,
   },
 });
 

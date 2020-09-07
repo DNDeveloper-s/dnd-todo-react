@@ -7,6 +7,7 @@ import DropTargetForTask from "./DropTargetForTask";
 import { classNames } from "../../../../helpers/utils";
 import "./DNDList.scss";
 import useTasks from "../../../../hooks/useTasks";
+import useFocus from "../../../../hooks/useFocus";
 
 const DNDList = (props) => {
   const {
@@ -18,6 +19,7 @@ const DNDList = (props) => {
     setDragState,
   } = useTreeDataUtils();
   const { fetchActiveTask } = useTasks();
+  const {focusId, setFocusId} = useFocus(null);
 
   function onDropToCompleteSection(draggedItem) {
     completeTask(draggedItem.id);
@@ -52,6 +54,8 @@ const DNDList = (props) => {
               item={taskState.tasks[taskId]}
               startsDragging={setDragState}
               onTitleClick={onTitleClick}
+              focusId={focusId}
+              setFocusId={setFocusId}
             />
           )
         )}

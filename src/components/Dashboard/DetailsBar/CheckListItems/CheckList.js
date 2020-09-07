@@ -4,12 +4,12 @@ import useTasks from "../../../../hooks/useTasks";
 import { constants } from "../../../../helpers/constants";
 import useTreeDataUtils from "../../../../hooks/useTreeDataUtils";
 import CheckListItem from "./CheckListItem";
+import { filterArr } from "../../../../helpers/utils";
+import useFocus from "../../../../hooks/useFocus";
 
 const CheckList = () => {
   const dispatch = useDispatch();
-  const [focusedItem, setFocusedItem] = useState(null);
-  const [taskItems, setTaskItems] = useState([]);
-  const { updateTask } = useTasks();
+  const {focusId, setFocusId} = useFocus(null);
   const { curTask, fetchActiveTask } = useTasks();
   const { setDragState } = useTreeDataUtils();
 
@@ -70,7 +70,7 @@ const CheckList = () => {
           "px",
       }}
     >
-      {curTask(fetchActiveTask()).items.map((item, index) => (
+      {filterArr(curTask(fetchActiveTask()).items).map((item, index) => (
         <CheckListItem
           key={item.id}
           index={index}
@@ -81,10 +81,10 @@ const CheckList = () => {
             paddingLeft: 0,
           }}
           handleStyle={{
-            left: "-10px",
+            left: "0px",
           }}
           bgStyle={{
-            left: "5px",
+            left: "15px",
           }}
           startsDragging={setDragState}
           config={{
@@ -92,6 +92,8 @@ const CheckList = () => {
             dragFrom: constants.DRAG_FROM.ITEM,
           }}
           onTitleClick={() => null}
+          focusId={focusId}
+          setFocusId={setFocusId}
         />
       ))}
     </div>

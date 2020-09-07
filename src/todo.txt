@@ -27,4 +27,11 @@ Day - 10
 Day - 11
 
 6. Subtask are intimatated and fully functional now
-7. TODO: Make Subtask drop functionality come alive
+7. Make Subtask drop functionality come alive
+
+TODO: IMPROVEMENTS - Make completed task editable, user has to incomplete it first and then edit and then tick them
+TODO: IMPROVEMENTS - Active Tasks fix on focus and right click
+
+TODO: Work on Dates and Time
+TODO: Enhance Priority
+TODO: Integrate Context Menu

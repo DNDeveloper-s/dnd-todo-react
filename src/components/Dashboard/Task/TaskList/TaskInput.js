@@ -1,32 +1,80 @@
-import React, {useState} from 'react';
+import React, {useEffect, useRef, useState} from "react";
 import useTasks from "../../../../hooks/useTasks";
+import { classNames } from "../../../../helpers/utils";
 
-const TaskInput = ({itemMode, task, onClick}) => {
-	const {curTask, updateItem, fetchItem, fetchActiveTask, updateTask} = useTasks();
+const TaskInput = ({
+  handleBackspace,
+  handleShiftReturn,
+  handleReturn,
+  itemMode,
+  task,
+  onClick,
+  focusIt,
+}) => {
+  const inputRef = useRef(null);
+  const {
+    curTask,
+    updateItem,
+    fetchItem,
+    fetchActiveTask,
+    updateTask,
+  } = useTasks();
 
-	function onChange(e) {
-		if(itemMode) {
-			return updateItem(fetchActiveTask(), {
-				itemId: task.id,
-				content: e.target.value
-			})
-		}
-		updateTask({
-			taskId: task.id,
-			content: e.target.value
-		});
-	}
+  useEffect(() => {
+    if(focusIt) {
+      inputRef.current.focus();
+    }
+  }, [focusIt]);
 
-	return (
-		<div className="dnd_list-item-element--input" onClick={e => onClick(task.id, e)}>
-			<input
-				type="text"
-				value={itemMode ? fetchItem(fetchActiveTask(), task.id).content : curTask(task.id).content}
-				onChange={onChange}
-				spellCheck={false}
-			/>
-		</div>
-	)
-}
+  function onChange(e) {
+    if (itemMode) {
+      return updateItem(fetchActiveTask(), {
+        itemId: task.id,
+        content: e.target.value,
+      });
+    }
+    updateTask({
+      taskId: task.id,
+      content: e.target.value,
+    });
+  }
+
+  function onKeyDown(e) {
+    const params = itemMode ? [fetchActiveTask(), task.id] : [task.id];
+    if(e.key === "Enter" && e.shiftKey) return handleShiftReturn && handleShiftReturn(...params);
+    if (e.key === "Enter") return handleReturn(...params);
+    if (e.key === "Backspace") {
+      console.log('Hitting backspace')
+      const curTitle = itemMode
+        ? fetchItem(fetchActiveTask(), task.id)?.content
+        : curTask(task.id)?.content;
+      if (curTitle.length === 0) return handleBackspace(...params);
+    }
+  }
+
+  return (
+    <div
+      className={classNames("dnd_list-item-element--input", {
+        completed: itemMode
+          ? Boolean(fetchItem(fetchActiveTask(), task.id)?.status)
+          : curTask(task.id)?.status.completed,
+      })}
+      onKeyDown={onKeyDown}
+      onClick={(e) => onClick(task.id, e)}
+    >
+      <input
+        ref={inputRef}
+        type="text"
+        value={
+          itemMode
+            ? fetchItem(fetchActiveTask(), task.id)?.content
+            : curTask(task.id)?.content
+        }
+        onChange={onChange}
+        spellCheck={false}
+      />
+    </div>
+  );
+};
 
 export default TaskInput;

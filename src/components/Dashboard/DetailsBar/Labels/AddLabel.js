@@ -1,12 +1,12 @@
-import React, {useState} from 'react';
+import React, { useState } from "react";
 import PlusIcon from "../../../../icons/PlusIcon";
 import useOutsideAlerter from "../../../../hooks/useOutsideAlerter";
 import AddLabelInput from "./AddLabelInput";
 import PopOver from "./PopOver";
-import {getFilteredLabels} from "../../../../helpers/utils";
+import { getFilteredLabels } from "../../../../helpers/utils";
 
-const AddLabel = ({onAddLabel, labels}) => {
-  const {visible, setVisible, ref} = useOutsideAlerter(false);
+const AddLabel = ({ onAddLabel, labels }) => {
+  const { visible, setVisible, ref } = useOutsideAlerter(false);
   const [suggestions, setSuggestions] = useState(labels);
   const [activeInd, setActiveInd] = useState(0);
 
@@ -21,13 +21,13 @@ const AddLabel = ({onAddLabel, labels}) => {
   }
 
   function onDirection(type) {
-    if(type === 'goDown') {
-      if(suggestions.length - 1 === activeInd) {
+    if (type === "goDown") {
+      if (suggestions.length - 1 === activeInd) {
         return setActiveInd(0);
       }
       setActiveInd(activeInd + 1);
-    } else if(type === 'goUp') {
-      if(activeInd === 0) {
+    } else if (type === "goUp") {
+      if (activeInd === 0) {
         return setActiveInd(suggestions.length - 1);
       }
       setActiveInd(activeInd - 1);
@@ -49,17 +49,22 @@ const AddLabel = ({onAddLabel, labels}) => {
 
   return (
     <div className="dashboard-detailsBar-labelsList-addLabel" ref={ref}>
-      {visible ?
+      {visible ? (
         <>
           <AddLabelInput
             onChange={onSearchChange}
             direction={onDirection}
             handleReturn={handleReturn}
           />
-          <PopOver onClick={onItemClick} activeInd={activeInd} suggestions={suggestions}/>
-        </> :
-        <PlusIcon fill={'#fff'} onClick={onClick} />
-      }
+          <PopOver
+            onClick={onItemClick}
+            activeInd={activeInd}
+            suggestions={suggestions}
+          />
+        </>
+      ) : (
+        <PlusIcon fill={"#fff"} onClick={onClick} />
+      )}
     </div>
   );
 };

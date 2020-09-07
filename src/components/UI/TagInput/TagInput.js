@@ -1,5 +1,5 @@
-import React, {useEffect, useRef, useState} from "react";
-import {convertFromRaw, convertToRaw, EditorState} from "draft-js";
+import React, { useEffect, useRef, useState } from "react";
+import { convertFromRaw, convertToRaw, EditorState } from "draft-js";
 import Editor from "draft-js-plugins-editor";
 import createSingleLinePlugin from "draft-js-single-line-plugin";
 import createMentionPlugin, {
@@ -62,7 +62,7 @@ const TagInput = ({
   const stateRef = useRef(null);
 
   useEffect(() => {
-    if(stateRef.current === 'empty') {
+    if (stateRef.current === "empty") {
       const contentState = editorState.getCurrentContent();
       const raw = convertToRaw(contentState);
       console.log(raw);
@@ -96,7 +96,6 @@ const TagInput = ({
   }
 
   function onLabelSearchChange({ value }) {
-
     setLabelSuggestions(getFilteredLabels(value, labelsData));
   }
 
@@ -107,7 +106,6 @@ const TagInput = ({
   function onPrioritySearchChange({ value }) {
     setPrioritySuggestions(defaultSuggestionsFilter(value, priorityData));
   }
-
 
   function onAddLabel(entry) {
     console.log("Mention added!", entry);
@@ -149,7 +147,6 @@ const TagInput = ({
     // });
     // console.log('Mention added!', content, entry);
   }
-
 
   return (
     <div

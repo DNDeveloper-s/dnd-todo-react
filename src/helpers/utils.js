@@ -1,9 +1,9 @@
 import produce from "immer";
 import moment from "moment";
 import { getToday } from "../components/CalendarPicker/helpers";
-import {defaultSuggestionsFilter} from "draft-js-mention-plugin";
-import {v4 as uuidV4} from "uuid";
-import {colors} from "../components/ColorPicker/helpers/colors";
+import { defaultSuggestionsFilter } from "draft-js-mention-plugin";
+import { v4 as uuidV4 } from "uuid";
+import { colors } from "../components/ColorPicker/helpers/colors";
 
 /**
  *
@@ -180,7 +180,7 @@ export const getCommonFormatDate = (date, format = {}) =>
     lastDay: format.lastDay || "[Yesterday]",
     lastWeek: format.lastWeek || "[Last] dddd",
     sameElse: format.sameElse || "ddd, MMM D",
-});
+  });
 
 /**
  *
@@ -195,8 +195,7 @@ export const getFilteredLabels = (value, labelsData) => {
   if (value.trim().length > 0) {
     if (filteredSuggestions.length > 0) {
       if (
-        filteredSuggestions[0].name.toLowerCase() !==
-        value.trim().toLowerCase()
+        filteredSuggestions[0].name.toLowerCase() !== value.trim().toLowerCase()
       ) {
         filteredSuggestions = addCreateLabel(filteredSuggestions, value);
       }
@@ -235,17 +234,20 @@ export const pushToArray = (arr, itemToPush, config = {}) => {
   //   match: 'id'
   // }
   const newArr = [...arr];
-  if(config.allowDuplicates) {
+  if (config.allowDuplicates) {
     newArr.push(itemToPush);
     return newArr;
   }
-  const isPresent = arr.findIndex(item => matchItemId(item, config.match) === matchItemId(itemToPush, config.match));
-  if(isPresent < 0) {
+  const isPresent = arr.findIndex(
+    (item) =>
+      matchItemId(item, config.match) === matchItemId(itemToPush, config.match)
+  );
+  if (isPresent < 0) {
     newArr.push(itemToPush);
     return newArr;
   }
   return newArr;
-}
+};
 
 /**
  *
@@ -255,7 +257,6 @@ export const pushToArray = (arr, itemToPush, config = {}) => {
 export const isDefined = (variable) =>
   variable !== undefined && variable !== null;
 
-
 /**
  *
  * @param args
@@ -264,17 +265,34 @@ export const isDefined = (variable) =>
 export const classNames = (...args) => {
   let classArr = [];
   let classObj;
-  for(let i = 0; i < args.length; i++) {
+  for (let i = 0; i < args.length; i++) {
     let arg = args[i];
-    if(typeof arg === "string" || typeof arg === 'number') {
+    if (typeof arg === "string" || typeof arg === "number") {
       classArr.push(arg.toString());
       continue;
     }
-    if(typeof arg === "object") {
+    if (typeof arg === "object") {
       classObj = arg;
     }
   }
   const mappedClassObj = Object.keys(classObj);
   let arr = mappedClassObj.filter((c) => classObj[c]);
   return [...classArr, ...arr].join(" ");
+};
+
+export const filterArr = (arr, filterOptions) => {
+  // First implementing the array of the item object
+  // eg, {id: 1, content: '....', status: 1, completedAt: Date}, {...}, {...}
+  const incompleteItems = arr.filter((c) => c.status === 0);
+  const completedItems = arr.filter((c) => c.status === 1);
+  completedItems.sort((a, b) => {
+    if (a.completedAt < b.completedAt) {
+      return -1;
+    }
+    if (a.completedAt > b.completedAt) {
+      return 1;
+    }
+    return 0;
+  });
+  return [...incompleteItems, ...completedItems];
 };

@@ -1,7 +1,7 @@
 @import "../../../../styles/utilities/mixins";
 @import "../../../../styles/utilities/variables";
 
-$SCAFFOLD_WIDTH: 16px;
+$SCAFFOLD_WIDTH: 30px;
 $ITEM_HEIGHT: 40px;
 
 .dnd_list {
@@ -153,6 +153,14 @@ $ITEM_HEIGHT: 40px;
       &--input {
         flex: 1;
         height: 100%;
+
+        &.completed {
+
+          input {
+            text-decoration: line-through;
+            color: $black-40;
+          }
+        }
 
         input {
           width: 100%;

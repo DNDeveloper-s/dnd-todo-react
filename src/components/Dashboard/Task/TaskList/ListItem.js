@@ -14,6 +14,7 @@ import MoveIcon from "../../../../icons/MoveIcon";
 import useProjects from "../../../../hooks/useProjects";
 import useGlobalState from "../../../../hooks/useGlobalState";
 import useTasks from "../../../../hooks/useTasks";
+import { v4 as uuidV4 } from "uuid";
 
 /**
  * Specifies the drag source contract.
@@ -78,14 +79,17 @@ function ListItem({
   expandBtnStyle,
   handleStyle,
   bgStyle,
+  focusId,
+  setFocusId,
   ...otherProps
 }) {
-  const { onDropItem: onDropItemUtil } = useDropUtils();
+  const { onDropTask } = useDropUtils();
   const { curProject } = useProjects();
   const { fetchToggleCollapse } = useGlobalState();
-  const { curTask, updateStatus } = useTasks();
+  const { createTask, curTask, deleteTask, updateStatus } = useTasks();
   const {
     onExpandToggle,
+    getPrevItemInExpandedTree,
     getPath,
     hasChildTasks,
     levelInTree,
@@ -97,7 +101,7 @@ function ListItem({
   const { connectDragSource, connectDragPreview } = otherProps;
 
   function onDropItem(droppedItem, dropAsType) {
-    onDropItemUtil({
+    onDropTask({
       draggedId: droppedItem.id,
       droppedId: item.id,
       dropAsType: dropAsType,
@@ -107,6 +111,30 @@ function ListItem({
 
   function onToggleCheckBox(isActive) {
     updateStatus(item.id, isActive);
+  }
+
+  function handleReturn(taskId, as) {
+    const newTaskId = uuidV4();
+    createTask({
+      id: newTaskId,
+      content: "",
+      labelIds: [],
+      projectId: null,
+      priority: 0,
+      createType: {
+        path: getPath(taskId),
+        as
+      }
+    })
+    setFocusId(newTaskId);
+    if(as === constants.AS_CHILD)
+      onExpandToggle(config.dragFrom, item.id, true)(true);
+  }
+
+  function handleBackspace(taskId) {
+    const prevItemId = getPrevItemInExpandedTree(taskId, config.dragFrom, originTask);
+    deleteTask(taskId);
+    setFocusId(prevItemId);
   }
 
   return connectDragPreview(
@@ -158,7 +186,14 @@ function ListItem({
             <MoveIcon fill="#ddd" />
           </div>
         )}
-        <TaskInput onClick={onTitleClick} task={item} />
+        <TaskInput
+          handleShiftReturn={(args) => handleReturn(args, constants.AS_CHILD)}
+          handleReturn={args => handleReturn(args, constants.AS_SIBLING)}
+          handleBackspace={handleBackspace}
+          onClick={onTitleClick}
+          task={item}
+          focusIt={focusId === item.id}
+        />
         <div className="dnd_list-item-element--group">
           {item.labelIds.map((labelId) => (
             <TaskLabel key={labelId} labelId={labelId} />
@@ -183,7 +218,7 @@ function ListItem({
         <span className="dnd_list-item-element--line" />
       </div>
       {!noTreeStyle &&
-        [constants.DROP_AS_SIBLING, constants.DROP_AS_CHILD].map((dropAs) => (
+        [constants.AS_SIBLING, constants.AS_CHILD].map((dropAs) => (
           <TaskDropTarget
             style={{
               transform: `translateX(${

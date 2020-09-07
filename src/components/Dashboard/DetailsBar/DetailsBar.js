@@ -29,11 +29,13 @@ import useTasks from "../../../hooks/useTasks";
 import ListItem from "../Task/TaskList/ListItem";
 import { constants } from "../../../helpers/constants";
 import useTreeDataUtils from "../../../hooks/useTreeDataUtils";
+import useFocus from "../../../hooks/useFocus";
 
 const DetailsBar = (props) => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const { fetchLabelState } = useLabels();
   const { getExpandedTreeArr, setDragState } = useTreeDataUtils();
+  const {focusId, setFocusId} = useFocus(null);
   const {
     curTask,
     fetchActiveTask,
@@ -42,28 +44,13 @@ const DetailsBar = (props) => {
     updateActiveTask,
     updateTask,
     updateStatus,
+    taskProgress,
   } = useTasks();
   const {
     match: { params },
   } = props;
   const [task, setTask] = useState(null);
   const [date, setDate] = useState(null);
-  const dispatch = useDispatch();
-  const [progress, setProgress] = useState(0);
-
-  // Using for just validating the changes for the use Effect
-  const currentTask = curTask(fetchActiveTask());
-
-  useEffect(() => {
-    if (currentTask) {
-      const completedItems = currentTask.items.filter(
-        (item) => item.status === 1
-      ).length;
-      const totalItems = currentTask.items.length;
-      const newProgress = (completedItems / totalItems) * 100;
-      setProgress(newProgress);
-    }
-  }, [currentTask]);
 
   useEffect(() => {
     if (typeof params === "object") {
@@ -218,7 +205,7 @@ const DetailsBar = (props) => {
           <PriorityHighIcon />
         </div>
         <div className="dashboard-detailsBar-progress_bar">
-          <ProgressBar progress={progress} />
+          <ProgressBar progress={taskProgress(fetchActiveTask())} />
         </div>
       </div>
       {curTask(fetchActiveTask()).parentTask && (
@@ -286,14 +273,12 @@ const DetailsBar = (props) => {
               height:
                 getExpandedTreeArr(constants.DRAG_FROM.DETAIL, "incomplete", {
                   forTaskId: fetchActiveTask(),
-                  onlySubTasks: true,
                 }).length * constants.ITEM_HEIGHT,
               transition: "height 0.3s cubic-bezier(0, 0.86, 0.61, 1.15) 0s",
             }}
           >
             {getExpandedTreeArr(constants.DRAG_FROM.DETAIL, "all", {
               forTaskId: fetchActiveTask(),
-              onlySubTasks: true,
             }).map((taskId, index) => {
               return (
                 <ListItem
@@ -313,6 +298,8 @@ const DetailsBar = (props) => {
                   item={curTask(taskId)}
                   startsDragging={setDragState}
                   onTitleClick={() => console.log("Title clicked!!")}
+                  focusId={focusId}
+                  setFocusId={setFocusId}
                 />
               );
             })}

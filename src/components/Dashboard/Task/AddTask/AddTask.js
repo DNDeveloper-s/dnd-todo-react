@@ -25,7 +25,6 @@ import useLabels from "../../../../hooks/useLabels";
 import useProjects from "../../../../hooks/useProjects";
 import useTasks from "../../../../hooks/useTasks";
 
-
 const priorities = [
   { id: "1", ind: 3, label: "High Priority", IconComponent: PriorityHighIcon },
   {
@@ -39,18 +38,18 @@ const priorities = [
 ];
 
 const AddTask = () => {
-  const {fetchLabelState} = useLabels();
-  const {createTask} = useTasks();
-  const {curProject} = useProjects();
-  const {addTaskToLabel, createLabel} = useLabels();
-  const [selectedProject, setSelectedProject] = useState('inbox');
+  const { fetchLabelState } = useLabels();
+  const { createTask } = useTasks();
+  const { curProject } = useProjects();
+  const { addTaskToLabel, createLabel } = useLabels();
+  const [selectedProject, setSelectedProject] = useState("inbox");
   const [priority, setPriority] = useState(priorities[3]);
   const [date, setDate] = useState({
     rawData: {
       data: {
         monthDay: getToday().day,
         month: getToday().month,
-        year: getToday().year
+        year: getToday().year,
       },
     },
   });
@@ -115,8 +114,8 @@ const AddTask = () => {
       content: taskContent,
       labelIds,
       projectId,
-      priority: priority.ind
-    })
+      priority: priority.ind,
+    });
 
     cb();
   }
@@ -182,7 +181,8 @@ const AddTask = () => {
           projectsData={[]}
           priorityData={[]}
           placeholder={`Add Task to "${
-            curProject(selectedProject).label || curProject(selectedProject).content
+            curProject(selectedProject).label ||
+            curProject(selectedProject).content
           }" ${
             date.date ? 'on "' + date.diff + '"' : 'on "Today"'
           }, Please Enter to save...`}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import { DragSource } from "react-dnd";
 import PropTypes from "prop-types";
 import { constants } from "../../../../helpers/constants";
@@ -6,11 +6,10 @@ import useDropUtils from "../../../../hooks/useDropUtils";
 import useTreeDataUtils from "../../../../hooks/useTreeDataUtils";
 import CheckBox from "../../../UI/CheckBox/CheckBox";
 import MoveIcon from "../../../../icons/MoveIcon";
-import useProjects from "../../../../hooks/useProjects";
-import useGlobalState from "../../../../hooks/useGlobalState";
 import useTasks from "../../../../hooks/useTasks";
 import TaskInput from "../../Task/TaskList/TaskInput";
 import TaskDropTarget from "../../Task/TaskList/TaskDropTarget";
+import { v4 as uuidV4 } from "uuid";
 
 /**
  * Specifies the drag source contract.
@@ -75,22 +74,51 @@ function CheckListItem({
   expandBtnStyle,
   handleStyle,
   bgStyle,
+  focusId,
+  setFocusId,
   ...otherProps
 }) {
   const { onDropItem: onDropItemUtil } = useDropUtils();
-  const { fetchActiveTask, fetchItem } = useTasks();
+  const { fetchActiveTask, fetchItem, updateItem, createTaskItem, deleteTaskItem } = useTasks();
   const { getDragState } = useTreeDataUtils();
 
-  const { itemType, noTreeStyle } = config;
+  const { itemType } = config;
 
   const { connectDragSource, connectDragPreview } = otherProps;
 
   function onDropItem(droppedItem, dropAsType) {
     // TODO: ondropitem to taskItem
+    onDropItemUtil({
+      taskId: fetchActiveTask(),
+      droppedId: item.id,
+      draggedId: droppedItem.id,
+    });
   }
 
   function onToggleCheckBox(isActive) {
-    // TODO: Update item status
+    updateItem(fetchActiveTask(), {
+      itemId: item.id,
+      status: isActive ? 1 : 0,
+    });
+  }
+
+  function handleReturn(taskId, itemId) {
+    const newItemId = uuidV4();
+    createTaskItem({
+      taskId: fetchActiveTask(),
+      id: newItemId,
+      content: '',
+      status: 0,
+      createAfterItemId: itemId
+    });
+    setFocusId(newItemId);
+  }
+
+  function handleBackspace(taskId, itemId) {
+    const lastItemId = deleteTaskItem({
+      taskId, itemId
+    });
+    setFocusId(lastItemId);
   }
 
   return connectDragPreview(
@@ -121,12 +149,22 @@ function CheckListItem({
             <MoveIcon fill="#ddd" />
           </div>
         )}
-        <TaskInput itemMode onClick={onTitleClick} task={item} />
+        <TaskInput
+          itemMode
+          handleReturn={handleReturn}
+          handleBackspace={handleBackspace}
+          onClick={onTitleClick}
+          task={item}
+          focusIt={focusId === item.id}
+        />
         <TaskDropTarget
           itemType={itemType}
-          dropAs={constants.DROP_AS_SIBLING}
+          dropAs={constants.AS_SIBLING}
           onDrop={onDropItem}
           somethingIsDragging={getDragState().isDragging}
+          style={{
+            left: "24px",
+          }}
         />
       </div>
     </div>

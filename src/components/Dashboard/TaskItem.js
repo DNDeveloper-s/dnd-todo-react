@@ -5,7 +5,7 @@ import CheckBox from "../UI/CheckBox/CheckBox";
 
 // Images Imports
 
-const TaskItem = ({noLabels, noProjects, noReminders, noDates}) => {
+const TaskItem = ({ noLabels, noProjects, noReminders, noDates }) => {
   const [active, setActive] = useState(false);
   const [title, setTitle] = useState(
     "It’s the task you were looking for in that case"

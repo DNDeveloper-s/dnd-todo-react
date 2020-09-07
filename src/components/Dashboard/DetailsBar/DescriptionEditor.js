@@ -1,13 +1,17 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from "react";
 import Editor from "draft-js-plugins-editor";
-import {EditorState, convertFromRaw, convertToRaw} from "draft-js";
+import { EditorState, convertFromRaw, convertToRaw } from "draft-js";
 import createMentionPlugin from "draft-js-mention-plugin";
 import EntryComponent from "../../UI/TagInput/EntryComponent";
-import {getFilteredLabels, pushToArray, spliceText} from "../../../helpers/utils";
+import {
+  getFilteredLabels,
+  pushToArray,
+  spliceText,
+} from "../../../helpers/utils";
 import LabelItemComponent from "../../UI/TagInput/LabelItemComponent";
-import {UPDATE_TASK} from "../../../features/taskSlice";
-import {CREATE_LABEL} from "../../../features/labelSlice";
-import {useDispatch} from "react-redux";
+import { UPDATE_TASK } from "../../../features/taskSlice";
+import { CREATE_LABEL } from "../../../features/labelSlice";
+import { useDispatch } from "react-redux";
 import useLabels from "../../../hooks/useLabels";
 
 // const {hasCommandModifier} = KeyBindingUtil;
@@ -20,8 +24,12 @@ const mentionPlugin = createMentionPlugin({
 });
 const { MentionSuggestions } = mentionPlugin;
 
-
-const DescriptionEditor = ({editorState, setEditorState, labelsData, task}) => {
+const DescriptionEditor = ({
+  editorState,
+  setEditorState,
+  labelsData,
+  task,
+}) => {
   const [labelSuggestions, setLabelSuggestions] = useState(labelsData);
   const plugins = [mentionPlugin];
   const dispatch = useDispatch();
@@ -35,8 +43,13 @@ const DescriptionEditor = ({editorState, setEditorState, labelsData, task}) => {
     const parsedContent = editorState.getCurrentContent();
     const content = convertToRaw(parsedContent);
     const contentBlock = content.blocks[0];
-    if(contentBlock.entityRanges.length > 0) {
-      contentBlock.text = spliceText(contentBlock.text, contentBlock.entityRanges[0].offset, contentBlock.entityRanges[0].length) + " ";
+    if (contentBlock.entityRanges.length > 0) {
+      contentBlock.text =
+        spliceText(
+          contentBlock.text,
+          contentBlock.entityRanges[0].offset,
+          contentBlock.entityRanges[0].length
+        ) + " ";
 
       // Adding label to the task
       addLabelToTask(content.entityMap[0].data);
@@ -46,7 +59,6 @@ const DescriptionEditor = ({editorState, setEditorState, labelsData, task}) => {
       const newContentState = convertFromRaw(content);
       setEditorState(EditorState.createWithContent(newContentState));
     }
-
   }, [editorState]);
 
   function onLabelSearchChange({ value }) {
@@ -54,37 +66,34 @@ const DescriptionEditor = ({editorState, setEditorState, labelsData, task}) => {
   }
 
   function addLabelToTask(entity) {
-    console.log('[DescriptionEditor.js || Line no. 83 ....]', entity);
+    console.log("[DescriptionEditor.js || Line no. 83 ....]", entity);
     onAddLabel(entity.mention);
   }
 
   function onAddLabel(labelItem) {
     const taskLabels = task.labelIds;
 
-    if(labelItem.creating) {
+    if (labelItem.creating) {
       createLabel(labelItem, task.id);
     }
 
     const newTaskLabelIds = pushToArray(taskLabels, labelItem.id, {
-      allowDuplicates: false
+      allowDuplicates: false,
     });
 
-    console.log('[LabelsWrapper.js || Line no. 25 ....]', newTaskLabelIds);
+    console.log("[LabelsWrapper.js || Line no. 25 ....]", newTaskLabelIds);
 
-    dispatch(UPDATE_TASK({
-      taskId: task.id,
-      labelIds: newTaskLabelIds
-    }));
+    dispatch(
+      UPDATE_TASK({
+        taskId: task.id,
+        labelIds: newTaskLabelIds,
+      })
+    );
   }
-
 
   return (
     <div>
-      <Editor
-        editorState={editorState}
-        onChange={onChange}
-        plugins={plugins}
-      />
+      <Editor editorState={editorState} onChange={onChange} plugins={plugins} />
       <MentionSuggestions
         onSearchChange={onLabelSearchChange}
         suggestions={labelSuggestions}
