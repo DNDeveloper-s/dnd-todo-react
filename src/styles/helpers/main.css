@@ -970,7 +970,7 @@ textarea {
 }
 input:disabled,
 textarea:disabled {
-  background-color: rgba(38, 38, 38, 0.2) !important;
+/*  background-color: rgba(38, 38, 38, 0.2) !important;*/
   cursor: not-allowed !important;
 }
 

@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import { DragSource } from "react-dnd";
 import PropTypes from "prop-types";
 import { constants } from "../../../../helpers/constants";
@@ -79,7 +79,13 @@ function CheckListItem({
   ...otherProps
 }) {
   const { onDropItem: onDropItemUtil } = useDropUtils();
-  const { fetchActiveTask, fetchItem, updateItem, createTaskItem, deleteTaskItem } = useTasks();
+  const {
+    fetchActiveTask,
+    fetchItem,
+    updateItem,
+    createTaskItem,
+    deleteTaskItem,
+  } = useTasks();
   const { getDragState } = useTreeDataUtils();
 
   const { itemType } = config;
@@ -107,16 +113,17 @@ function CheckListItem({
     createTaskItem({
       taskId: fetchActiveTask(),
       id: newItemId,
-      content: '',
+      content: "",
       status: 0,
-      createAfterItemId: itemId
+      createAfterItemId: itemId,
     });
     setFocusId(newItemId);
   }
 
   function handleBackspace(taskId, itemId) {
     const lastItemId = deleteTaskItem({
-      taskId, itemId
+      taskId,
+      itemId,
     });
     setFocusId(lastItemId);
   }

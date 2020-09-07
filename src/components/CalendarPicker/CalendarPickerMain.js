@@ -93,13 +93,20 @@ const CalendarPickerMain = ({
   }
 
   function onDateClick(e, date) {
-    if(!date.data.cur) {
+    if (!date.data.cur) {
       onMonthChange(date.data.month);
     }
     onDateChange({
-      date: new Date(date.data.year, date.data.month - 1, date.data.monthDay, 9, 0, 0),
-      rawData: date
-    })
+      date: new Date(
+        date.data.year,
+        date.data.month - 1,
+        date.data.monthDay,
+        0,
+        0,
+        0
+      ),
+      rawData: date,
+    });
   }
 
   const dates = getGridDates(curMonth, curYear);
@@ -110,7 +117,7 @@ const CalendarPickerMain = ({
     gridItems = dates.map((date, ind) => {
       return (
         <CalendarPickerGridItem
-          {...{activeDate}}
+          {...{ activeDate }}
           key={date.data.monthDay + ind + Math.random()}
           {...{ date }}
           onClick={onDateClick}

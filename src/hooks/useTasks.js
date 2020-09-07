@@ -12,7 +12,7 @@ import {
 } from "../features/taskSlice";
 import useTreeDataUtils from "./useTreeDataUtils";
 import { filterArr } from "../helpers/utils";
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 
 const useTasks = () => {
   const dispatch = useDispatch();
@@ -45,9 +45,9 @@ const useTasks = () => {
     dispatch(CREATE_TASK(taskObj));
   };
 
-  const deleteTask = taskId => {
-    dispatch(DELETE_TASK({taskId}));
-  }
+  const deleteTask = (taskId) => {
+    dispatch(DELETE_TASK({ taskId }));
+  };
 
   const updateItem = (taskId, itemObj) => {
     dispatch(
@@ -103,17 +103,16 @@ const useTasks = () => {
     dispatch(CREATE_TASK_ITEM(itemObj));
   };
 
-  const deleteTaskItem = (obj: {taskId: String, itemId: String}) => {
-
+  const deleteTaskItem = (obj: { taskId: String, itemId: String }) => {
     const itemArr = filterArr(curTask(obj.taskId).items);
-    const curItemIndex = itemArr.findIndex(c => c.id === obj.itemId);
-    if(curItemIndex === 0) return null;
+    const curItemIndex = itemArr.findIndex((c) => c.id === obj.itemId);
+    if (curItemIndex === 0) return null;
     const lastItemId = curTask(obj.taskId).items[curItemIndex - 1].id;
 
     dispatch(DELETE_TASK_ITEM(obj));
 
     return lastItemId;
-  }
+  };
 
   return {
     createTask,

@@ -4,7 +4,7 @@ Day - 9
 2. Calendar Icon and its functionality move to its own component to make it more reusable   -- Done
 -- Moving all logic to CalendarDropdown                                                     -- Done
 -- TODO: Still need to refactor and make the calendar logic more readable and flexible and rearrange the data structure inside the calendar dropdown
-3. Make Details bar fully functional                                                        -- In Progress
+3. Make Details bar fully functional                                                        -- Done
 Steps:
     1. Wrap CheckList Items in DragNDrop Context                    -- Done
     2. Make it draggable and droppable in its own area only.        -- Done
@@ -19,7 +19,7 @@ Steps:
 
 
 Day - 10
-3. TODO: Make Details bar fully functional                                -- On Hold
+3. Make Details bar fully functional                                -- Done
 4. Make taskItems toggleStatus and progress bar                     -- Done
 5. Make Subtask possible in main bar first                                    // Taking Snapshot of the project
 
@@ -29,9 +29,13 @@ Day - 11
 6. Subtask are intimatated and fully functional now
 7. Make Subtask drop functionality come alive
 
-TODO: IMPROVEMENTS - Make completed task editable, user has to incomplete it first and then edit and then tick them
-TODO: IMPROVEMENTS - Active Tasks fix on focus and right click
+IMPROVEMENTS - Make completed task editable, user has to incomplete it first and then edit and then tick them
+IMPROVEMENTS - Active Tasks fix on focus and right click
 
-TODO: Work on Dates and Time
+BUG - Label | on adding second label through description editor it is replacing the first one, added through the description editor -- Fixed`
+TODO: Work on Dates and Time			--- In Progress
 TODO: Enhance Priority
 TODO: Integrate Context Menu
+
+TODO: Add Info display - Later on
+

@@ -1,13 +1,18 @@
-import React from "react";
+import React, { useEffect } from "react";
 // import CalendarPicker from "./components/CalendarPicker/CalendarPicker";
 import NavBar from "./components/Dashboard/NavBar/NavBar";
-import "./styles/helpers/main.css";
+import "./styles/helpers/main.scss";
 import Dashboard from "./components/Dashboard/Dashboard";
 import store from "./store/store";
 import { Provider } from "react-redux";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from "react-router-dom";
 
 function App() {
   return (
@@ -24,6 +29,7 @@ function App() {
                 </>
               )}
             />
+            <Redirect to="/app/inbox" />
           </Switch>
         </DndProvider>
       </Provider>

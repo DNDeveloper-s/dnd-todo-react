@@ -1,19 +1,21 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { DragSource } from "react-dnd";
 import PropTypes from "prop-types";
+import { withRouter } from "react-router";
 import { constants } from "../../../../helpers/constants";
 import TaskDropTarget from "./TaskDropTarget";
 import useDropUtils from "../../../../hooks/useDropUtils";
 import TaskInput from "./TaskInput";
 import TaskLabel from "./TaskLabel";
 import useTreeDataUtils from "../../../../hooks/useTreeDataUtils";
-import { classNames } from "../../../../helpers/utils";
+import { classNames, wait } from "../../../../helpers/utils";
 import CaretDownIcon from "../../../../icons/CaretDownIcon";
 import CheckBox from "../../../UI/CheckBox/CheckBox";
 import MoveIcon from "../../../../icons/MoveIcon";
 import useProjects from "../../../../hooks/useProjects";
 import useGlobalState from "../../../../hooks/useGlobalState";
 import useTasks from "../../../../hooks/useTasks";
+import DisplayInfo from "../../../UI/DisplayInfo/DisplayInfo";
 import { v4 as uuidV4 } from "uuid";
 
 /**
@@ -113,6 +115,11 @@ function ListItem({
     updateStatus(item.id, isActive);
   }
 
+  /**
+   * @description Handling the Return on the input element
+   * @param taskId {String}
+   * @param as {String}
+   */
   function handleReturn(taskId, as) {
     const newTaskId = uuidV4();
     createTask({
@@ -123,18 +130,45 @@ function ListItem({
       priority: 0,
       createType: {
         path: getPath(taskId),
-        as
-      }
-    })
+        as,
+      },
+    });
+    // Focusing the newly created task
     setFocusId(newTaskId);
-    if(as === constants.AS_CHILD)
+
+    // Navigating to the newly created task,
+    // but only if the action is happening in the main area
+    // i.e, dragFrom = main
+    if (config.dragFrom === constants.DRAG_FROM.MAIN)
+      otherProps.history.push(otherProps.match.path + "/" + newTaskId);
+
+    // If task has been added as child
+    // then expanding the parent task
+    if (as === constants.AS_CHILD)
       onExpandToggle(config.dragFrom, item.id, true)(true);
   }
 
+  /**
+   * @description Handling the backspace on the input element when the input field is empty
+   * @param taskId {String}
+   */
   function handleBackspace(taskId) {
-    const prevItemId = getPrevItemInExpandedTree(taskId, config.dragFrom, originTask);
+    // Fetching the previous item in the expanded tree,
+    // so that we can focus the last item
+    const prevItemId = getPrevItemInExpandedTree(
+      taskId,
+      config.dragFrom,
+      originTask
+    );
     deleteTask(taskId);
+    // Focusing the prev item in teh expanded tree
     setFocusId(prevItemId);
+
+    // Navigating to the prevTask
+    // but only if the action is happening in the main area
+    // i.e, dragFrom = main
+    if (config.dragFrom === constants.DRAG_FROM.MAIN)
+      otherProps.history.push(otherProps.match.path + "/" + prevItemId);
   }
 
   return connectDragPreview(
@@ -188,11 +222,12 @@ function ListItem({
         )}
         <TaskInput
           handleShiftReturn={(args) => handleReturn(args, constants.AS_CHILD)}
-          handleReturn={args => handleReturn(args, constants.AS_SIBLING)}
+          handleReturn={(args) => handleReturn(args, constants.AS_SIBLING)}
           handleBackspace={handleBackspace}
           onClick={onTitleClick}
           task={item}
           focusIt={focusId === item.id}
+          disabled={item.status.completed}
         />
         <div className="dnd_list-item-element--group">
           {item.labelIds.map((labelId) => (
@@ -254,8 +289,6 @@ ListItem.propTypes = {
 };
 
 // Export the wrapped version
-export default DragSource(
-  constants.ITEM_TYPES.TASK,
-  cardSource,
-  collect
-)(ListItem);
+export default withRouter(
+  DragSource(constants.ITEM_TYPES.TASK, cardSource, collect)(ListItem)
+);

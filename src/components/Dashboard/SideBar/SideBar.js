@@ -47,7 +47,7 @@ const SideBar = (props) => {
             <p>Today</p>
           </div>
         </div>
-        </Link>
+      </Link>
       <Link to={"/app/calendar"}>
         <div className="dashboard-sidebar-item">
           <div className="dashboard-sidebar-item-icon">
@@ -58,16 +58,16 @@ const SideBar = (props) => {
           </div>
         </div>
       </Link>
-        <Link to={"/app/upcoming"}>
-          <div className="dashboard-sidebar-item">
-            <div className="dashboard-sidebar-item-icon">
-              <RgbCalendarIcon />
-            </div>
-            <div className="dashboard-sidebar-item-label">
-              <p>Upcoming</p>
-            </div>
+      <Link to={"/app/upcoming"}>
+        <div className="dashboard-sidebar-item">
+          <div className="dashboard-sidebar-item-icon">
+            <RgbCalendarIcon />
           </div>
-        </Link>
+          <div className="dashboard-sidebar-item-label">
+            <p>Upcoming</p>
+          </div>
+        </div>
+      </Link>
       <div className="dashboard-sidebar-item dropdown">
         <SideBarDropDown
           items={fetchProjectState().projects}

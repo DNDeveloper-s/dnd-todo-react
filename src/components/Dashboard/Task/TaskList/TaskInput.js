@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import useTasks from "../../../../hooks/useTasks";
 import { classNames } from "../../../../helpers/utils";
 
@@ -10,6 +10,7 @@ const TaskInput = ({
   task,
   onClick,
   focusIt,
+  ...otherProps
 }) => {
   const inputRef = useRef(null);
   const {
@@ -21,7 +22,7 @@ const TaskInput = ({
   } = useTasks();
 
   useEffect(() => {
-    if(focusIt) {
+    if (focusIt) {
       inputRef.current.focus();
     }
   }, [focusIt]);
@@ -41,10 +42,11 @@ const TaskInput = ({
 
   function onKeyDown(e) {
     const params = itemMode ? [fetchActiveTask(), task.id] : [task.id];
-    if(e.key === "Enter" && e.shiftKey) return handleShiftReturn && handleShiftReturn(...params);
+    if (e.key === "Enter" && e.shiftKey)
+      return handleShiftReturn && handleShiftReturn(...params);
     if (e.key === "Enter") return handleReturn(...params);
     if (e.key === "Backspace") {
-      console.log('Hitting backspace')
+      console.log("Hitting backspace");
       const curTitle = itemMode
         ? fetchItem(fetchActiveTask(), task.id)?.content
         : curTask(task.id)?.content;
@@ -72,6 +74,7 @@ const TaskInput = ({
         }
         onChange={onChange}
         spellCheck={false}
+        {...otherProps}
       />
     </div>
   );

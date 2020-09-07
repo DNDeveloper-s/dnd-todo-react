@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import classes from "./Dropdown.module.css";
 import useOutsideAlerter from "../../../hooks/useOutsideAlerter";
 import DropdownItem from "./DropdownItem";
@@ -12,10 +12,14 @@ const Dropdown = ({
   ItemComponent,
   ItemHeader,
   ItemFooter,
+  onClose,
 }) => {
-  const { visible, setVisible, ref } = useOutsideAlerter(initialValue);
+  const { visible, setVisible, ref } = useOutsideAlerter(initialValue, onClose);
 
   function onHandleClick() {
+    if (visible) {
+      onClose();
+    }
     setVisible(!visible);
   }
 
@@ -42,7 +46,11 @@ const Dropdown = ({
             ) : (
               <>
                 {items.map((item) => (
-                  <DropdownItem key={item.id} item={item} onClick={itemClickHandler} />
+                  <DropdownItem
+                    key={item.id}
+                    item={item}
+                    onClick={itemClickHandler}
+                  />
                 ))}
               </>
             )}

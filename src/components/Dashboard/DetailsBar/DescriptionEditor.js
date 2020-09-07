@@ -10,7 +10,6 @@ import {
 } from "../../../helpers/utils";
 import LabelItemComponent from "../../UI/TagInput/LabelItemComponent";
 import { UPDATE_TASK } from "../../../features/taskSlice";
-import { CREATE_LABEL } from "../../../features/labelSlice";
 import { useDispatch } from "react-redux";
 import useLabels from "../../../hooks/useLabels";
 
@@ -51,6 +50,8 @@ const DescriptionEditor = ({
           contentBlock.entityRanges[0].length
         ) + " ";
 
+      console.log(contentBlock.text);
+
       // Adding label to the task
       addLabelToTask(content.entityMap[0].data);
 
@@ -66,7 +67,6 @@ const DescriptionEditor = ({
   }
 
   function addLabelToTask(entity) {
-    console.log("[DescriptionEditor.js || Line no. 83 ....]", entity);
     onAddLabel(entity.mention);
   }
 
@@ -80,8 +80,6 @@ const DescriptionEditor = ({
     const newTaskLabelIds = pushToArray(taskLabels, labelItem.id, {
       allowDuplicates: false,
     });
-
-    console.log("[LabelsWrapper.js || Line no. 25 ....]", newTaskLabelIds);
 
     dispatch(
       UPDATE_TASK({

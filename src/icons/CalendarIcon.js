@@ -1,12 +1,12 @@
 import * as React from "react";
 
-function CalendarIcon({ fill, dueOver, ...args }) {
+function CalendarIcon({ fill, dueOver, pathStyle, ...args }) {
   return (
     <svg width={84} height={96} viewBox="0 0 84 96" fill="none" {...args}>
       <path
         d="M22.031.5a2 2 0 00-2 2v11a2 2 0 004 0v-11a2 2 0 00-2-2zm40 0a2 2 0 00-2 2v11a2 2 0 004 0v-11a2 2 0 00-2-2zm-54 8A8.018 8.018 0 000 16.531V34.5h84V16.531A8.018 8.018 0 0075.969 8.5H66.03v7.094c2.386 1.39 4 3.965 4 6.906 0 4.395-3.605 8-8 8-4.394 0-8-3.605-8-8 0-2.941 1.615-5.516 4-6.906V8.5H26v7.063c2.406 1.384 4.031 3.98 4.031 6.937 0 4.395-3.605 8-8 8-4.394 0-8-3.605-8-8 0-2.932 1.596-5.513 3.969-6.906V8.5H8.031zm14 10a3.97 3.97 0 00-4 4c0 2.233 1.768 4 4 4 2.233 0 4-1.767 4-4s-1.767-4-4-4zm40 0a3.97 3.97 0 00-4 4c0 2.233 1.768 4 4 4 2.233 0 4-1.767 4-4s-1.767-4-4-4zM0 34.5V87a8.018 8.018 0 008.031 8.031H75.97A8.018 8.018 0 0084 87V34.5H0z"
         fill={dueOver ? "#f24031" : fill || "#4B6FDE"}
-        style={{ transition: ".15s ease-in-out" }}
+        style={{ transition: ".15s ease-in-out", ...pathStyle }}
       />
     </svg>
   );

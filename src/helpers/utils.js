@@ -153,16 +153,27 @@ export const spliceText = (str, start, end) => {
 
 export const getDayDifference = (date) => {
   // let momentDate = moment(date.dateObj).calendar();
-  let momentDate = getCommonFormatDate(date.dateObj);
+  let momentDate = getCommonFormatDate(date);
 
   // if (momentDate.split("/")[1]) {
   //   momentDate = moment(date.dateObj).format("ddd, MMM D");
   // }
 
-  let a = moment([date.year, date.month, date.day]);
-  let b = moment([getToday().year, getToday().month, getToday().day]);
+  let a = moment(date);
+  let b = moment().get();
 
   return { momentDate, dueOver: a.diff(b, "days") < 0 };
+};
+
+/**
+ *
+ * @param date
+ * @returns {boolean}
+ */
+export const isDueOver = (date) => {
+  let a = moment(date);
+  let b = moment().get();
+  return a.diff(b, "days") < 0;
 };
 
 /**
@@ -280,6 +291,12 @@ export const classNames = (...args) => {
   return [...classArr, ...arr].join(" ");
 };
 
+/**
+ * @description For now this function is limited to the items array in terms of filter functionality
+ * @param arr
+ * @param filterOptions
+ * @returns {*[]}
+ */
 export const filterArr = (arr, filterOptions) => {
   // First implementing the array of the item object
   // eg, {id: 1, content: '....', status: 1, completedAt: Date}, {...}, {...}
@@ -295,4 +312,23 @@ export const filterArr = (arr, filterOptions) => {
     return 0;
   });
   return [...incompleteItems, ...completedItems];
+};
+
+export const timeFilter = (arr, value) => {
+  const timeValue = parseInt(value.split(":").join(""));
+  let theIndex;
+  for (let i = 0; i < arr.length; i++) {
+    // Removing colon in the time string
+    // so that we can compare them as a number
+    const timeIter = parseInt(arr[i].label.split(":").join(""));
+    if (timeIter > timeValue) {
+      theIndex = i;
+      break;
+    }
+  }
+  return arr[theIndex];
+};
+
+export const isEqual = (a, d) => {
+  return JSON.stringify(a) === JSON.stringify(d);
 };

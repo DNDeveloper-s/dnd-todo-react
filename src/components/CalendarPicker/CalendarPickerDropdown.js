@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import CalendarPickerDropdownItem from "./CalendarPickerDropdownItem";
 import useOutsideAlerter from "../../hooks/useOutsideAlerter";
 
@@ -13,12 +13,26 @@ const CalendarPickerDropdown = ({
   onActiveElements,
   onItemClick,
   activeLogic,
+  scrollTo,
+  itemStyle,
+  itemHeight,
   dropDownItemsFooter,
+  onClose,
+  onOpen,
   itemsContainerClasses = [],
 }) => {
-  const { ref, visible, setVisible } = useOutsideAlerter(false);
+  const { ref, visible, setVisible } = useOutsideAlerter(false, onClose);
+  const scrollRef = useRef(null);
+
+  useEffect(() => {
+    if (scrollTo && scrollRef?.current) {
+      scrollRef.current.scrollTo(0, scrollTo * itemHeight);
+    }
+  }, [visible]);
 
   function toggleDropdown() {
+    if (visible) onClose && onClose();
+    if (!visible) onOpen && onOpen();
     setVisible(!visible);
   }
 
@@ -29,9 +43,9 @@ const CalendarPickerDropdown = ({
       item={item}
       active={activeLogic && activeLogic(item)}
       onClick={(e) => {
-        onItemClick(e);
-        setVisible(false);
+        onItemClick(e, setVisible);
       }}
+      style={{ ...itemStyle, height: itemHeight }}
     />
   ));
 
@@ -45,6 +59,7 @@ const CalendarPickerDropdown = ({
       </div>
       {visible && (
         <div
+          ref={scrollRef}
           className={[
             "dnd_calendar-dropdown-items",
             ...itemsContainerClasses,

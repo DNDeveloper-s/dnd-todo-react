@@ -15,7 +15,7 @@ import { classNames } from "../../helpers/utils";
 // Images Imports
 
 const Dashboard = (props) => {
-  const [visible, setVisible] = useState(true);
+  const [visible, setVisible] = useState(false);
 
   return (
     <div className="dashboard">

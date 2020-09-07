@@ -1,21 +1,9 @@
 import React, { useState } from "react";
-import DoubleAddIcon from "../../../../icons/DoubleAddIcon";
-import { getToday } from "../../../CalendarPicker/helpers";
-import TagInput from "../../../UI/TagInput/TagInput";
 import { v4 as uuidV4 } from "uuid";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  CREATE_TASK,
-  getColumnOrder,
-  // REMOVE_TASK_CLASS,
-} from "../../../../features/taskSlice";
-import {
-  getDayDifference,
-  getPriorityByInd,
-  wait,
-} from "../../../../helpers/utils";
+import DoubleAddIcon from "../../../../icons/DoubleAddIcon";
+import TagInput from "../../../UI/TagInput/TagInput";
+import { getDayDifference, isDefined } from "../../../../helpers/utils";
 import AddTaskOptions from "./AddTaskOptions";
-import { getAllProjects } from "../../../../features/projectSlice";
 import PriorityHighIcon from "../../../../icons/PriorityHighIcon";
 import PriorityMediumIcon from "../../../../icons/PriorityMediumIcon";
 import PriorityLowIcon from "../../../../icons/PriorityLowIcon";
@@ -24,6 +12,7 @@ import CalendarDropdown from "../../../UI/CalendarDropdown/CalendarDropdown";
 import useLabels from "../../../../hooks/useLabels";
 import useProjects from "../../../../hooks/useProjects";
 import useTasks from "../../../../hooks/useTasks";
+import useMoment from "../../../../hooks/useMoment";
 
 const priorities = [
   { id: "1", ind: 3, label: "High Priority", IconComponent: PriorityHighIcon },
@@ -38,21 +27,20 @@ const priorities = [
 ];
 
 const AddTask = () => {
+  const { moment } = useMoment();
   const { fetchLabelState } = useLabels();
   const { createTask } = useTasks();
   const { curProject } = useProjects();
   const { addTaskToLabel, createLabel } = useLabels();
   const [selectedProject, setSelectedProject] = useState("inbox");
   const [priority, setPriority] = useState(priorities[3]);
-  const [date, setDate] = useState({
-    rawData: {
-      data: {
-        monthDay: getToday().day,
-        month: getToday().month,
-        year: getToday().year,
-      },
-    },
-  });
+  const [dateData, setDateData] = useState(null);
+
+  // const todayDate = {
+  //   date: moment().get().set({ hour: 0, minute: 0, second: 0 }).toString(),
+  //   dueOver: false,
+  //   diff: "Today",
+  // }
 
   function parseTextFromRaw(entityRanges, text) {
     const parsedTextArr = [];
@@ -109,12 +97,25 @@ const AddTask = () => {
     // Project Content
     const projectId = selectedProject.id;
 
+    // Parsing startDate
+    let startDate = null;
+    if (dateData) {
+      const timeArr = dateData.time ? dateData.time.split(":") : [0, 0];
+      startDate = moment(dateData.date)
+        .set({
+          hour: timeArr[0],
+          minute: timeArr[1],
+        })
+        .toISOString();
+    }
+
     createTask({
       id: taskId,
       content: taskContent,
       labelIds,
       projectId,
       priority: priority.ind,
+      startDate,
     });
 
     cb();
@@ -156,17 +157,22 @@ const AddTask = () => {
   //   };
   // });
 
-  function onDateChange(data) {
-    const dayDiff = getDayDifference({
-      dateObj: data.date,
-      day: data.rawData.data.monthDay,
-      month: data.rawData.data.month,
-      year: data.rawData.data.year,
-    });
-    setDate({
-      ...data,
+  function onCalendarModalClose(response, setDropDownVisibility) {
+    // Here, we are just hiding the dropdown no matter what
+    setDropDownVisibility(false);
+    // Then checking if we are resetting
+    // so just returning by setting it to null
+    if (!isDefined(response)) return setDateData(null);
+    // If we are here,
+    // it means we have got some data to work with
+    const { date, time, reminders } = response;
+    console.log(response);
+    const dayDiff = getDayDifference(date);
+    setDateData({
+      date: moment(date).toISOString(),
       diff: dayDiff.momentDate,
-      dueOver: dayDiff.dueOver,
+      time,
+      reminders,
     });
   }
 
@@ -184,13 +190,20 @@ const AddTask = () => {
             curProject(selectedProject).label ||
             curProject(selectedProject).content
           }" ${
-            date.date ? 'on "' + date.diff + '"' : 'on "Today"'
-          }, Please Enter to save...`}
+            dateData
+              ? dateData.date
+                ? 'on "' + dateData.diff + '"'
+                : 'on "Today"'
+              : ""
+          }, Hit Enter to save...`}
           onReturn={onReturn}
         />
       </div>
       <div className="add_task-icon">
-        <CalendarDropdown initialDate={date} onDateChange={onDateChange} />
+        <CalendarDropdown
+          initialDate={dateData}
+          onCalendarModalClose={onCalendarModalClose}
+        />
       </div>
 
       <div className="vertical_separator" />

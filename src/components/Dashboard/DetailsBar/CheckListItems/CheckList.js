@@ -9,7 +9,7 @@ import useFocus from "../../../../hooks/useFocus";
 
 const CheckList = () => {
   const dispatch = useDispatch();
-  const {focusId, setFocusId} = useFocus(null);
+  const { focusId, setFocusId } = useFocus(null);
   const { curTask, fetchActiveTask } = useTasks();
   const { setDragState } = useTreeDataUtils();
 

@@ -19,7 +19,7 @@ const DNDList = (props) => {
     setDragState,
   } = useTreeDataUtils();
   const { fetchActiveTask } = useTasks();
-  const {focusId, setFocusId} = useFocus(null);
+  const { focusId, setFocusId } = useFocus(null);
 
   function onDropToCompleteSection(draggedItem) {
     completeTask(draggedItem.id);

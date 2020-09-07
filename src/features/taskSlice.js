@@ -251,7 +251,15 @@ export const taskSlice = createSlice({
       state.taskData = action.payload;
     },
     CREATE_TASK: (state, action) => {
-      const { id, content, priority, labelIds, projectId, createType } = action.payload;
+      const {
+        id,
+        content,
+        priority,
+        labelIds,
+        projectId,
+        createType,
+        startDate,
+      } = action.payload;
       const newTaskObj = {
         id: id,
         status: {
@@ -265,19 +273,20 @@ export const taskSlice = createSlice({
         inItemMode: false,
         items: [],
         childTasks: [],
+        startDate,
       };
 
       // Case 1. If task has been added without any reference
       // so it will be added just to the top of the array in the top level
-      if(!createType) {
+      if (!createType) {
         state.taskOrder.splice(0, 0, id);
       }
 
       // Case 2. If added as some extra info
       // like creating task with a reference
       // of its sibling or child
-      if(createType) {
-        const {path, as} = createType;
+      if (createType) {
+        const { path, as } = createType;
         // Here "path" is the tree path of the reference task
         // eg: ["task-1", "task-2"] is "path"
         // and "as" is the relation with the reference task
@@ -288,33 +297,39 @@ export const taskSlice = createSlice({
         const refTask = state.tasks[path[path.length - 1]];
 
         // Case 1. If added as sibling
-        if(as === constants.AS_SIBLING) {
+        if (as === constants.AS_SIBLING) {
           // In case of sibling
           // There are two cases also
 
           // Case 1. When the reference task lies on the top level
           // Hence refTask won't have any parent task
-          if(!refTask.parentTask) {
+          if (!refTask.parentTask) {
             // Get the index of the reference task on the top level [taskOrder]
-            const refIndex = state.taskOrder.findIndex(c => c === refTask.id);
+            const refIndex = state.taskOrder.findIndex((c) => c === refTask.id);
 
             // and then add the newTask after the index of refTask to the top level [taskOrder]
             // Adding next to the refIndex, so adding "1"
-            state.taskOrder.splice(refIndex + 1, 0, newTaskObj.id)
+            state.taskOrder.splice(refIndex + 1, 0, newTaskObj.id);
           }
 
           // Case 2. When the reference task lies somewhere in the inner level
-          if(refTask.parentTask) {
+          if (refTask.parentTask) {
             // Get the parent task of the reference task
             const parentOfRefTask = state.tasks[refTask.parentTask];
 
             // And get the index of the reference task
-            const refTaskIndex = parentOfRefTask.childTasks.findIndex(c => c === refTask.id);
+            const refTaskIndex = parentOfRefTask.childTasks.findIndex(
+              (c) => c === refTask.id
+            );
 
             // and then add the newTask to the parentTasks's childTasks array
             // after the index of reference task
             // Adding next to the refIndex, so adding "1"
-            parentOfRefTask.childTasks.splice(refTaskIndex + 1, 0, newTaskObj.id);
+            parentOfRefTask.childTasks.splice(
+              refTaskIndex + 1,
+              0,
+              newTaskObj.id
+            );
 
             // Update the parent task
             newTaskObj.parentTask = parentOfRefTask.id;
@@ -322,7 +337,7 @@ export const taskSlice = createSlice({
         }
 
         // Case 2. If added as child
-        if(as === constants.AS_CHILD) {
+        if (as === constants.AS_CHILD) {
           // Here, its so simple as we don't need to get any index to add
           // So, just add the newTask to top of the refTask's childTasks array
           refTask.childTasks.splice(0, 0, newTaskObj.id);
@@ -335,29 +350,31 @@ export const taskSlice = createSlice({
       state.tasks[id] = newTaskObj;
     },
     DELETE_TASK: (state, action) => {
-      const {taskId} = action.payload;
+      const { taskId } = action.payload;
       const curTask = state.tasks[taskId];
       // Here will be two cases
 
       // Case 1. If the targetTask lies on the top level
       // We will be checking it via its parentTask
-      if(!curTask.parentTask) {
+      if (!curTask.parentTask) {
         // So we are gonna be deleting it from the top level [taskOrder]
         // First get the index of the targetTask in the taskOrder array
-        const targetTaskIndex = state.taskOrder.findIndex(c => c === taskId);
+        const targetTaskIndex = state.taskOrder.findIndex((c) => c === taskId);
 
         // and then splice it from the taskOrder array
         state.taskOrder.splice(targetTaskIndex, 1);
       }
 
       // Case 2. If the targetTask lies somewhere in the inner level
-      if(curTask.parentTask) {
+      if (curTask.parentTask) {
         // Get the parentTask
         const parentOfTargetTask = state.tasks[curTask.parentTask];
 
         // and get the index on the targetTask in the parentTask's childTasks array
         // so that we can splice it through the index
-        const targetTaskIndex = parentOfTargetTask.childTasks.findIndex(c => c === taskId);
+        const targetTaskIndex = parentOfTargetTask.childTasks.findIndex(
+          (c) => c === taskId
+        );
 
         // we are gonna be deleting it for now
         // TODO: Removed task should go to trashTask
@@ -374,23 +391,24 @@ export const taskSlice = createSlice({
         // We are just gonna update the parentTask of the targetTask
         curTask.parentTask = null;
       }
-
     },
     CREATE_TASK_ITEM: (state, action) => {
       const { taskId, id, content, status, createAfterItemId } = action.payload;
       const curTask = state.tasks[taskId];
-      const itemObj = {id, content, status}
-      if(!createAfterItemId) {
+      const itemObj = { id, content, status };
+      if (!createAfterItemId) {
         curTask.items.push(itemObj);
       } else {
-        const createAfterItemIdIndex = curTask.items.findIndex(c => c.id === createAfterItemId);
+        const createAfterItemIdIndex = curTask.items.findIndex(
+          (c) => c.id === createAfterItemId
+        );
         curTask.items.splice(createAfterItemIdIndex + 1, 0, itemObj);
       }
     },
     DELETE_TASK_ITEM: (state, action) => {
-      const {taskId, itemId} = action.payload;
+      const { taskId, itemId } = action.payload;
       const curTask = state.tasks[taskId];
-      const itemIndex = curTask.items.findIndex(c => c.id === itemId);
+      const itemIndex = curTask.items.findIndex((c) => c.id === itemId);
       curTask.items.splice(itemIndex, 1);
     },
     UPDATE_TASK: (state, action) => {

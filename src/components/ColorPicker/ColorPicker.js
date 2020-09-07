@@ -34,8 +34,8 @@ const ColorPicker = () => {
   ));
 
   function moreColorItemClicked(color) {
-    const isColorInMain = colors.find(c => c.value === color);
-    if(isColorInMain) {
+    const isColorInMain = colors.find((c) => c.value === color);
+    if (isColorInMain) {
       setMoreColor(null);
       return setActiveColor(color);
     }
@@ -73,16 +73,15 @@ const ColorPicker = () => {
           <ColorPickerItem
             key={moreColor}
             active={activeColor === moreColor}
-            color={{value: moreColor}}
+            color={{ value: moreColor }}
             onClick={setActiveColor}
           />
         )}
-        <div
-          className="color_picker-item color_picker-item-dropdown"
-          ref={ref}
-        >
-          <div className="color_picker-item-dropdown-toggle_menu"
-               onClick={toggleMoreColors}>
+        <div className="color_picker-item color_picker-item-dropdown" ref={ref}>
+          <div
+            className="color_picker-item-dropdown-toggle_menu"
+            onClick={toggleMoreColors}
+          >
             <DotsMenuHorizontal />
           </div>
           <div className="color_picker-item-dropdown-container">

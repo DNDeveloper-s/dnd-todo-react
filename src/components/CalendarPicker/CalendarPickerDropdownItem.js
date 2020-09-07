@@ -9,6 +9,7 @@ const CalendarPickerDropdownItem = ({
   onActiveElements,
   onClick,
   active,
+  style,
 }) => {
   return (
     <div
@@ -17,6 +18,7 @@ const CalendarPickerDropdownItem = ({
       )}
       onClick={(e) => onClick(e.currentTarget.dataset.label)}
       data-label={item.label}
+      {...{ style }}
     >
       <p>{item.label}</p>
       {active && onActiveElements}

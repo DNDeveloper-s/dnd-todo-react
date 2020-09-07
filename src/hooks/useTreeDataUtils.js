@@ -94,10 +94,12 @@ const useTreeDataUtils = (props) => {
   };
 
   const getPrevItemInExpandedTree = (taskId, dragFrom, originTask) => {
-    const expandedTree = getExpandedTreeArr(dragFrom, "incomplete", {forTaskId: originTask});
-    const targetIndex = expandedTree.findIndex(c => c === taskId);
+    const expandedTree = getExpandedTreeArr(dragFrom, "incomplete", {
+      forTaskId: originTask,
+    });
+    const targetIndex = expandedTree.findIndex((c) => c === taskId);
     return expandedTree[targetIndex - 1];
-  }
+  };
 
   const curTask = (taskId) => taskState.tasks[taskId];
 

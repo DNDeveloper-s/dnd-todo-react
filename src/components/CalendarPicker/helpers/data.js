@@ -227,7 +227,58 @@ const timeList = [
   { value: 47, label: "23:30" },
 ];
 
-const reminder = [
+const reminderWithLongTime = [
+  {
+    value: 0,
+    label: "None",
+  },
+  {
+    value: 1,
+    label: "On the day(09:00)",
+    data: {
+      input: 0,
+      key: "d",
+    },
+  },
+  {
+    value: 2,
+    label: "1 days ahead(09:00)",
+    data: {
+      input: 1,
+      key: "d",
+    },
+  },
+  {
+    value: 3,
+    label: "2 days ahead(09:00)",
+    data: {
+      input: 2,
+      key: "d",
+    },
+  },
+  {
+    value: 4,
+    label: "3 days ahead(09:00)",
+    data: {
+      input: 3,
+      key: "d",
+    },
+  },
+  {
+    value: 5,
+    label: "1 week ahead(09:00)",
+    data: {
+      input: 1,
+      key: "w",
+    },
+  },
+  {
+    value: 6,
+    label: "Custom",
+  },
+];
+
+const remindersWithShortTime = [
   {
     value: 0,
     label: "None",
@@ -235,22 +286,42 @@ const reminder = [
   {
     value: 1,
     label: "On time",
+    data: {
+      input: 0,
+      key: "s",
+    },
   },
   {
     value: 2,
     label: "5 minutes ahead",
+    data: {
+      input: 2,
+      key: "m",
+    },
   },
   {
     value: 3,
     label: "30 minutes ahead",
+    data: {
+      input: 30,
+      key: "m",
+    },
   },
   {
     value: 4,
     label: "1 hour ahead",
+    data: {
+      input: 1,
+      key: "h",
+    },
   },
   {
     value: 5,
     label: "1 day ahead",
+    data: {
+      input: 1,
+      key: "d",
+    },
   },
   {
     value: 6,
@@ -285,4 +356,11 @@ const repeat = [
   },
 ];
 
-export { dayData, monthData, reminder, repeat, timeList };
+export {
+  dayData,
+  monthData,
+  reminderWithLongTime,
+  remindersWithShortTime,
+  repeat,
+  timeList,
+};

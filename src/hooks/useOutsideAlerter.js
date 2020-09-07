@@ -1,23 +1,29 @@
-import {useRef, useState, useEffect} from 'react';
+import { useRef, useState, useEffect } from "react";
 
-const useOutsideAlerter = (initialValue) => {
+const useOutsideAlerter = (initialValue, onClose) => {
   const ref = useRef(null);
-  const [visible, setVisible] = useState(initialValue);
+  const [visible, setVisible] = useState(initialValue || false);
+
+  useEffect(() => {
+    if (!visible) onClose && onClose();
+  }, [visible]);
 
   function handleClickOutside(e) {
-    if(ref.current && !ref.current.contains(e.target)) setVisible(false);
+    if (ref.current && !ref.current.contains(e.target)) {
+      // onClose && onClose();
+      setVisible(false);
+    }
   }
 
   useEffect(() => {
-    document.addEventListener('click', handleClickOutside, true);
+    document.addEventListener("click", handleClickOutside, true);
 
     return () => {
-      document.removeEventListener('click', handleClickOutside, true);
-    }
-
+      document.removeEventListener("click", handleClickOutside, true);
+    };
   }, [ref]);
 
-  return {ref, setVisible, visible};
+  return { ref, setVisible, visible };
 };
 
 export default useOutsideAlerter;

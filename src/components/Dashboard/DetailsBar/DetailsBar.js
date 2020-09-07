@@ -35,7 +35,7 @@ const DetailsBar = (props) => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const { fetchLabelState } = useLabels();
   const { getExpandedTreeArr, setDragState } = useTreeDataUtils();
-  const {focusId, setFocusId} = useFocus(null);
+  const { focusId, setFocusId } = useFocus(null);
   const {
     curTask,
     fetchActiveTask,
@@ -240,7 +240,7 @@ const DetailsBar = (props) => {
       </div>
       <div className="dashboard-detailsBar-desc">
         <DescriptionEditor
-          task={task}
+          task={curTask(fetchActiveTask())}
           {...{ editorState, setEditorState }}
           labelsData={labelsArr}
         />

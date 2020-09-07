@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import TimeEditor from "./TimeEditor";
 import CalendarPickerDropdown from "./CalendarPickerDropdown";
-import { reminder, repeat, timeList } from "./helpers/data";
+import { repeat, timeList } from "./helpers/data";
 import AppButton from "../UI/AppButton";
 import TickIcon from "../../icons/TickIcon";
+import { timeFilter } from "../../helpers/utils";
+import { classNames } from "../../helpers/utils";
 
 // Components Imports
 
@@ -11,23 +13,20 @@ import TickIcon from "../../icons/TickIcon";
 
 const CalendarPickerFooter = ({
   onTimeChange,
+  handleClear,
+  handleOk,
+  reminders,
+  repeatValue,
   onReminderChange,
   onRepeatChange,
+  reminderList,
 }) => {
   const [timeValue, setTimeValue] = useState("");
-  const [reminderValue, setReminderValue] = useState("None");
-  const [repeatValue, setRepeatValue] = useState("None");
+  const [localReminders, setLocalReminders] = useState(reminders);
 
-  function timeItemClicked(e) {
+  function timeItemClicked(e, setVisible) {
+    setVisible(false);
     setTimeValue(e);
-  }
-
-  function reminderItemClicked(e) {
-    setReminderValue(e);
-  }
-
-  function repeatItemClicked(e) {
-    setRepeatValue(e);
   }
 
   useEffect(() => {
@@ -42,24 +41,87 @@ const CalendarPickerFooter = ({
   //   onRepeatChange(repeatValue);
   // }, [repeatValue]);
 
+  function onLocalReminderChange(reminderLabel) {
+    const reminderIndex = reminderList.findIndex(
+      (c) => c.label === reminderLabel
+    );
+    // Checking it the next selected remainder is "None"
+    // By checking the index as "None" holds the zero index
+    if (reminderIndex === 0) return setLocalReminders([reminderList[0]]);
+    setLocalReminders((prevReminder) => {
+      let updatedReminder = [...prevReminder];
+      if (updatedReminder[0].label === "None") {
+        updatedReminder.splice(0, 1);
+      }
+      // Checking if the reminder already exists
+      // Deleting it then
+      const prevIndex = prevReminder.findIndex(
+        (c) => c.label === reminderLabel
+      );
+
+      // If index found
+      // then removing it
+      if (prevIndex >= 0) {
+        updatedReminder.splice(prevIndex, 1);
+        if (updatedReminder.length === 0) updatedReminder.push(reminderList[0]);
+      }
+      // Else
+      // Adding it
+      else {
+        console.log(updatedReminder);
+        updatedReminder.push(reminderList[reminderIndex]);
+      }
+      updatedReminder.sort((a, b) => {
+        if (a.value < b.value) return -1;
+        if (a.value > b.value) return 1;
+        return 0;
+      });
+      return updatedReminder;
+    });
+  }
+
+  function onReminderOpen() {
+    setLocalReminders(reminders);
+  }
+
   return (
     <div className="dnd_calendar-footer">
-      <div className="dnd_calendar-button">
+      <div
+        className={classNames("dnd_calendar-button", {
+          active: Boolean(timeValue),
+        })}
+      >
         <CalendarPickerDropdown
           itemsContainerClasses={["overflowAuto"]}
           items={timeList}
           onItemClick={timeItemClicked}
+          scrollTo={
+            timeList.find(
+              (c) => c.label === timeFilter(timeList, timeValue)?.label
+            )?.value
+          }
+          itemHeight={40}
+          itemStyle={{
+            padding: 0,
+          }}
         >
           <TimeEditor timeValue={timeValue} onTimeChange={setTimeValue} />
         </CalendarPickerDropdown>
       </div>
-      <div className="dnd_calendar-button">
+      <div
+        className={classNames("dnd_calendar-button", {
+          active: reminders[0].value !== 0,
+        })}
+      >
         <CalendarPickerDropdown
           containerClasses={["minify"]}
-          items={reminder}
-          onItemClick={reminderItemClicked}
+          items={reminderList}
+          onItemClick={onLocalReminderChange}
           onActiveElements={<TickIcon />}
-          activeLogic={(item) => item.label === reminderValue}
+          onOpen={onReminderOpen}
+          activeLogic={(item) =>
+            localReminders.filter((c) => c.value === item.value).length > 0
+          }
           dropDownItemsFooter={(setVisible) => (
             <>
               <div className="dnd_calendar-separator" />
@@ -68,7 +130,10 @@ const CalendarPickerFooter = ({
                 <AppButton
                   label={"Ok"}
                   primary={true}
-                  onClick={() => setVisible(false)}
+                  onClick={() => {
+                    onReminderChange(localReminders);
+                    setVisible(false);
+                  }}
                 />
               </div>
             </>
@@ -76,9 +141,9 @@ const CalendarPickerFooter = ({
         >
           <div className="dnd_calendar-button-label">
             <p>
-              {!reminderValue || reminderValue === "None"
+              {reminders[0].value === 0
                 ? "Set Reminder"
-                : reminderValue}
+                : reminders.map((c) => c.label).join(", ")}
             </p>
           </div>
         </CalendarPickerDropdown>
@@ -87,7 +152,7 @@ const CalendarPickerFooter = ({
         <CalendarPickerDropdown
           containerClasses={["minify"]}
           items={repeat}
-          onItemClick={repeatItemClicked}
+          onItemClick={onRepeatChange}
           activeLogic={(item) => item.label === repeatValue}
         >
           <div className="dnd_calendar-button-label">
@@ -100,8 +165,8 @@ const CalendarPickerFooter = ({
         </CalendarPickerDropdown>
       </div>
       <div className={"dnd_calendar-flex_buttons"}>
-        <AppButton label={"Clear"} />
-        <AppButton label={"Ok"} primary={true} />
+        <AppButton label={"Clear"} onClick={handleClear} />
+        <AppButton label={"Ok"} primary={true} onClick={handleOk} />
       </div>
     </div>
   );
