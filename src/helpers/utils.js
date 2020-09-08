@@ -1,9 +1,12 @@
 import produce from "immer";
 import moment from "moment";
-import { getToday } from "../components/CalendarPicker/helpers";
 import { defaultSuggestionsFilter } from "draft-js-mention-plugin";
 import { v4 as uuidV4 } from "uuid";
 import { colors } from "../components/ColorPicker/helpers/colors";
+import {
+  remindersWithShortTime,
+  reminderWithLongTime,
+} from "../components/CalendarPicker/helpers/data";
 
 /**
  *
@@ -166,32 +169,75 @@ export const getDayDifference = (date) => {
 };
 
 /**
- *
- * @param date
+ * @requires nice {String}
+ * @param {Object} dateData - Object that hold the date object and time object
+ * @param {String} dateData.date - property that holds the date ISO string
+ * @param {String} dateData.time - property that holds the time string
+ * @param {Boolean} isFullDay
  * @returns {boolean}
  */
-export const isDueOver = (date) => {
-  let a = moment(date);
-  let b = moment().get();
-  return a.diff(b, "days") < 0;
+export const isDueOver = (dateData, isFullDay) => {
+  let a = moment(getMomentDateWithTime(dateData)); // date from the data
+  let b = moment().get(); // Today's date
+  let unit = "minute"; // Comparing unit
+
+  if (isFullDay) unit = "days"; // If time doesn't exist then just comparing with the "days", doesn't make sense with "minute" then
+
+  return a.diff(b, unit) < 0;
+};
+
+/**
+ * @description It just takes date and time and then returns the moment date object with the specified time
+ * @param dateData {String | Object}
+ * @param dateData.date {String}
+ * @param dateData.time {String}
+ * @returns {string}
+ */
+export const getMomentDateWithTime = (dateData) => {
+  if (typeof dateData === "object") {
+    const { date, time } = dateData;
+    const timeArr = time ? time.split(":") : [0, 0];
+    return moment(date)
+      .set({
+        hour: timeArr[0],
+        minute: timeArr[1],
+      })
+      .toISOString();
+  }
+  return moment(dateData);
 };
 
 /**
  *
  * @param date {DateConstructor}
  * @param format {Object}
+ * @param isFullDay {Boolean}
  * @returns {string}
  */
 
-export const getCommonFormatDate = (date, format = {}) =>
-  moment(date).calendar(null, {
+export const getCommonFormatDate = (date, format = {}, isFullDay) => {
+  // Checking for if the date difference is more than a year
+  let sameElse;
+  let a = moment(getMomentDateWithTime(date));
+  let b = moment().get();
+  a.diff(b, "years") > 0
+    ? (sameElse = "MMM D, YYYY")
+    : (sameElse = format.sameElse || "ddd, MMM D");
+
+  // Checking if the date lies today
+  if (a.diff(b, "days") === 0 && !isFullDay) {
+    return moment(date).format("HH:mm");
+  }
+
+  return moment(getMomentDateWithTime(date)).calendar(null, {
     sameDay: format.sameDay || "[Today]",
     nextDay: format.nextDay || "[Tomorrow]",
     nextWeek: format.nextWeek || "dddd",
     lastDay: format.lastDay || "[Yesterday]",
     lastWeek: format.lastWeek || "[Last] dddd",
-    sameElse: format.sameElse || "ddd, MMM D",
+    sameElse,
   });
+};
 
 /**
  *
@@ -331,4 +377,43 @@ export const timeFilter = (arr, value) => {
 
 export const isEqual = (a, d) => {
   return JSON.stringify(a) === JSON.stringify(d);
+};
+
+export const convertRemindersToTriggers = (rawReminders) => {
+  // Here we are just checking that reminders are not none
+  if (!rawReminders || rawReminders[0].value === 0) return null;
+
+  // Checking the type of reminders
+  // Cause we are using two types of reminders
+  // shortTime.. and longTime..
+  const reminderList = getReminderListFromRaw(rawReminders);
+
+  function getReminderListFromRaw(rawReminders) {
+    const isLong = reminderWithLongTime.some(
+      (c) => c.label === rawReminders[0].label
+    );
+    if (isLong) return reminderWithLongTime;
+    else return remindersWithShortTime;
+  }
+
+  // Now, as we got the reminderList
+  // We are ready to loop through
+  // and generate durations via moment
+  return rawReminders.map((reminderObj) => {
+    // Creating the durations by keys
+    const duration = moment.duration(
+      reminderObj.data.input,
+      reminderObj.data.key
+    );
+    const reminderId = uuidV4();
+    return { id: reminderId, trigger: duration.toISOString() };
+  });
+};
+
+export const isTriggerDuration = (date, trigger) => {
+  const userDate = moment(getMomentDateWithTime(date));
+  const today = moment().get();
+  const restDuration = moment.duration(userDate.diff(today)).asMinutes();
+  const triggerDuration = moment.duration(trigger).asMinutes();
+  return triggerDuration > restDuration;
 };

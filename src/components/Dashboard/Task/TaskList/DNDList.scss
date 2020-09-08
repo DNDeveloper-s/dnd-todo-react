@@ -219,6 +219,10 @@ $ITEM_HEIGHT: 40px;
       &--time {
         font-size: 13px;
         color: $black-60;
+
+        &.dueOver {
+          color: $failed;
+        }
       }
 
       &--line {

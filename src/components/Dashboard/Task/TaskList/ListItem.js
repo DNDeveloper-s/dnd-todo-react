@@ -8,7 +8,12 @@ import useDropUtils from "../../../../hooks/useDropUtils";
 import TaskInput from "./TaskInput";
 import TaskLabel from "./TaskLabel";
 import useTreeDataUtils from "../../../../hooks/useTreeDataUtils";
-import { classNames, wait } from "../../../../helpers/utils";
+import {
+  classNames,
+  getCommonFormatDate,
+  isDueOver,
+  wait,
+} from "../../../../helpers/utils";
 import CaretDownIcon from "../../../../icons/CaretDownIcon";
 import CheckBox from "../../../UI/CheckBox/CheckBox";
 import MoveIcon from "../../../../icons/MoveIcon";
@@ -17,6 +22,7 @@ import useGlobalState from "../../../../hooks/useGlobalState";
 import useTasks from "../../../../hooks/useTasks";
 import DisplayInfo from "../../../UI/DisplayInfo/DisplayInfo";
 import { v4 as uuidV4 } from "uuid";
+import ReminderIcon from "../../../../icons/ReminderIcon";
 
 /**
  * Specifies the drag source contract.
@@ -234,22 +240,48 @@ function ListItem({
             <TaskLabel key={labelId} labelId={labelId} />
           ))}
         </div>
-        <div className="dnd_list-item-element--group">
-          <div className="dnd_list-item-element--project">
+        {/*Rendering this only when projectId is present*/}
+        {item.projectId && (
+          <div className="dnd_list-item-element--group">
+            <div className="dnd_list-item-element--project">
+              <div
+                className="dnd_list-item-element--project--highlighter"
+                style={{
+                  backgroundColor: curProject(item.projectId).color,
+                }}
+              />
+              <p>{curProject(item.projectId).content}</p>
+            </div>
+          </div>
+        )}
+        {/*Rendering this only when reminder is present*/}
+        {item.reminders && (
+          <div className="dnd_list-item-element--group">
+            <ReminderIcon style={{ zoom: 0.8 }} fill="#c7c7c7" />
+          </div>
+        )}
+        {/*Rendering this only when startDate is present*/}
+        {item.startDate && (
+          <div className="dnd_list-item-element--group">
             <div
-              className="dnd_list-item-element--project--highlighter"
-              style={{
-                backgroundColor: curProject(item.projectId || "inbox").color,
-              }}
-            />
-            <p>{curProject(item.projectId || "inbox").content}</p>
+              className={classNames("dnd_list-item-element--time", {
+                dueOver: isDueOver(item.startDate, item.isFullDay),
+              })}
+            >
+              <p>
+                {getCommonFormatDate(
+                  item.startDate,
+                  {
+                    lastWeek: "MMM D",
+                    nextWeek: "ddd",
+                    sameElse: "MMM D",
+                  },
+                  item.isFullDay
+                )}
+              </p>
+            </div>
           </div>
-        </div>
-        <div className="dnd_list-item-element--group">
-          <div className="dnd_list-item-element--time">
-            <p>Tue</p>
-          </div>
-        </div>
+        )}
         <span className="dnd_list-item-element--line" />
       </div>
       {!noTreeStyle &&

@@ -295,7 +295,7 @@ const remindersWithShortTime = [
     value: 2,
     label: "5 minutes ahead",
     data: {
-      input: 2,
+      input: 5,
       key: "m",
     },
   },

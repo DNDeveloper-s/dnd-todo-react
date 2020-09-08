@@ -1,19 +1,19 @@
-import React from 'react';
-import {useSelector} from "react-redux";
-import {getGlobalState} from "../features/globalSlice";
-import {constants} from "../helpers/constants";
+import { useSelector } from "react-redux";
+import { getGlobalState } from "../features/globalSlice";
+import { constants } from "../helpers/constants";
 
-const useGlobalState = props => {
-	const globalState = useSelector(getGlobalState);
+const useGlobalState = (props) => {
+  const globalState = useSelector(getGlobalState);
 
-	const fetchGlobalState = () => globalState;
+  const fetchGlobalState = () => globalState;
 
-	const fetchToggleCollapse = (dragFrom, taskId) => globalState.toggleCollapse[dragFrom + constants.SEPARATOR + taskId]
+  const fetchToggleCollapse = (dragFrom, taskId) =>
+    globalState.toggleCollapse[dragFrom + constants.SEPARATOR + taskId];
 
-	return{
-		fetchGlobalState,
-		fetchToggleCollapse
-	}
-}
+  return {
+    fetchGlobalState,
+    fetchToggleCollapse,
+  };
+};
 
 export default useGlobalState;

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { convertFromRaw, convertToRaw, EditorState } from "draft-js";
+import { convertToRaw, EditorState } from "draft-js";
 import Editor from "draft-js-plugins-editor";
 import createSingleLinePlugin from "draft-js-single-line-plugin";
 import createMentionPlugin, {
@@ -47,27 +47,15 @@ const TagInput = ({
   priorityData,
   onReturn,
   placeholder,
+  editorRef,
 }) => {
-  const editorRef = useRef(null);
+  // const editorRef = useRef(null);
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const [labelSuggestions, setLabelSuggestions] = useState(labelsData);
   const [projectSuggestions, setProjectSuggestions] = useState(projectsData);
   const [prioritySuggestions, setPrioritySuggestions] = useState(priorityData);
-
-  const [focused, setFocused] = useState(false);
   // const plugins = [mentionPlugin, projectsPlugin, priorityPlugin, singleLinePlugin];
   const plugins = [mentionPlugin, singleLinePlugin];
-
-  // Temporary variables
-  const stateRef = useRef(null);
-
-  useEffect(() => {
-    if (stateRef.current === "empty") {
-      const contentState = editorState.getCurrentContent();
-      const raw = convertToRaw(contentState);
-      console.log(raw);
-    }
-  }, [editorState]);
 
   function handleReturn() {
     const contentState = editorState.getCurrentContent();
@@ -76,19 +64,8 @@ const TagInput = ({
     // Calling onReturn to handle the asynchronous task and then
     // having a callback to wait for the task to finish
     onReturn(raw, () => {
-      setEditorState(EditorState.createWithText(" "));
+      setEditorState(require("draftjs-utils").clearEditorContent(editorState));
     });
-  }
-
-  function focusEditor() {
-    editorRef.current.focus();
-    setFocused(true);
-  }
-
-  function blurEditor() {
-    if (editorRef.current.getEditorRef().editor.innerText.trim().length === 0) {
-      setFocused(false);
-    }
   }
 
   async function onChange(editorState) {
@@ -147,18 +124,18 @@ const TagInput = ({
     // });
     // console.log('Mention added!', content, entry);
   }
-
   return (
     <div
       className={classes["dnd_tag-input-editor"]}
-      onFocus={focusEditor}
-      onBlur={blurEditor}
+      // onFocus={focusEditor}
+      // onBlur={blurEditor}
     >
-      {!focused && (
-        <div className={classes["dnd_tag-input-editor-placeholder"]}>
-          <p>{placeholder}</p>
-        </div>
-      )}
+      {/*{editorRef.current?.getEditorRef().editor.innerText.trim().length ===*/}
+      {/*  0 && (*/}
+      {/*  <div className={classes["dnd_tag-input-editor-placeholder"]}>*/}
+      {/*    <p>{placeholder}</p>*/}
+      {/*  </div>*/}
+      {/*)}*/}
       <Editor
         editorState={editorState}
         onChange={onChange}
@@ -166,6 +143,7 @@ const TagInput = ({
         blockRenderMap={singleLinePlugin.blockRenderMap}
         ref={editorRef}
         handleReturn={handleReturn}
+        placeholder={placeholder}
       />
       <MentionSuggestions
         onSearchChange={onLabelSearchChange}

@@ -5,7 +5,6 @@ import CalendarPickerMain from "./CalendarPickerMain";
 import CalendarPickerFooter from "./CalendarPickerFooter";
 import useMoment from "../../hooks/useMoment";
 import { remindersWithShortTime, reminderWithLongTime } from "./helpers/data";
-import { update } from "smooth-scrollbar/geometry";
 import { isEqual } from "../../helpers/utils";
 
 const CalendarPicker = ({
@@ -20,23 +19,53 @@ const CalendarPicker = ({
   );
   const [year, setYear] = useState(getYear(initialData?.date || new Date()));
   const [yearMode, setYearMode] = useState(false);
-  const [time, setTime] = useState("");
+  const [time, setTime] = useState(activeDate?.time || "");
   const [reminderList, setReminderList] = useState(reminderWithLongTime);
-  const [reminders, setReminders] = useState([reminderList[0]]);
+  const [reminders, setReminders] = useState(
+    activeDate?.reminders || [reminderList[0]]
+  );
   const [repeatValue, setRepeatValue] = useState("None");
 
   useEffect(() => {
     if (Boolean(time)) {
-      if (!activeDate) setActiveDate(moment().get().toISOString());
+      if (!activeDate) setActiveDate({ date: moment().get().toISOString() });
       if (isEqual(reminderList, reminderWithLongTime)) {
-        setReminders([remindersWithShortTime[1]]);
+        // Here we are checking if the time was not set
+        // and the previous remindersList was reminderWithLongTime
+        // and time was not selected
+        // but now selected so switching the remindersList to reminderWithShortTime
+        setReminders(
+          reminderWithLongTime.some(
+            (c) => c.label === activeDate?.reminders[0].label
+          )
+            ? [remindersWithShortTime[1]]
+            : activeDate?.reminders || [remindersWithShortTime[1]]
+        );
       }
+      // Setting the remindersList to reminderWithShortTime
+      // if the time is set
       setReminderList(remindersWithShortTime);
+    } else {
+      setReminders([reminderList[0]]);
+      setReminderList(reminderWithLongTime);
     }
-  }, [activeDate, moment, reminderList, setActiveDate, time]);
+  }, [time]);
+
+  useEffect(() => {
+    // Setting time and reminders on value changes
+    setActiveDate({
+      date: activeDate?.date,
+      time,
+      reminders,
+    });
+  }, [time, reminders]);
 
   function onDateClick(e) {
-    setActiveDate(e.date);
+    setActiveDate({
+      date: e.date,
+      time,
+      reminders,
+    });
   }
 
   function handleClear() {
@@ -45,7 +74,7 @@ const CalendarPicker = ({
 
   function handleOk() {
     onModalClose({
-      date: activeDate,
+      date: activeDate.date,
       time,
       reminders,
     });
@@ -64,12 +93,14 @@ const CalendarPicker = ({
       <CalendarPickerMain
         curMonth={month}
         curYear={year}
-        {...{ yearMode, activeDate }}
+        {...{ yearMode }}
+        activeDate={activeDate?.date}
         onMonthChange={setMonth}
         onYearModeChange={setYearMode}
         onDateChange={onDateClick}
       />
       <CalendarPickerFooter
+        time={time}
         onTimeChange={setTime}
         onReminderChange={setReminders}
         onRepeatChange={setRepeatValue}

@@ -9,10 +9,10 @@ import {
   UPDATE_ITEM,
   UPDATE_STATUS,
   UPDATE_TASK,
+  getAllTasks,
 } from "../features/taskSlice";
 import useTreeDataUtils from "./useTreeDataUtils";
-import { filterArr } from "../helpers/utils";
-import { useEffect, useState } from "react";
+import { filterArr, isDefined, isTriggerDuration } from "../helpers/utils";
 
 const useTasks = () => {
   const dispatch = useDispatch();
@@ -114,6 +114,25 @@ const useTasks = () => {
     return lastItemId;
   };
 
+  const allTaskIds = () => Object.keys(taskState.tasks);
+
+  const triggerReminder = () => {
+    const taskIdsWithReminder = allTaskIds().filter((c) =>
+      isDefined(curTask(c).reminders)
+    );
+    console.log(taskIdsWithReminder);
+    taskIdsWithReminder.forEach((taskId) => {
+      let shouldBeTriggered = false;
+      const task = curTask(taskId);
+      for (let i = 0; i < task.reminders.length; i++) {
+        const reminder = task.reminders[i];
+        shouldBeTriggered = isTriggerDuration(task.startDate, reminder.trigger);
+        if (shouldBeTriggered) break;
+      }
+      console.log(shouldBeTriggered, task.id);
+    });
+  };
+
   return {
     createTask,
     createTaskItem,
@@ -125,6 +144,7 @@ const useTasks = () => {
     fetchTaskState,
     parentTask,
     taskProgress,
+    triggerReminder,
     updateActiveTask,
     updateItem,
     updateStatus,

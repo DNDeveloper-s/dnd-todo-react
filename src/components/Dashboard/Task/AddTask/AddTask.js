@@ -1,8 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { v4 as uuidV4 } from "uuid";
 import DoubleAddIcon from "../../../../icons/DoubleAddIcon";
 import TagInput from "../../../UI/TagInput/TagInput";
-import { getDayDifference, isDefined } from "../../../../helpers/utils";
+import {
+  convertRemindersToTriggers,
+  getCommonFormatDate,
+  getDayDifference,
+  getMomentDateWithTime,
+  isDefined,
+} from "../../../../helpers/utils";
 import AddTaskOptions from "./AddTaskOptions";
 import PriorityHighIcon from "../../../../icons/PriorityHighIcon";
 import PriorityMediumIcon from "../../../../icons/PriorityMediumIcon";
@@ -35,12 +41,17 @@ const AddTask = () => {
   const [selectedProject, setSelectedProject] = useState("inbox");
   const [priority, setPriority] = useState(priorities[3]);
   const [dateData, setDateData] = useState(null);
+  const [focusInput, setFocusInput] = useState(true);
+  const editorRef = useRef(null);
 
   // const todayDate = {
   //   date: moment().get().set({ hour: 0, minute: 0, second: 0 }).toString(),
   //   dueOver: false,
   //   diff: "Today",
   // }
+  useEffect(() => {
+    console.log(dateData);
+  }, [dateData]);
 
   function parseTextFromRaw(entityRanges, text) {
     const parsedTextArr = [];
@@ -100,14 +111,11 @@ const AddTask = () => {
     // Parsing startDate
     let startDate = null;
     if (dateData) {
-      const timeArr = dateData.time ? dateData.time.split(":") : [0, 0];
-      startDate = moment(dateData.date)
-        .set({
-          hour: timeArr[0],
-          minute: timeArr[1],
-        })
-        .toISOString();
+      startDate = getMomentDateWithTime(dateData);
     }
+
+    // Task is full day or what
+    const isFullDay = !Boolean(dateData?.time);
 
     createTask({
       id: taskId,
@@ -116,7 +124,12 @@ const AddTask = () => {
       projectId,
       priority: priority.ind,
       startDate,
+      reminders: convertRemindersToTriggers(dateData?.reminders),
+      isFullDay,
     });
+
+    // Setting dateData to null for the calendar actions
+    setDateData(null);
 
     cb();
   }
@@ -158,15 +171,15 @@ const AddTask = () => {
   // });
 
   function onCalendarModalClose(response, setDropDownVisibility) {
-    // Here, we are just hiding the dropdown no matter what
+    // Here, we are just hiding the dropdown and focusing the input element no matter what
     setDropDownVisibility(false);
+    editorRef.current.focus();
     // Then checking if we are resetting
     // so just returning by setting it to null
     if (!isDefined(response)) return setDateData(null);
     // If we are here,
     // it means we have got some data to work with
     const { date, time, reminders } = response;
-    console.log(response);
     const dayDiff = getDayDifference(date);
     setDateData({
       date: moment(date).toISOString(),
@@ -183,6 +196,7 @@ const AddTask = () => {
       </div>
       <div className="add_task-input">
         <TagInput
+          editorRef={editorRef}
           mentionsData={labelsArr}
           projectsData={[]}
           priorityData={[]}
@@ -190,18 +204,18 @@ const AddTask = () => {
             curProject(selectedProject).label ||
             curProject(selectedProject).content
           }" ${
-            dateData
-              ? dateData.date
-                ? 'on "' + dateData.diff + '"'
-                : 'on "Today"'
+            dateData?.date
+              ? 'on "' + getCommonFormatDate(dateData, {}, true) + '"'
               : ""
           }, Hit Enter to save...`}
           onReturn={onReturn}
+          focusIt={focusInput}
+          setFocusIt={setFocusInput}
         />
       </div>
       <div className="add_task-icon">
         <CalendarDropdown
-          initialDate={dateData}
+          dateData={dateData}
           onCalendarModalClose={onCalendarModalClose}
         />
       </div>

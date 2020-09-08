@@ -11,18 +11,17 @@ import useFocus from "../../../../hooks/useFocus";
 
 const DNDList = (props) => {
   const {
-    completeTask,
     getExpandedTreeArr,
     getCompletedTasks,
     taskState,
     getDragState,
     setDragState,
   } = useTreeDataUtils();
-  const { fetchActiveTask } = useTasks();
+  const { fetchActiveTask, updateStatus } = useTasks();
   const { focusId, setFocusId } = useFocus(null);
 
   function onDropToCompleteSection(draggedItem) {
-    completeTask(draggedItem.id);
+    updateStatus(draggedItem.id, true);
   }
 
   function onTitleClick(taskId, event) {

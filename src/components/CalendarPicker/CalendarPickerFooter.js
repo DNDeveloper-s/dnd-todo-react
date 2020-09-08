@@ -20,18 +20,14 @@ const CalendarPickerFooter = ({
   onReminderChange,
   onRepeatChange,
   reminderList,
+  time,
 }) => {
-  const [timeValue, setTimeValue] = useState("");
   const [localReminders, setLocalReminders] = useState(reminders);
 
   function timeItemClicked(e, setVisible) {
     setVisible(false);
-    setTimeValue(e);
+    onTimeChange(e);
   }
-
-  useEffect(() => {
-    onTimeChange(timeValue);
-  }, [timeValue]);
 
   // useEffect(() => {
   //   onReminderChange(reminderValue);
@@ -88,7 +84,7 @@ const CalendarPickerFooter = ({
     <div className="dnd_calendar-footer">
       <div
         className={classNames("dnd_calendar-button", {
-          active: Boolean(timeValue),
+          active: Boolean(time),
         })}
       >
         <CalendarPickerDropdown
@@ -96,17 +92,19 @@ const CalendarPickerFooter = ({
           items={timeList}
           onItemClick={timeItemClicked}
           scrollTo={
-            timeList.find(
-              (c) => c.label === timeFilter(timeList, timeValue)?.label
-            )?.value
+            timeList.find((c) => c.label === timeFilter(timeList, time)?.label)
+              ?.value
           }
           itemHeight={40}
           itemStyle={{
             padding: 0,
           }}
         >
-          <TimeEditor timeValue={timeValue} onTimeChange={setTimeValue} />
+          <TimeEditor timeValue={time} onTimeChange={onTimeChange} />
         </CalendarPickerDropdown>
+        <div className="reset-time-editor" onClick={() => onTimeChange("")}>
+          <span>x</span>
+        </div>
       </div>
       <div
         className={classNames("dnd_calendar-button", {

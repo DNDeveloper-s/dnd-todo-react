@@ -3,6 +3,13 @@
     white-space: pre !important;
 }
 
+/* Placeholder Styles*/
+.public-DraftEditorPlaceholder-root {
+    position: absolute;
+    color: rgba(0,0,0,0.3);
+    pointer-events: none;
+}
+
 /*.public-DraftEditor-content > div > div:not(:first-child) {*/
 /*    display: none;*/
 /*    pointer-events: none;*/

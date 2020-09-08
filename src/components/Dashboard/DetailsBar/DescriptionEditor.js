@@ -39,8 +39,19 @@ const DescriptionEditor = ({
   }
 
   useEffect(() => {
-    const parsedContent = editorState.getCurrentContent();
-    const content = convertToRaw(parsedContent);
+    const contentState = editorState.getCurrentContent();
+    const content = convertToRaw(contentState);
+
+    // const contentBlocks = contentState.getLastCreatedEntityKey();
+    //
+    // const lastEntity = contentState.getEntity(contentBlocks);
+    //
+    // console.log(lastEntity);
+
+    // contentBlocks[0].findEntityRanges(false, (start, end) => {
+    //   console.log(start, end);
+    // });
+
     const contentBlock = content.blocks[0];
     if (contentBlock.entityRanges.length > 0) {
       contentBlock.text =
@@ -68,6 +79,18 @@ const DescriptionEditor = ({
 
   function addLabelToTask(entity) {
     onAddLabel(entity.mention);
+    //
+    // const contentState = editorState.getCurrentContent();
+    // const lastEntityKey = contentState.getLastCreatedEntityKey();
+    //
+    // const newContentState = contentState.replaceEntityData(lastEntityKey, null);
+    // const content = convertToRaw(newContentState);
+    //
+    // console.log(content);
+
+    // const lastEntity = contentState.getEntity(lastEntityKey).getData();
+    //
+    // console.log(lastEntity);
   }
 
   function onAddLabel(labelItem) {
@@ -91,7 +114,12 @@ const DescriptionEditor = ({
 
   return (
     <div>
-      <Editor editorState={editorState} onChange={onChange} plugins={plugins} />
+      <Editor
+        editorState={editorState}
+        placeholder="Description"
+        onChange={onChange}
+        plugins={plugins}
+      />
       <MentionSuggestions
         onSearchChange={onLabelSearchChange}
         suggestions={labelSuggestions}

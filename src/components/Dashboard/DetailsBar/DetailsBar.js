@@ -97,7 +97,7 @@ const DetailsBar = (props) => {
         });
       }
     }
-  }, [params]);
+  }, [params.taskId]);
 
   const labelsArr = fetchLabelState().labels.entities.map((labelId) => {
     const label = fetchLabelState().labels.data[labelId];

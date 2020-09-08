@@ -9,6 +9,9 @@ import { Switch } from "react-router";
 import NoMatchedTask from "./Task/NoMatchedTask";
 import CaretRightIcon from "../../icons/CaretRightIcon";
 import { classNames } from "../../helpers/utils";
+import useInitMinutes from "../../hooks/useInitMinutes";
+import useTasks from "../../hooks/useTasks";
+import useTriggers from "../../hooks/useTriggers";
 
 // Components Imports
 
@@ -16,6 +19,9 @@ import { classNames } from "../../helpers/utils";
 
 const Dashboard = (props) => {
   const [visible, setVisible] = useState(false);
+  const { fetchTaskState } = useTasks();
+  useInitMinutes({ taskState: fetchTaskState() });
+  useTriggers();
 
   return (
     <div className="dashboard">

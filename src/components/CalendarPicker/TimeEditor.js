@@ -7,25 +7,16 @@ import { timeList } from "./helpers/data";
 
 const TimeEditor = ({ timeValue, onTimeChange }) => {
   const timeEditor = useRef(null);
-  const [value, setValue] = useState("");
-
-  useEffect(() => {
-    setValue(timeValue);
-  }, [timeValue]);
-
-  useEffect(() => {
-    onTimeChange(value);
-  }, [value]);
 
   function onTimeFocus() {
-    if (value.trim().length === 0) {
+    if (timeValue.trim().length === 0) {
       const d = new Date();
       let hour = d.getHours();
       let min = d.getMinutes();
       if (hour < 10) hour = `0${hour}`;
       if (min < 10) min = `0${min}`;
 
-      setValue(`${hour}:${min}`);
+      onTimeChange(`${hour}:${min}`);
     }
   }
 
@@ -96,10 +87,10 @@ const TimeEditor = ({ timeValue, onTimeChange }) => {
 
   function onTextSelection(isHour) {
     if (isHour) {
-      const hourValue = value.split(":")[0];
+      const hourValue = timeValue.split(":")[0];
       getValidTime(+hourValue, "hour");
     } else {
-      const minValue = value.split(":")[1];
+      const minValue = timeValue.split(":")[1];
       getValidTime(+minValue, "min");
     }
   }
@@ -115,7 +106,7 @@ const TimeEditor = ({ timeValue, onTimeChange }) => {
         validTime = `0${validTime}`;
       }
 
-      setValue(`${validTime}:${value.split(":")[1]}`);
+      onTimeChange(`${validTime}:${timeValue.split(":")[1]}`);
     } else if (type === "min") {
       if (time > 59) {
         validTime = 59;
@@ -125,14 +116,14 @@ const TimeEditor = ({ timeValue, onTimeChange }) => {
         validTime = `0${validTime}`;
       }
 
-      setValue(`${value.split(":")[0]}:${validTime}`);
+      onTimeChange(`${timeValue.split(":")[0]}:${validTime}`);
     }
   }
 
   function onWheelHandler(e) {
     const increment = e.deltaY > 0;
-    let minValue = +value.split(":")[1];
-    let hourValue = +value.split(":")[0];
+    let minValue = +timeValue.split(":")[1];
+    let hourValue = +timeValue.split(":")[0];
 
     if (!(minValue === 0 || minValue === 30)) {
       if (increment) {
@@ -157,16 +148,16 @@ const TimeEditor = ({ timeValue, onTimeChange }) => {
         minValue = `0${minValue}`;
       }
 
-      setValue(`${hourValue}:${minValue}`);
+      onTimeChange(`${hourValue}:${minValue}`);
     } else if (increment) {
-      const currentIndex = timeList.findIndex((cur) => cur.label === value);
-      setValue(
+      const currentIndex = timeList.findIndex((cur) => cur.label === timeValue);
+      onTimeChange(
         timeList[currentIndex === timeList.length - 1 ? 0 : currentIndex + 1]
           .label
       );
     } else {
-      const currentIndex = timeList.findIndex((cur) => cur.label === value);
-      setValue(
+      const currentIndex = timeList.findIndex((cur) => cur.label === timeValue);
+      onTimeChange(
         timeList[currentIndex === 0 ? timeList.length - 1 : currentIndex - 1]
           .label
       );
@@ -178,9 +169,9 @@ const TimeEditor = ({ timeValue, onTimeChange }) => {
       type="text"
       ref={timeEditor}
       placeholder={"Set Time"}
-      value={value}
+      value={timeValue}
       onFocus={onTimeFocus}
-      onChange={(e) => setValue(e.target.value)}
+      onChange={(e) => onTimeChange(e.target.value)}
       onClick={onClickTimeEditor}
       onKeyDown={onKeyDownTimeEditor}
       onKeyUp={onKeyUpHandler}

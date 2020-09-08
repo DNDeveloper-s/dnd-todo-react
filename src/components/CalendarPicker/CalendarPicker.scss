@@ -273,6 +273,13 @@
     margin: .82rem + .6rem 0;
     cursor: pointer;
 
+    &:hover {
+      .reset-time-editor {
+        opacity: 1;
+        pointer-events: auto;
+      }
+    }
+
     &.active {
       border-color: $purple;
 
@@ -317,6 +324,23 @@
         overflow: hidden;
         text-overflow: ellipsis;
         padding: 0 15px;
+      }
+    }
+
+    .reset-time-editor {
+      position: absolute;
+      right: 5px;
+      top: 50%;
+      @include flexCentered();
+      line-height: 1;
+      transform: translateY(-62%);
+      color: $grey;
+      transition: $generic-transition;
+      opacity: 0;
+      pointer-events: none;
+
+      &:hover {
+        color: $purple;
       }
     }
 

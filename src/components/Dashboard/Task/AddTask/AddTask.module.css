@@ -12,6 +12,7 @@
   justify-content: flex-start;
   align-items: center;
   transition: 0.15s ease-in-out;
+  width: 100%;
 }
 .AddTask_project_dropdown_handle:hover {
   background-color: rgba(221, 233, 255, 0.53);

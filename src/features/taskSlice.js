@@ -259,21 +259,25 @@ export const taskSlice = createSlice({
         projectId,
         createType,
         startDate,
+        reminders,
+        isFullDay,
       } = action.payload;
       const newTaskObj = {
-        id: id,
+        id,
         status: {
           completed: false,
           prevColumnId: null,
         },
         labelIds: labelIds || [],
         projectId: projectId || null,
-        priority: priority,
-        content: content,
+        priority,
+        content,
         inItemMode: false,
         items: [],
         childTasks: [],
         startDate,
+        reminders,
+        isFullDay,
       };
 
       // Case 1. If task has been added without any reference
@@ -629,6 +633,7 @@ export const taskSlice = createSlice({
       const { taskId } = action.payload;
       state.actions.activeTask = taskId;
     },
+    TRIGGER_REMINDER: (state, action) => {},
   },
 });
 

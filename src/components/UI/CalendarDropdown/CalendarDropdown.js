@@ -6,14 +6,19 @@ import useMoment from "../../../hooks/useMoment";
 import CalendarIcon from "../../../icons/CalendarIcon";
 import { isDueOver } from "../../../helpers/utils";
 
-const CalendarDropdown = ({ initialDate: dateData, onCalendarModalClose }) => {
+const CalendarDropdown = ({ dateData, onCalendarModalClose }) => {
   // Props
   // Get the initialDate
   const { moment } = useMoment();
-  const [activeDate, setActiveDate] = useState(dateData?.date);
+  const [activeDate, setActiveDate] = useState(dateData);
+
+  useEffect(() => {
+    console.log(dateData);
+    setActiveDate(dateData);
+  }, [dateData]);
 
   const memoizedOnClose = useCallback(() => {
-    setActiveDate(dateData?.date);
+    setActiveDate(dateData);
   }, [dateData]);
 
   const calendarPicker = (setVisible) => (
@@ -28,10 +33,10 @@ const CalendarDropdown = ({ initialDate: dateData, onCalendarModalClose }) => {
     <Dropdown
       onClose={memoizedOnClose}
       handle={
-        dateData || activeDate ? (
+        dateData || activeDate?.date ? (
           <CalendarWithDate
-            dueOver={isDueOver(activeDate)}
-            date={moment(activeDate).date()}
+            dueOver={isDueOver(activeDate, !activeDate?.time)}
+            date={moment(activeDate.date).date()}
           />
         ) : (
           <CalendarIcon
