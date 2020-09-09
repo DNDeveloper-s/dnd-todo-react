@@ -5,11 +5,12 @@ import {
   CREATE_TASK_ITEM,
   DELETE_TASK,
   DELETE_TASK_ITEM,
+  TRIGGER_REMINDER,
   UPDATE_ACTIVE_TASK,
   UPDATE_ITEM,
   UPDATE_STATUS,
   UPDATE_TASK,
-  getAllTasks,
+  UPDATE_TRIGGERS,
 } from "../features/taskSlice";
 import useTreeDataUtils from "./useTreeDataUtils";
 import { filterArr, isDefined, isTriggerDuration } from "../helpers/utils";
@@ -19,12 +20,18 @@ const useTasks = () => {
   const taskState = useSelector(getTasks);
   const { getPath } = useTreeDataUtils();
 
+  const fetchTriggers = () => taskState.actions.triggers;
+
   function updateTask(updatedObj) {
     dispatch(UPDATE_TASK({ ...updatedObj }));
   }
 
   const updateActiveTask = (taskId) => {
     dispatch(UPDATE_ACTIVE_TASK({ taskId }));
+  };
+
+  const updateTriggers = (taskId) => {
+    dispatch(UPDATE_TRIGGERS({ taskId }));
   };
 
   const fetchItem = (taskId, itemId) => {
@@ -114,23 +121,45 @@ const useTasks = () => {
     return lastItemId;
   };
 
+  const remindNow = (toRemindList) => {
+    console.log("toRemindList", toRemindList);
+    toRemindList.forEach((reminderObj) => {
+      // Checking if the reminder is already in the queue
+      const isInQueue = fetchTriggers().some((c) => c === reminderObj.taskId);
+      // if not in queue
+      if (!isInQueue) {
+        dispatch(
+          TRIGGER_REMINDER({
+            reminderId: reminderObj.id,
+            taskId: reminderObj.taskId,
+          })
+        );
+      }
+    });
+  };
+
   const allTaskIds = () => Object.keys(taskState.tasks);
 
   const triggerReminder = () => {
-    const taskIdsWithReminder = allTaskIds().filter((c) =>
-      isDefined(curTask(c).reminders)
+    const taskIdsWithReminder = allTaskIds().filter(
+      (c) => isDefined(curTask(c).reminders) && curTask(c).reminders.length > 0
     );
-    console.log(taskIdsWithReminder);
+    const toRemindList = [];
     taskIdsWithReminder.forEach((taskId) => {
-      let shouldBeTriggered = false;
+      let shouldBeTriggered = { isTrigger: false, id: null };
       const task = curTask(taskId);
       for (let i = 0; i < task.reminders.length; i++) {
         const reminder = task.reminders[i];
-        shouldBeTriggered = isTriggerDuration(task.startDate, reminder.trigger);
-        if (shouldBeTriggered) break;
+        shouldBeTriggered = {
+          isTrigger: isTriggerDuration(task.startDate, reminder.trigger),
+          id: reminder.id,
+          taskId: task.id,
+        };
+        if (shouldBeTriggered.isTrigger) break;
       }
-      console.log(shouldBeTriggered, task.id);
+      if (shouldBeTriggered.isTrigger) toRemindList.push(shouldBeTriggered);
     });
+    remindNow(toRemindList);
   };
 
   return {
@@ -142,6 +171,7 @@ const useTasks = () => {
     fetchActiveTask,
     fetchItem,
     fetchTaskState,
+    fetchTriggers,
     parentTask,
     taskProgress,
     triggerReminder,
@@ -149,6 +179,7 @@ const useTasks = () => {
     updateItem,
     updateStatus,
     updateTask,
+    updateTriggers,
   };
 };
 

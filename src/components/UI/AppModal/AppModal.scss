@@ -1,0 +1,93 @@
+@import "../../../styles/utilities/variables";
+@import "../../../styles/utilities/mixins";
+
+
+#modal-root {
+  position: absolute;
+  top: 0;
+  left: 0;
+  perspective: 1000px;
+}
+
+.app {
+
+  &-backdrop {
+    width: 100vw;
+    height: 100vh;
+    background-color: $black-40;
+    opacity: 0;
+    pointer-events: none;
+    animation: showBackdrop .4s ease-out forwards;
+
+    &.hideIt {
+      animation: hideBackdrop .4s ease-out forwards;
+    }
+  }
+
+  &-modal {
+    position: absolute;
+    left: 50%;
+    background-color: white;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.08), 0 0 1px 1px rgba(0,0,0,0.1);
+    padding: 3rem;
+    border-radius: 4px;
+    width: 90%;
+    max-width: 50rem;
+    box-sizing: border-box;
+    transition: .2s ease-in-out;
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%);
+    top: 18%;
+    //transform-origin: top;
+    animation: showModal .2s cubic-bezier(.29,.92,.29,.93) forwards;
+
+    &.hideIt {
+      opacity: 1;
+      pointer-events: auto;
+      top: 22%;
+      //transform: translate(-50%) translateY(0px) scale(1);
+      animation: hideModal .2s cubic-bezier(.29,.92,.29,.93) forwards;
+    }
+  }
+}
+
+@keyframes showModal {
+  to {
+    opacity: 1;
+    pointer-events: auto;
+    top: 22%;
+    //transform: translate(-50%) translateY(0px) scale(1);
+  }
+}
+
+@keyframes hideModal {
+  to {
+    opacity: 0;
+    pointer-events: none;
+    top: 18%;
+    //transform: translate(-50%) translateY(-30px) scale(0.92);
+  }
+}
+
+@keyframes showBackdrop {
+  0% {
+    opacity: 0;
+    pointer-events: none;
+  }
+  100% {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+@keyframes hideBackdrop {
+  0% {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  100% {
+    opacity: 0;
+    pointer-events: none;
+  }
+}

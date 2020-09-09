@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import classes from "./Dropdown.module.css";
 import useOutsideAlerter from "../../../hooks/useOutsideAlerter";
 import DropdownItem from "./DropdownItem";
+import PropTypes from "prop-types";
 
 const Dropdown = ({
   handle,
@@ -60,6 +61,18 @@ const Dropdown = ({
       </div>
     </div>
   );
+};
+
+Dropdown.propTypes = {
+  handle: PropTypes.element.isRequired,
+  direction: PropTypes.string,
+  initialValue: PropTypes.bool,
+  items: PropTypes.array,
+  onItemSelect: PropTypes.func.isRequired,
+  ItemComponent: PropTypes.element,
+  ItemHeader: PropTypes.element,
+  ItemFooter: PropTypes.element,
+  onClose: PropTypes.func,
 };
 
 export default Dropdown;

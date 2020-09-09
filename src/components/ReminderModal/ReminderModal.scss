@@ -1,0 +1,53 @@
+@import "../../styles/utilities/variables";
+@import "../../styles/utilities/mixins";
+
+.reminder_modal {
+
+  &-close_btn {
+    position: absolute;
+    top: 10px;
+    right: 14px;
+    @include svgSize(1rem);
+    cursor: pointer;
+
+    svg {
+      fill: $black-60;
+    }
+  }
+
+  &-title {
+    margin-top: 1rem;
+  }
+
+  &-actions {
+    width: 100%;
+    @include flexCentered();
+    justify-content: space-around;
+    margin: 4rem 0 2rem;
+
+    &-btn {
+      @include flexCentered();
+      flex-direction: column;
+      cursor: pointer;
+
+      &-icon {
+        width: 6rem;
+        height: 6rem;
+        @include flexCentered();
+        background-color: $purple;
+        border-radius: 20rem;
+
+        svg {
+          width: 2rem;
+          height: 2rem;
+        }
+      }
+
+      &-label {
+        margin-top: 1.5rem;
+        color: $grey;
+        font-size: 14px;
+      }
+    }
+  }
+}

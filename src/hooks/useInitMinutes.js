@@ -9,7 +9,7 @@ const useInitMinutes = () => {
     dispatch(SET_MINUTE());
     setInterval(() => {
       dispatch(SET_MINUTE());
-    }, 1000 * 60);
+    }, 1000 * 20);
   }, []);
 };
 

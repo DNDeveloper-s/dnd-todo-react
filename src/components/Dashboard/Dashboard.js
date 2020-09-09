@@ -12,13 +12,16 @@ import { classNames } from "../../helpers/utils";
 import useInitMinutes from "../../hooks/useInitMinutes";
 import useTasks from "../../hooks/useTasks";
 import useTriggers from "../../hooks/useTriggers";
+import ReminderModal from "../ReminderModal/ReminderModal";
+import TriggerReminder from "./TriggerReminder";
+import "./dashboardMain.scss";
 
 // Components Imports
 
 // Images Imports
 
 const Dashboard = (props) => {
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState(true);
   const { fetchTaskState } = useTasks();
   useInitMinutes({ taskState: fetchTaskState() });
   useTriggers();
@@ -51,6 +54,7 @@ const Dashboard = (props) => {
           <Route component={NoMatchedTask} />
         </Switch>
       </div>
+      <TriggerReminder />
     </div>
   );
 };

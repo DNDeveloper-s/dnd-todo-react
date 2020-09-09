@@ -115,7 +115,7 @@ const CalendarPickerFooter = ({
           containerClasses={["minify"]}
           items={reminderList}
           onItemClick={onLocalReminderChange}
-          onActiveElements={<TickIcon />}
+          onActiveElements={<TickIcon style={{ width: "1.4rem" }} />}
           onOpen={onReminderOpen}
           activeLogic={(item) =>
             localReminders.filter((c) => c.value === item.value).length > 0

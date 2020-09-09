@@ -244,6 +244,7 @@ export const taskSlice = createSlice({
         dragItem: null,
       },
       activeTask: null,
+      triggers: [], // Array of taskIds
     },
   },
   reducers: {
@@ -633,7 +634,30 @@ export const taskSlice = createSlice({
       const { taskId } = action.payload;
       state.actions.activeTask = taskId;
     },
-    TRIGGER_REMINDER: (state, action) => {},
+    TRIGGER_REMINDER: (state, action) => {
+      const { reminderId, taskId } = action.payload;
+      const curTask = state.tasks[taskId];
+      // Fetching the reminder index
+      const reminderIndex = curTask.reminders.findIndex(
+        (c) => c.id === reminderId
+      );
+
+      console.log("Before splicing", reminderIndex, curTask.reminders);
+
+      // and starts splicing the items after it
+      curTask.reminders.splice(reminderIndex, curTask.reminders.length);
+
+      console.log("After splicing", reminderIndex, curTask.reminders);
+
+      // and then push it to triggers
+      state.actions.triggers.push(taskId);
+    },
+    UPDATE_TRIGGERS: (state, action) => {
+      const { taskId } = action.payload;
+      state.actions.triggers = state.actions.triggers.filter(
+        (c) => c !== taskId
+      );
+    },
   },
 });
 
@@ -648,8 +672,10 @@ export const {
   DROP_TASK,
   UPDATE_DRAGGING_STATE,
   TOGGLE_EXPAND,
+  TRIGGER_REMINDER,
   UPDATE_ACTIVE_TASK,
   UPDATE_ITEM,
+  UPDATE_TRIGGERS,
   UPDATE_STATUS,
 } = taskSlice.actions;
 
