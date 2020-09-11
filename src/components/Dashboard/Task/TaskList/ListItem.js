@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useRef } from "react";
 import { DragSource } from "react-dnd";
 import PropTypes from "prop-types";
+import { v4 as uuidV4 } from "uuid";
 import { withRouter } from "react-router";
 import { constants } from "../../../../helpers/constants";
 import TaskDropTarget from "./TaskDropTarget";
@@ -8,21 +9,19 @@ import useDropUtils from "../../../../hooks/useDropUtils";
 import TaskInput from "./TaskInput";
 import TaskLabel from "./TaskLabel";
 import useTreeDataUtils from "../../../../hooks/useTreeDataUtils";
-import {
-  classNames,
-  getCommonFormatDate,
-  isDueOver,
-  wait,
-} from "../../../../helpers/utils";
 import CaretDownIcon from "../../../../icons/CaretDownIcon";
 import CheckBox from "../../../UI/CheckBox/CheckBox";
 import MoveIcon from "../../../../icons/MoveIcon";
 import useProjects from "../../../../hooks/useProjects";
 import useGlobalState from "../../../../hooks/useGlobalState";
 import useTasks from "../../../../hooks/useTasks";
-import DisplayInfo from "../../../UI/DisplayInfo/DisplayInfo";
-import { v4 as uuidV4 } from "uuid";
 import ReminderIcon from "../../../../icons/ReminderIcon";
+import ContextMenu from "../../../UI/ContextMenu/ContextMenu";
+import {
+  classNames,
+  getCommonFormatDate,
+  isDueOver,
+} from "../../../../helpers/utils";
 
 /**
  * Specifies the drag source contract.
@@ -91,6 +90,7 @@ function ListItem({
   setFocusId,
   ...otherProps
 }) {
+  const contextRef = useRef(null);
   const { onDropTask } = useDropUtils();
   const { curProject } = useProjects();
   const { fetchToggleCollapse } = useGlobalState();
@@ -177,135 +177,142 @@ function ListItem({
       otherProps.history.push(otherProps.match.path + "/" + prevItemId);
   }
 
-  return connectDragPreview(
-    <div
-      className={classNames("dnd_list-item", { active })}
-      data-taskid={item.id}
-      style={{
-        position: "absolute",
-        top: 0,
-        left: 0,
-        transform: `translateY(${index * constants.ITEM_HEIGHT}px)`,
-        transition: `transform .3s cubic-bezier(0,.86,.61,1.15)`,
-      }}
-    >
+  return (
+    <>
+      connectDragPreview(
       <div
-        className="dnd_list-item-element pl-40"
+        ref={contextRef}
+        className={classNames("dnd_list-item", { active })}
+        data-taskid={item.id}
         style={{
-          marginLeft: noTreeStyle
-            ? "0px"
-            : `${
-                levelInTree(item.id, originTask) * constants.SCAFFOLD_WIDTH
-              }px`,
-          ...elementStyle,
+          position: "absolute",
+          top: 0,
+          left: 0,
+          transform: `translateY(${index * constants.ITEM_HEIGHT}px)`,
+          transition: `transform .3s cubic-bezier(0,.86,.61,1.15)`,
         }}
       >
-        <div className="dnd_list-item-element-bg" style={bgStyle} />
-        {hasChildTasks(item.id, filter) && !noTreeStyle && (
-          <div
-            className={classNames("dnd_list-item--toggle_child", {
-              expanded: fetchToggleCollapse(config.dragFrom, item.id),
-            })}
-            style={expandBtnStyle}
-            onClick={onExpandToggle(config.dragFrom, item.id)}
-          >
-            <CaretDownIcon fill="#ddd" />
-          </div>
-        )}
-        <CheckBox
+        <div
+          className="dnd_list-item-element pl-40"
           style={{
-            zoom: 0.8,
-            marginLeft: "15px",
-            marginRight: "15px",
+            marginLeft: noTreeStyle
+              ? "0px"
+              : `${
+                  levelInTree(item.id, originTask) * constants.SCAFFOLD_WIDTH
+                }px`,
+            ...elementStyle,
           }}
-          initialValue={curTask(item.id).status.completed}
-          onChange={onToggleCheckBox}
-        />
-        {connectDragSource(
-          <div className="dnd_list-item-element--handle" style={handleStyle}>
-            <MoveIcon fill="#ddd" />
-          </div>
-        )}
-        <TaskInput
-          handleShiftReturn={(args) => handleReturn(args, constants.AS_CHILD)}
-          handleReturn={(args) => handleReturn(args, constants.AS_SIBLING)}
-          handleBackspace={handleBackspace}
-          onClick={onTitleClick}
-          task={item}
-          focusIt={focusId === item.id}
-          disabled={item.status.completed}
-        />
-        <div className="dnd_list-item-element--group">
-          {item.labelIds.map((labelId) => (
-            <TaskLabel key={labelId} labelId={labelId} />
-          ))}
-        </div>
-        {/*Rendering this only when projectId is present*/}
-        {item.projectId && (
-          <div className="dnd_list-item-element--group">
-            <div className="dnd_list-item-element--project">
-              <div
-                className="dnd_list-item-element--project--highlighter"
-                style={{
-                  backgroundColor: curProject(item.projectId).color,
-                }}
-              />
-              <p>{curProject(item.projectId).content}</p>
-            </div>
-          </div>
-        )}
-        {/*Rendering this only when reminder is present*/}
-        {item.reminders && (
-          <div className="dnd_list-item-element--group">
-            <ReminderIcon style={{ zoom: 0.8 }} fill="#c7c7c7" />
-          </div>
-        )}
-        {/*Rendering this only when startDate is present*/}
-        {item.startDate && (
-          <div className="dnd_list-item-element--group">
+        >
+          <div className="dnd_list-item-element-bg" style={bgStyle} />
+          {hasChildTasks(item.id, filter) && !noTreeStyle && (
             <div
-              className={classNames("dnd_list-item-element--time", {
-                dueOver: isDueOver(item.startDate, item.isFullDay),
+              className={classNames("dnd_list-item--toggle_child", {
+                expanded: fetchToggleCollapse(config.dragFrom, item.id),
               })}
+              style={expandBtnStyle}
+              onClick={onExpandToggle(config.dragFrom, item.id)}
             >
-              <p>
-                {getCommonFormatDate(
-                  item.startDate,
-                  {
-                    lastWeek: "MMM D",
-                    nextWeek: "ddd",
-                    sameElse: "MMM D",
-                  },
-                  item.isFullDay
-                )}
-              </p>
+              <CaretDownIcon fill="#ddd" />
             </div>
-          </div>
-        )}
-        <span className="dnd_list-item-element--line" />
-      </div>
-      {!noTreeStyle &&
-        [constants.AS_SIBLING, constants.AS_CHILD].map((dropAs) => (
-          <TaskDropTarget
+          )}
+          <CheckBox
             style={{
-              transform: `translateX(${
-                levelInTree(item.id, originTask) * constants.SCAFFOLD_WIDTH + 30
-              }px)`,
+              zoom: 0.8,
+              marginLeft: "15px",
+              marginRight: "15px",
             }}
-            itemType={itemType}
-            expandToggle={() =>
-              !fetchToggleCollapse(config.dragFrom, item.id) &&
-              item.childTasks.length > 0 &&
-              onExpandToggle(config.dragFrom, item.id, true)()
-            }
-            key={dropAs}
-            dropAs={dropAs}
-            targetPath={getPath(item.id)}
-            onDrop={onDropItem}
-            somethingIsDragging={getDragState().isDragging}
+            initialValue={curTask(item.id).status.completed}
+            onChange={onToggleCheckBox}
           />
-        ))}
-    </div>
+          {connectDragSource(
+            <div className="dnd_list-item-element--handle" style={handleStyle}>
+              <MoveIcon fill="#ddd" />
+            </div>
+          )}
+          <TaskInput
+            handleShiftReturn={(args) => handleReturn(args, constants.AS_CHILD)}
+            handleReturn={(args) => handleReturn(args, constants.AS_SIBLING)}
+            handleBackspace={handleBackspace}
+            onClick={onTitleClick}
+            task={item}
+            focusIt={focusId === item.id}
+            disabled={item.status.completed}
+          />
+          <div className="dnd_list-item-element--group">
+            {item.labelIds.map((labelId) => (
+              <TaskLabel key={labelId} labelId={labelId} />
+            ))}
+          </div>
+          {/*Rendering this only when projectId is present*/}
+          {item.projectId && (
+            <div className="dnd_list-item-element--group">
+              <div className="dnd_list-item-element--project">
+                <div
+                  className="dnd_list-item-element--project--highlighter"
+                  style={{
+                    backgroundColor: curProject(item.projectId).color,
+                  }}
+                />
+                <p>{curProject(item.projectId).content}</p>
+              </div>
+            </div>
+          )}
+          {/*Rendering this only when reminder is present*/}
+          {item.reminders && (
+            <div className="dnd_list-item-element--group">
+              <ReminderIcon style={{ zoom: 0.8 }} fill="#c7c7c7" />
+            </div>
+          )}
+          {/*Rendering this only when startDate is present*/}
+          {item.startDate && (
+            <div className="dnd_list-item-element--group">
+              <div
+                className={classNames("dnd_list-item-element--time", {
+                  dueOver: isDueOver(item.startDate, item.isFullDay),
+                })}
+              >
+                <p>
+                  {getCommonFormatDate(
+                    item.startDate,
+                    {
+                      lastWeek: "MMM D",
+                      nextWeek: "ddd",
+                      sameElse: "MMM D",
+                    },
+                    item.isFullDay
+                  )}
+                </p>
+              </div>
+            </div>
+          )}
+          <span className="dnd_list-item-element--line" />
+        </div>
+        {!noTreeStyle &&
+          [constants.AS_SIBLING, constants.AS_CHILD].map((dropAs) => (
+            <TaskDropTarget
+              style={{
+                transform: `translateX(${
+                  levelInTree(item.id, originTask) * constants.SCAFFOLD_WIDTH +
+                  30
+                }px)`,
+              }}
+              itemType={itemType}
+              expandToggle={() =>
+                !fetchToggleCollapse(config.dragFrom, item.id) &&
+                item.childTasks.length > 0 &&
+                onExpandToggle(config.dragFrom, item.id, true)()
+              }
+              key={dropAs}
+              dropAs={dropAs}
+              targetPath={getPath(item.id)}
+              onDrop={onDropItem}
+              somethingIsDragging={getDragState().isDragging}
+            />
+          ))}
+      </div>
+      );
+      {contextRef && <ContextMenu listenerRef={contextRef} />}
+    </>
   );
 }
 

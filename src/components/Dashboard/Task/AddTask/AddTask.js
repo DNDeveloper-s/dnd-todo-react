@@ -215,6 +215,7 @@ const AddTask = () => {
       </div>
       <div className="add_task-icon">
         <CalendarDropdown
+          direction="bottomLeft"
           dateData={dateData}
           onCalendarModalClose={onCalendarModalClose}
         />

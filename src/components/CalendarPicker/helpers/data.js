@@ -1,3 +1,5 @@
+import moment from "moment";
+
 const monthData = {
   jan: {
     name: "January",
@@ -231,50 +233,37 @@ const reminderWithLongTime = [
   {
     value: 0,
     label: "None",
+    duration: "",
   },
   {
     value: 1,
     label: "On the day(09:00)",
-    data: {
-      input: 0,
-      key: "d",
-    },
+    duration: moment.duration(0, "d").toISOString(),
   },
   {
     value: 2,
     label: "1 days ahead(09:00)",
-    data: {
-      input: 1,
-      key: "d",
-    },
+    duration: moment.duration(1, "d").toISOString(),
   },
   {
     value: 3,
     label: "2 days ahead(09:00)",
-    data: {
-      input: 2,
-      key: "d",
-    },
+    duration: moment.duration(2, "d").toISOString(),
   },
   {
     value: 4,
     label: "3 days ahead(09:00)",
-    data: {
-      input: 3,
-      key: "d",
-    },
+    duration: moment.duration(3, "d").toISOString(),
   },
   {
     value: 5,
     label: "1 week ahead(09:00)",
-    data: {
-      input: 1,
-      key: "w",
-    },
+    duration: moment.duration(1, "w").toISOString(),
   },
   {
     value: 6,
     label: "Custom",
+    duration: "",
   },
 ];
 
@@ -282,50 +271,37 @@ const remindersWithShortTime = [
   {
     value: 0,
     label: "None",
+    duration: "",
   },
   {
     value: 1,
     label: "On time",
-    data: {
-      input: 0,
-      key: "s",
-    },
+    duration: moment.duration(0, "s").toISOString(),
   },
   {
     value: 2,
     label: "5 minutes ahead",
-    data: {
-      input: 5,
-      key: "m",
-    },
+    duration: moment.duration(5, "m").toISOString(),
   },
   {
     value: 3,
     label: "30 minutes ahead",
-    data: {
-      input: 30,
-      key: "m",
-    },
+    duration: moment.duration(30, "m").toISOString(),
   },
   {
     value: 4,
     label: "1 hour ahead",
-    data: {
-      input: 1,
-      key: "h",
-    },
+    duration: moment.duration(1, "h").toISOString(),
   },
   {
     value: 5,
     label: "1 day ahead",
-    data: {
-      input: 1,
-      key: "d",
-    },
+    duration: moment.duration(1, "d").toISOString(),
   },
   {
     value: 6,
     label: "Custom",
+    duration: "",
   },
 ];
 

@@ -33,9 +33,9 @@ IMPROVEMENTS - Make completed task editable, user has to incomplete it first and
 IMPROVEMENTS - Active Tasks fix on focus and right click
 
 BUG - Label | on adding second label through description editor it is replacing the first one, added through the description editor -- Fixed`
-TODO: Work on Dates and Time			--- In Progress
+TODO: Work on Dates and Time			--- Done with dates and time and reminders
 TODO: Enhance Priority
 TODO: Integrate Context Menu
 
 TODO: Add Info display - Later on
-
+TODO: Work with the repeats [rrule.js]

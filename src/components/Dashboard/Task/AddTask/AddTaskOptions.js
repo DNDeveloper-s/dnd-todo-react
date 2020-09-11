@@ -49,7 +49,9 @@ const AddTaskOptions = ({
 
   return (
     <Dropdown
+      direction="bottomLeft"
       items={[]}
+      onItemSelect={() => null}
       ItemHeader={itemHeader}
       ItemComponent={(setVisible) => {
         return (

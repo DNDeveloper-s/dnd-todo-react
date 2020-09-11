@@ -14,6 +14,9 @@ import SubTaskIcon from "../../../icons/SubTaskIcon";
 import NoMatchedTask from "../Task/NoMatchedTask";
 import CalendarDropdown from "../../UI/CalendarDropdown/CalendarDropdown";
 import {
+  convertTriggersToReminders,
+  decodeTaskDateForCalender,
+  fromNow,
   getCommonFormatDate,
   getDayDifference,
   isDefined,
@@ -36,6 +39,7 @@ const DetailsBar = (props) => {
   const { fetchLabelState } = useLabels();
   const { getExpandedTreeArr, setDragState } = useTreeDataUtils();
   const { focusId, setFocusId } = useFocus(null);
+  const [dateData, setDateData] = useState(null);
   const {
     curTask,
     fetchActiveTask,
@@ -49,53 +53,11 @@ const DetailsBar = (props) => {
   const {
     match: { params },
   } = props;
-  const [task, setTask] = useState(null);
-  const [date, setDate] = useState(null);
 
   useEffect(() => {
     if (typeof params === "object") {
       // Updating the task
       updateActiveTask(params.taskId);
-
-      const taskId = params.taskId;
-      const curTask = fetchTaskState().tasks[taskId];
-      if (curTask) {
-        const repeatFirstDate = JSON.parse(
-          JSON.stringify(new Date(2020, 8, 25))
-        );
-        let a = moment(repeatFirstDate);
-        let b = moment([getToday().year, getToday().month - 1, getToday().day]);
-        const newDate = getCommonFormatDate(repeatFirstDate, {
-          nextWeek: "ddd",
-          sameElse: `[${b.to(a)}], D MMM`,
-          nextDay: "[Tomorrow], MMM D",
-          lastWeek: "[Last] dddd, MMM D",
-        });
-
-        setTask({
-          ...curTask,
-          repeatFirstDate: newDate,
-        });
-        // TODO: Refactor this ugly code here...
-        const dayDiff = getDayDifference({
-          dateObj: repeatFirstDate,
-          day: new Date(repeatFirstDate).getDate(),
-          month: new Date(repeatFirstDate).getMonth() + 1,
-          year: new Date(repeatFirstDate).getFullYear(),
-        });
-        setDate({
-          rawData: {
-            date: repeatFirstDate,
-            data: {
-              monthDay: new Date(repeatFirstDate).getDate(),
-              month: new Date(repeatFirstDate).getMonth() + 1,
-              year: new Date(repeatFirstDate).getFullYear(),
-            },
-          },
-          diff: dayDiff.momentDate,
-          dueOver: dayDiff.dueOver,
-        });
-      }
     }
   }, [params.taskId]);
 
@@ -111,25 +73,25 @@ const DetailsBar = (props) => {
     };
   });
 
-  function onDateChange(data) {
-    const dayDiff = getDayDifference({
-      dateObj: data.date,
-      day: data.rawData.data.monthDay,
-      month: data.rawData.data.month,
-      year: data.rawData.data.year,
-    });
-    setDate({
-      ...data,
-      diff: dayDiff.momentDate,
-      dueOver: dayDiff.dueOver,
-    });
-  }
+  // function onDateChange(data) {
+  //   const dayDiff = getDayDifference({
+  //     dateObj: data.date,
+  //     day: data.rawData.data.monthDay,
+  //     month: data.rawData.data.month,
+  //     year: data.rawData.data.year,
+  //   });
+  //   setDate({
+  //     ...data,
+  //     diff: dayDiff.momentDate,
+  //     dueOver: dayDiff.dueOver,
+  //   });
+  // }
 
   function toggleItemMode() {
     const parsedContent = editorState.getCurrentContent();
     const content = convertToRaw(parsedContent);
 
-    console.log("Toggling");
+    convertTriggersToReminders(curTask(fetchActiveTask()).reminders);
 
     let itemsFromBlock = [];
     if (!curTask(fetchActiveTask()).inItemMode) {
@@ -154,7 +116,6 @@ const DetailsBar = (props) => {
       const newContentState = convertFromRaw(content);
       setEditorState(EditorState.createWithContent(newContentState));
     }
-    console.log(itemsFromBlock, !task.inItemMode);
     updateTask({
       taskId: curTask(fetchActiveTask()).id,
       inItemMode: !curTask(fetchActiveTask()).inItemMode,
@@ -163,7 +124,6 @@ const DetailsBar = (props) => {
   }
 
   function handleParentTaskClick() {
-    console.log(props);
     props.match.params.taskId = "task-1";
     const matchedUrl = props.match.url;
     const pathArr = matchedUrl.split("/");
@@ -185,7 +145,25 @@ const DetailsBar = (props) => {
     updateStatus(fetchActiveTask(), isActive);
   }
 
-  return task ? (
+  function onCalendarModalClose(response, setDropDownVisibility) {
+    // Here, we are just hiding the dropdown and focusing the input element no matter what
+    setDropDownVisibility(false);
+    // Then checking if we are resetting
+    // so just returning by setting it to null
+    if (!isDefined(response)) return setDateData(null);
+    // If we are here,
+    // it means we have got some data to work with
+    const { date, time, reminders } = response;
+    const dayDiff = getDayDifference(date);
+    setDateData({
+      date: moment(date).toISOString(),
+      diff: dayDiff.momentDate,
+      time,
+      reminders,
+    });
+  }
+
+  return curTask(fetchActiveTask()) ? (
     <>
       <div className="dashboard-detailsBar-header">
         <CheckBox
@@ -195,10 +173,13 @@ const DetailsBar = (props) => {
         <div className="vertical_separator" />
         <div className="dashboard-detailsBar-header-title">
           <div className="dashboard-detailsBar-header-title-icon">
-            <CalendarDropdown initialDate={date} onDateChange={onDateChange} />
+            <CalendarDropdown
+              onCalendarModalClose={onCalendarModalClose}
+              dateData={decodeTaskDateForCalender(curTask(fetchActiveTask()))}
+            />
           </div>
           <div className="dashboard-detailsBar-header-title-label">
-            <p>{task.repeatFirstDate || "Repeat first date"}</p>
+            <p>{fromNow(curTask(fetchActiveTask())) || "Repeat first date"}</p>
           </div>
         </div>
         <div className="dashboard-detailsBar-header-icon">
@@ -312,4 +293,4 @@ const DetailsBar = (props) => {
   );
 };
 
-export default DetailsBar;
+export default React.memo(DetailsBar);

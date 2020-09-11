@@ -149,6 +149,52 @@ export const spliceText = (str, start, end) => {
 };
 
 /**
+ * @param date
+ * @returns {string}
+ */
+
+export const fromNow = (task) => {
+  if (!task?.startDate) return null;
+
+  let a = moment(getMomentDateWithTime(task.startDate));
+  let b = moment().get();
+  let diff = b.to(a);
+
+  if (diff.startsWith("in")) {
+    diff = diff.slice(3) + " later";
+  }
+
+  // Making it title case
+  function makeTitleCase(str) {
+    let newStr = str.split(" ");
+    newStr[0] = newStr[0].toUpperCase();
+    return newStr.join(" ");
+  }
+
+  diff = makeTitleCase(diff);
+
+  let format = getCommonFormatDate(
+    task.startDate,
+    {
+      sameDay: "[Today], MMM DD",
+      nextDay: "[Tomorrow], MMM DD",
+      nextWeek: "ddd, MMM DD",
+      lastDay: "[Yesterday], MMM DD",
+      lastWeek: "[Last] ddd, MMM DD",
+      sameElse: `[${diff}], MMM DD`,
+    },
+    task.isFullDay,
+    true
+  );
+
+  if (!task.isFullDay) {
+    format = format + ", " + moment(task.startDate).format("HH:mm");
+  }
+
+  return format;
+};
+
+/**
  *
  * @param date {{dateObj: {DateConstructor},day: {Number}, month: {Number}, year: {Number}}}
  * @return {Object}
@@ -215,7 +261,12 @@ export const getMomentDateWithTime = (dateData) => {
  * @returns {string}
  */
 
-export const getCommonFormatDate = (date, format = {}, isFullDay) => {
+export const getCommonFormatDate = (
+  date,
+  format = {},
+  isFullDay,
+  noTimeOnToday
+) => {
   // Checking for if the date difference is more than a year
   let sameElse;
   let a = moment(getMomentDateWithTime(date));
@@ -225,7 +276,7 @@ export const getCommonFormatDate = (date, format = {}, isFullDay) => {
     : (sameElse = format.sameElse || "ddd, MMM D");
 
   // Checking if the date lies today
-  if (a.diff(b, "days") === 0 && !isFullDay) {
+  if (a.diff(b, "days") === 0 && !isFullDay && !noTimeOnToday) {
     return moment(date).format("HH:mm");
   }
 
@@ -383,31 +434,33 @@ export const convertRemindersToTriggers = (rawReminders) => {
   // Here we are just checking that reminders are not none
   if (!rawReminders || rawReminders[0].value === 0) return null;
 
-  // Checking the type of reminders
-  // Cause we are using two types of reminders
-  // shortTime.. and longTime..
-  const reminderList = getReminderListFromRaw(rawReminders);
-
-  function getReminderListFromRaw(rawReminders) {
-    const isLong = reminderWithLongTime.some(
-      (c) => c.label === rawReminders[0].label
-    );
-    if (isLong) return reminderWithLongTime;
-    else return remindersWithShortTime;
-  }
-
   // Now, as we got the reminderList
   // We are ready to loop through
   // and generate durations via moment
   return rawReminders.map((reminderObj) => {
-    // Creating the durations by keys
-    const duration = moment.duration(
-      reminderObj.data.input,
-      reminderObj.data.key
-    );
     const reminderId = uuidV4();
-    return { id: reminderId, trigger: duration.toISOString() };
+    return { id: reminderId, trigger: reminderObj.duration };
   });
+};
+
+export const convertTriggersToReminders = (triggers = [], isFullDay) => {
+  if (!isDefined(triggers)) return;
+
+  let reminderList = remindersWithShortTime;
+  if (isFullDay) {
+    reminderList = reminderWithLongTime;
+  }
+  const arr = [];
+  triggers.forEach((trigger) => {
+    const parsedTrigger = reminderList.find(
+      (c) => c.duration === trigger.trigger
+    );
+    if (!!parsedTrigger) {
+      arr.push(parsedTrigger);
+    }
+  });
+
+  return arr;
 };
 
 export const isTriggerDuration = (date, trigger) => {
@@ -416,4 +469,13 @@ export const isTriggerDuration = (date, trigger) => {
   const restDuration = moment.duration(userDate.diff(today)).asMinutes();
   const triggerDuration = moment.duration(trigger).asMinutes();
   return triggerDuration > restDuration;
+};
+
+export const decodeTaskDateForCalender = (task) => {
+  const date = moment(task.startDate);
+  return {
+    date: date.toISOString(),
+    time: task.isFullDay ? null : date.format("HH[:]mm"),
+    reminders: convertTriggersToReminders(task.reminders, task.isFullDay),
+  };
 };

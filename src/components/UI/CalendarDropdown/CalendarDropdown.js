@@ -5,15 +5,15 @@ import Dropdown from "../Dropdown/Dropdown";
 import useMoment from "../../../hooks/useMoment";
 import CalendarIcon from "../../../icons/CalendarIcon";
 import { isDueOver } from "../../../helpers/utils";
+import PropTypes from "prop-types";
 
-const CalendarDropdown = ({ dateData, onCalendarModalClose }) => {
+const CalendarDropdown = ({ direction, dateData, onCalendarModalClose }) => {
   // Props
   // Get the initialDate
   const { moment } = useMoment();
   const [activeDate, setActiveDate] = useState(dateData);
 
   useEffect(() => {
-    console.log(dateData);
     setActiveDate(dateData);
   }, [dateData]);
 
@@ -31,6 +31,8 @@ const CalendarDropdown = ({ dateData, onCalendarModalClose }) => {
 
   return (
     <Dropdown
+      direction={direction}
+      onItemSelect={() => null}
       onClose={memoizedOnClose}
       handle={
         dateData || activeDate?.date ? (
@@ -48,6 +50,21 @@ const CalendarDropdown = ({ dateData, onCalendarModalClose }) => {
       ItemComponent={calendarPicker}
     />
   );
+};
+
+CalendarDropdown.propTypes = {
+  direction: PropTypes.oneOf([
+    "topLeft",
+    "topCenter",
+    "topRight",
+    "rightCenter",
+    "bottomRight",
+    "bottomCenter",
+    "bottomLeft",
+    "leftCenter",
+  ]),
+  dateData: PropTypes.any,
+  onCalendarModalClose: PropTypes.func.isRequired,
 };
 
 export default CalendarDropdown;

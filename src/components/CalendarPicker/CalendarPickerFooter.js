@@ -81,92 +81,98 @@ const CalendarPickerFooter = ({
   }
 
   return (
-    <div className="dnd_calendar-footer">
-      <div
-        className={classNames("dnd_calendar-button", {
-          active: Boolean(time),
-        })}
-      >
-        <CalendarPickerDropdown
-          itemsContainerClasses={["overflowAuto"]}
-          items={timeList}
-          onItemClick={timeItemClicked}
-          scrollTo={
-            timeList.find((c) => c.label === timeFilter(timeList, time)?.label)
-              ?.value
-          }
-          itemHeight={40}
-          itemStyle={{
-            padding: 0,
-          }}
+    reminders && (
+      <div className="dnd_calendar-footer">
+        <div
+          className={classNames("dnd_calendar-button", {
+            active: Boolean(time),
+          })}
         >
-          <TimeEditor timeValue={time} onTimeChange={onTimeChange} />
-        </CalendarPickerDropdown>
-        <div className="reset-time-editor" onClick={() => onTimeChange("")}>
-          <span>x</span>
+          <CalendarPickerDropdown
+            itemsContainerClasses={["overflowAuto"]}
+            items={timeList}
+            onItemClick={timeItemClicked}
+            scrollTo={
+              timeList.find(
+                (c) => c.label === timeFilter(timeList, time)?.label
+              )?.value
+            }
+            itemHeight={40}
+            itemStyle={{
+              padding: 0,
+            }}
+          >
+            <TimeEditor timeValue={time} onTimeChange={onTimeChange} />
+          </CalendarPickerDropdown>
+          <div className="reset-time-editor" onClick={() => onTimeChange("")}>
+            <span>x</span>
+          </div>
+        </div>
+        <div
+          className={classNames("dnd_calendar-button", {
+            active: reminders[0]?.value !== 0,
+          })}
+        >
+          <CalendarPickerDropdown
+            containerClasses={["minify"]}
+            items={reminderList}
+            onItemClick={onLocalReminderChange}
+            onActiveElements={<TickIcon style={{ width: "1.4rem" }} />}
+            onOpen={onReminderOpen}
+            activeLogic={(item) =>
+              localReminders.filter((c) => c.value === item.value).length > 0
+            }
+            dropDownItemsFooter={(setVisible) => (
+              <>
+                <div className="dnd_calendar-separator" />
+                <div className={"dnd_calendar-flex_buttons"}>
+                  <AppButton
+                    label={"Cancel"}
+                    onClick={() => setVisible(false)}
+                  />
+                  <AppButton
+                    label={"Ok"}
+                    primary={true}
+                    onClick={() => {
+                      onReminderChange(localReminders);
+                      setVisible(false);
+                    }}
+                  />
+                </div>
+              </>
+            )}
+          >
+            <div className="dnd_calendar-button-label">
+              <p>
+                {reminders[0]?.value === 0
+                  ? "Set Reminder"
+                  : reminders.map((c) => c.label).join(", ")}
+              </p>
+            </div>
+          </CalendarPickerDropdown>
+        </div>
+        <div className="dnd_calendar-button">
+          <CalendarPickerDropdown
+            containerClasses={["minify"]}
+            items={repeat}
+            onItemClick={onRepeatChange}
+            activeLogic={(item) => item.label === repeatValue}
+          >
+            <div className="dnd_calendar-button-label">
+              <p>
+                {!repeatValue || repeatValue === "None"
+                  ? "Set Repeat"
+                  : repeatValue}
+              </p>
+            </div>
+          </CalendarPickerDropdown>
+        </div>
+        <div className={"dnd_calendar-flex_buttons"}>
+          <AppButton label={"Clear"} onClick={handleClear} />
+          <AppButton label={"Ok"} primary={true} onClick={handleOk} />
         </div>
       </div>
-      <div
-        className={classNames("dnd_calendar-button", {
-          active: reminders[0].value !== 0,
-        })}
-      >
-        <CalendarPickerDropdown
-          containerClasses={["minify"]}
-          items={reminderList}
-          onItemClick={onLocalReminderChange}
-          onActiveElements={<TickIcon style={{ width: "1.4rem" }} />}
-          onOpen={onReminderOpen}
-          activeLogic={(item) =>
-            localReminders.filter((c) => c.value === item.value).length > 0
-          }
-          dropDownItemsFooter={(setVisible) => (
-            <>
-              <div className="dnd_calendar-separator" />
-              <div className={"dnd_calendar-flex_buttons"}>
-                <AppButton label={"Cancel"} onClick={() => setVisible(false)} />
-                <AppButton
-                  label={"Ok"}
-                  primary={true}
-                  onClick={() => {
-                    onReminderChange(localReminders);
-                    setVisible(false);
-                  }}
-                />
-              </div>
-            </>
-          )}
-        >
-          <div className="dnd_calendar-button-label">
-            <p>
-              {reminders[0].value === 0
-                ? "Set Reminder"
-                : reminders.map((c) => c.label).join(", ")}
-            </p>
-          </div>
-        </CalendarPickerDropdown>
-      </div>
-      <div className="dnd_calendar-button">
-        <CalendarPickerDropdown
-          containerClasses={["minify"]}
-          items={repeat}
-          onItemClick={onRepeatChange}
-          activeLogic={(item) => item.label === repeatValue}
-        >
-          <div className="dnd_calendar-button-label">
-            <p>
-              {!repeatValue || repeatValue === "None"
-                ? "Set Repeat"
-                : repeatValue}
-            </p>
-          </div>
-        </CalendarPickerDropdown>
-      </div>
-      <div className={"dnd_calendar-flex_buttons"}>
-        <AppButton label={"Clear"} onClick={handleClear} />
-        <AppButton label={"Ok"} primary={true} onClick={handleOk} />
-      </div>
-    </div>
+    )
   );
 };
 

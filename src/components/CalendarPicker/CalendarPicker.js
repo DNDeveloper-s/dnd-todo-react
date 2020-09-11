@@ -22,34 +22,9 @@ const CalendarPicker = ({
   const [time, setTime] = useState(activeDate?.time || "");
   const [reminderList, setReminderList] = useState(reminderWithLongTime);
   const [reminders, setReminders] = useState(
-    activeDate?.reminders || [reminderList[0]]
+    activeDate?.reminders?.length > 0 ? activeDate.reminders : [reminderList[0]]
   );
   const [repeatValue, setRepeatValue] = useState("None");
-
-  useEffect(() => {
-    if (Boolean(time)) {
-      if (!activeDate) setActiveDate({ date: moment().get().toISOString() });
-      if (isEqual(reminderList, reminderWithLongTime)) {
-        // Here we are checking if the time was not set
-        // and the previous remindersList was reminderWithLongTime
-        // and time was not selected
-        // but now selected so switching the remindersList to reminderWithShortTime
-        setReminders(
-          reminderWithLongTime.some(
-            (c) => c.label === activeDate?.reminders[0].label
-          )
-            ? [remindersWithShortTime[1]]
-            : activeDate?.reminders || [remindersWithShortTime[1]]
-        );
-      }
-      // Setting the remindersList to reminderWithShortTime
-      // if the time is set
-      setReminderList(remindersWithShortTime);
-    } else {
-      setReminders([reminderList[0]]);
-      setReminderList(reminderWithLongTime);
-    }
-  }, [time]);
 
   useEffect(() => {
     // Setting time and reminders on value changes
@@ -80,6 +55,32 @@ const CalendarPicker = ({
     });
   }
 
+  function onTimeChange(changedTime) {
+    setTime(changedTime);
+    if (Boolean(changedTime)) {
+      if (!activeDate) setActiveDate({ date: moment().get().toISOString() });
+      if (isEqual(reminderList, reminderWithLongTime)) {
+        // Here we are checking if the time was not set
+        // and the previous remindersList was reminderWithLongTime
+        // and time was not selected
+        // but now selected so switching the remindersList to reminderWithShortTime
+        setReminders(
+          reminderWithLongTime.some(
+            (c) => c.label === activeDate?.reminders[0].label
+          )
+            ? [remindersWithShortTime[1]]
+            : activeDate?.reminders || [remindersWithShortTime[1]]
+        );
+      }
+      // Setting the remindersList to reminderWithShortTime
+      // if the time is set
+      setReminderList(remindersWithShortTime);
+    } else {
+      setReminders([reminderList[0]]);
+      setReminderList(reminderWithLongTime);
+    }
+  }
+
   return (
     <div className="dnd_calendar">
       <CalendarPickerHeader
@@ -101,7 +102,7 @@ const CalendarPicker = ({
       />
       <CalendarPickerFooter
         time={time}
-        onTimeChange={setTime}
+        onTimeChange={onTimeChange}
         onReminderChange={setReminders}
         onRepeatChange={setRepeatValue}
         reminders={reminders}

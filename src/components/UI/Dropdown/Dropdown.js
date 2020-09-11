@@ -1,5 +1,5 @@
 import React from "react";
-import classes from "./Dropdown.module.css";
+import classes from "./Dropdown.module.scss";
 import useOutsideAlerter from "../../../hooks/useOutsideAlerter";
 import DropdownItem from "./DropdownItem";
 import PropTypes from "prop-types";
@@ -36,6 +36,7 @@ const Dropdown = ({
       <div
         className={[
           classes["Dropdown-container"],
+          classes[direction],
           visible ? classes["visible"] : "",
         ].join(" ")}
       >
@@ -65,7 +66,16 @@ const Dropdown = ({
 
 Dropdown.propTypes = {
   handle: PropTypes.element.isRequired,
-  direction: PropTypes.string,
+  direction: PropTypes.oneOf([
+    "topLeft",
+    "topCenter",
+    "topRight",
+    "rightCenter",
+    "bottomRight",
+    "bottomCenter",
+    "bottomLeft",
+    "leftCenter",
+  ]),
   initialValue: PropTypes.bool,
   items: PropTypes.array,
   onItemSelect: PropTypes.func.isRequired,
