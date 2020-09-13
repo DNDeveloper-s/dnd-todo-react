@@ -10,27 +10,13 @@ import {
   isDefined,
 } from "../../../../helpers/utils";
 import AddTaskOptions from "./AddTaskOptions";
-import PriorityHighIcon from "../../../../icons/PriorityHighIcon";
-import PriorityMediumIcon from "../../../../icons/PriorityMediumIcon";
-import PriorityLowIcon from "../../../../icons/PriorityLowIcon";
-import PriorityNoneIcon from "../../../../icons/PriorityNoneIcon";
+import { priorities } from "../../../../helpers/data";
 import CalendarDropdown from "../../../UI/CalendarDropdown/CalendarDropdown";
 import useLabels from "../../../../hooks/useLabels";
 import useProjects from "../../../../hooks/useProjects";
 import useTasks from "../../../../hooks/useTasks";
 import useMoment from "../../../../hooks/useMoment";
-
-const priorities = [
-  { id: "1", ind: 3, label: "High Priority", IconComponent: PriorityHighIcon },
-  {
-    id: "2",
-    ind: 2,
-    label: "Medium Priority",
-    IconComponent: PriorityMediumIcon,
-  },
-  { id: "3", ind: 1, label: "Low Priority", IconComponent: PriorityLowIcon },
-  { id: "4", ind: 0, label: "No Priority", IconComponent: PriorityNoneIcon },
-];
+import AddTaskCalendar from "./AddTaskCalendar";
 
 const AddTask = () => {
   const { moment } = useMoment();
@@ -38,7 +24,7 @@ const AddTask = () => {
   const { createTask } = useTasks();
   const { curProject } = useProjects();
   const { addTaskToLabel, createLabel } = useLabels();
-  const [selectedProject, setSelectedProject] = useState("inbox");
+  const [selectedProjectId, setSelectedProjectId] = useState("inbox");
   const [priority, setPriority] = useState(priorities[3]);
   const [dateData, setDateData] = useState(null);
   const [focusInput, setFocusInput] = useState(true);
@@ -106,7 +92,7 @@ const AddTask = () => {
     });
 
     // Project Content
-    const projectId = selectedProject.id;
+    const projectId = selectedProjectId;
 
     // Parsing startDate
     let startDate = null;
@@ -130,6 +116,8 @@ const AddTask = () => {
 
     // Setting dateData to null for the calendar actions
     setDateData(null);
+    setSelectedProjectId("inbox");
+    setPriority(priorities[3]);
 
     cb();
   }
@@ -201,8 +189,8 @@ const AddTask = () => {
           projectsData={[]}
           priorityData={[]}
           placeholder={`Add Task to "${
-            curProject(selectedProject).label ||
-            curProject(selectedProject).content
+            curProject(selectedProjectId).label ||
+            curProject(selectedProjectId).content
           }" ${
             dateData?.date
               ? 'on "' + getCommonFormatDate(dateData, {}, true) + '"'
@@ -214,7 +202,7 @@ const AddTask = () => {
         />
       </div>
       <div className="add_task-icon">
-        <CalendarDropdown
+        <AddTaskCalendar
           direction="bottomLeft"
           dateData={dateData}
           onCalendarModalClose={onCalendarModalClose}
@@ -226,9 +214,9 @@ const AddTask = () => {
         <AddTaskOptions
           priority={priority}
           priorities={priorities}
-          selectedProject={selectedProject}
+          selectedProject={selectedProjectId}
           onPrioritySelect={setPriority}
-          onProjectSelect={setSelectedProject}
+          onProjectSelect={setSelectedProjectId}
         />
       </div>
     </div>

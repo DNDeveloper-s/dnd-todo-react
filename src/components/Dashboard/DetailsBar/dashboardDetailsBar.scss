@@ -83,6 +83,10 @@ $TASK_ITEM_HEIGHT: 40px;
 
         &-label {
           color: $purple;
+
+          &.empty {
+            color: $black-60;
+          }
         }
 
         &-icon {

@@ -8,12 +8,13 @@ const Dropdown = ({
   handle,
   direction,
   initialValue,
+  containerStyle,
   items = [],
   onItemSelect,
   ItemComponent,
   ItemHeader,
   ItemFooter,
-  onClose,
+  onClose = () => null,
 }) => {
   const { visible, setVisible, ref } = useOutsideAlerter(initialValue, onClose);
 
@@ -39,6 +40,7 @@ const Dropdown = ({
           classes[direction],
           visible ? classes["visible"] : "",
         ].join(" ")}
+        style={containerStyle}
       >
         {visible && (
           <>
@@ -78,7 +80,7 @@ Dropdown.propTypes = {
   ]),
   initialValue: PropTypes.bool,
   items: PropTypes.array,
-  onItemSelect: PropTypes.func.isRequired,
+  onItemSelect: PropTypes.func,
   ItemComponent: PropTypes.element,
   ItemHeader: PropTypes.element,
   ItemFooter: PropTypes.element,

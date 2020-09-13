@@ -80,6 +80,7 @@
 .black-60 { @include color($black-60)}
 .black-70 { @include color($black-70)}
 .black { @include color($primary)}
+.primary { @include color($purple)}
 
 .white { color: $primary_text; }
 
@@ -223,6 +224,44 @@
 .uppercase { text-transform: uppercase }
 .pointer { cursor: pointer }
 
+.itemHoverEffect {
+  transition: $generic-transition;
+
+  &:hover {
+    background-color: $pale_blue;
+  }
+}
+
+.ariaLabel {
+  position: relative;
+
+  &:hover {
+    &::before {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(-50%) translateY(0px);
+    }
+  }
+
+  &::before {
+    content: attr(aria-label);
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    padding: .4rem 1rem;
+    background-color: $primary;
+    box-shadow: $generic-box-shadow;
+    border-radius: $generic-border-radius;
+    transition: .1s ease-out;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(-50%) translateY(-2px);
+    color: $primary_text;
+    font-size: 1.2rem;
+    white-space: nowrap;
+  }
+}
+
 .flex {
   display: flex;
 }
@@ -230,6 +269,7 @@
 .noFlexShrink { flex-shrink: 0 }
 .flexColumn { display: flex; flex-direction: column; }
 .justifyEnd { justify-content: flex-end !important; }
+.justifyStart { justify-content: flex-start !important; }
 .spaceBetween { justify-content: space-between !important; }
 .flexCentered {
   @include flexCentered();
@@ -327,7 +367,7 @@
   }
 }
 
-.generic_separator { height: 1px; width: 100%; background-color: $black-20 }
+.generic_separator { height: 1px; width: 100%; background-color: $black-10 }
 .vertical_separator {width: 1px; height: 100%; background-color: $black-20}
 
 .generic_input {

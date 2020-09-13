@@ -12,9 +12,9 @@
 }
 .HorizontalSelect_header {
   padding: 1rem 0.6rem 0;
-  font-size: 1.2rem;
-  font-family: "Lato_Black";
-  font-weight: 900;
+  font-size: 1rem;
+  font-family: "Lato";
+  font-weight: 600;
   text-transform: uppercase;
   color: rgba(38, 38, 38, 0.4);
 }

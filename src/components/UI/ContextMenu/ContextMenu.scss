@@ -7,6 +7,43 @@
   left: 0;
 }
 
+.recurrence-item {
+  width: 2.6rem;
+  height: 2.6rem;
+  margin: 3px 0;
+  cursor: pointer;
+  position: relative;
+  box-sizing: content-box;
+  padding: .3rem 1rem;
+  @include flexCentered();
+
+  &:nth-child(2) {
+    width: 2.9rem;
+    height: 2.9rem;
+  }
+
+  &:first-child {
+    padding-left: 0;
+  }
+
+  &:last-child {
+    padding-right: 0;
+  }
+
+  &:hover {
+    svg,
+    path:not(.noHover),
+    rect {
+      fill: #7b7b7b;
+    }
+  }
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+}
+
 .context-menu {
 
   &-holder {
@@ -18,11 +55,28 @@
     pointer-events: none;
     transform: translateY(-5px);
     animation: showContextMenu .2s cubic-bezier(.66,.14,.19,1.02) forwards;
+    min-width: 20rem;
   }
 
   &-item {
-    min-width: 16rem;
-    padding: .6rem 1rem;
+    padding: 1rem 2rem;
+    @include flexCentered();
+    justify-content: flex-start;
+
+    &-icon {
+      @include flexCentered();
+      margin-right: 10px;
+
+      svg,
+      path{
+        fill: $black-40;
+      }
+    }
+
+    &-label {
+      color: $primary;
+      font-size: 1.4rem;
+    }
 
     &:hover {
       background-color: $black-10;

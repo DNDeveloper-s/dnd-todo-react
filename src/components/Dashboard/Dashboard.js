@@ -30,11 +30,16 @@ const Dashboard = (props) => {
     <div className="dashboard">
       <SideBar />
       <div className="dashboard-main dashboard_wrapper">
-        <Route path={"/app/inbox"}>
-          <DashboardHeader />
-          <AddTask />
-          <DndList />
-        </Route>
+        <Route
+          path={"/app/:typeId/:scopeId"}
+          render={(props) => (
+            <>
+              <DashboardHeader {...props} />
+              <AddTask {...props} />
+              <DndList {...props} />
+            </>
+          )}
+        />
       </div>
       <div
         className={classNames("dashboard-detailsBar", {
@@ -50,7 +55,11 @@ const Dashboard = (props) => {
           <CaretRightIcon />
         </div>
         <Switch>
-          <Route exact path={"/app/inbox/:taskId"} component={DetailsBar} />
+          <Route
+            exact
+            path={"/app/:typeId/:scopeId/:taskId"}
+            component={DetailsBar}
+          />
           <Route component={NoMatchedTask} />
         </Switch>
       </div>

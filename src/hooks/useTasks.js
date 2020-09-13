@@ -53,7 +53,10 @@ const useTasks = () => {
   };
 
   const deleteTask = (taskId) => {
-    dispatch(DELETE_TASK({ taskId }));
+    const taskArr = getTaskArrObjRecursive(taskId, { deleted: 1 });
+    taskArr.forEach((taskObj) => {
+      updateTask(taskObj);
+    });
   };
 
   const updateItem = (taskId, itemObj) => {
@@ -65,17 +68,23 @@ const useTasks = () => {
     );
   };
 
+  const getTaskArrObjRecursive = (taskId, obj) => {
+    const taskArr = [];
+
+    completeTaskRecursively(taskId);
+
+    function completeTaskRecursively(taskId) {
+      taskArr.push({ taskId, ...obj });
+
+      curTask(taskId).childTasks.map(completeTaskRecursively);
+    }
+
+    return taskArr;
+  };
+
   const updateStatus = (taskId, completed) => {
     if (completed) {
-      const taskArr = [];
-
-      completeTaskRecursively(taskId);
-
-      function completeTaskRecursively(taskId) {
-        taskArr.push({ taskId: taskId, completed: true });
-
-        curTask(taskId).childTasks.map(completeTaskRecursively);
-      }
+      const taskArr = getTaskArrObjRecursive(taskId, { completed: true });
 
       taskArr.forEach((payload) => {
         dispatch(UPDATE_STATUS(payload));

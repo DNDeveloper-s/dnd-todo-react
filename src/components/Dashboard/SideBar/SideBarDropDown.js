@@ -7,7 +7,7 @@ import SideBarDropDownItem from "./SideBarDropDownItem";
 
 const SIDEBAR_DROPDOWN_ITEM_HEIGHT = 45;
 
-const SideBarDropDown = ({ toggle_menu, items = {entities: []} }) => {
+const SideBarDropDown = ({ toggle_menu, items = { entities: [] } }) => {
   const [visible, setVisible] = useState(false);
 
   function toggleMenu() {
@@ -29,7 +29,9 @@ const SideBarDropDown = ({ toggle_menu, items = {entities: []} }) => {
       <div
         className="dashboard-sidebar-dropdown-items"
         style={{
-          height: visible ? items.entities.length * SIDEBAR_DROPDOWN_ITEM_HEIGHT : "0px",
+          height: visible
+            ? items.entities.length * SIDEBAR_DROPDOWN_ITEM_HEIGHT
+            : "0px",
         }}
       >
         {visible && dropdownItems}

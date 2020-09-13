@@ -34,30 +34,31 @@ const DNDList = (props) => {
         className="dnd_list-container"
         style={{
           height:
-            getExpandedTreeArr(constants.DRAG_FROM.MAIN, "incomplete").length *
-            constants.ITEM_HEIGHT,
+            getExpandedTreeArr(constants.DRAG_FROM.MAIN, {
+              filters: { status: { completed: false }, deleted: 0 },
+            }).length * constants.ITEM_HEIGHT,
           transition: "height 0.3s cubic-bezier(0, 0.86, 0.61, 1.15) 0s",
         }}
       >
-        {getExpandedTreeArr(constants.DRAG_FROM.MAIN, "incomplete").map(
-          (taskId, index) => (
-            <ListItem
-              config={{
-                itemType: constants.ITEM_TYPES.TASK,
-                dragFrom: constants.DRAG_FROM.MAIN,
-              }}
-              key={taskId}
-              index={index}
-              filter="incomplete"
-              active={fetchActiveTask() === taskId}
-              item={taskState.tasks[taskId]}
-              startsDragging={setDragState}
-              onTitleClick={onTitleClick}
-              focusId={focusId}
-              setFocusId={setFocusId}
-            />
-          )
-        )}
+        {getExpandedTreeArr(constants.DRAG_FROM.MAIN, {
+          filters: { status: { completed: false }, deleted: 0 },
+        }).map((taskId, index) => (
+          <ListItem
+            config={{
+              itemType: constants.ITEM_TYPES.TASK,
+              dragFrom: constants.DRAG_FROM.MAIN,
+            }}
+            key={taskId}
+            index={index}
+            filters={{ status: { completed: false }, deleted: 0 }}
+            active={fetchActiveTask() === taskId}
+            item={taskState.tasks[taskId]}
+            startsDragging={setDragState}
+            onTitleClick={onTitleClick}
+            focusId={focusId}
+            setFocusId={setFocusId}
+          />
+        ))}
       </div>
       <div
         className="dnd_list-container completed empty"

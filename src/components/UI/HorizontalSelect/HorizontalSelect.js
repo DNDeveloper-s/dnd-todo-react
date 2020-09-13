@@ -1,18 +1,35 @@
-import React, {useState} from 'react';
-import classes from './HorizontalSelect.module.css';
+import React, { useState } from "react";
+import classes from "./HorizontalSelect.module.css";
 import HorizontalSelectItem from "./HorizontalSelectItem";
 
-const HorizontalSelect = ({headerText, items, onItemSelect, activeItem}) => {
-
+const HorizontalSelect = ({
+  allowAriaLabel,
+  headerText,
+  iconStyle,
+  items,
+  onItemSelect,
+  activeItem,
+  noActive,
+  ItemComponent,
+}) => {
   return (
     <div className={classes.HorizontalSelect}>
       <div className={classes.HorizontalSelect_header}>
-        <p>{headerText || 'Header Text'}</p>
+        <p>{headerText || "Header Text"}</p>
       </div>
       <div className={classes.HorizontalSelect_container}>
-        {items.map(item => (
-          <HorizontalSelectItem key={item.id} item={item} active={item.id === activeItem.id} onClick={onItemSelect} />
-        ))}
+        {ItemComponent && <ItemComponent />}
+        {items &&
+          items.map((item) => (
+            <HorizontalSelectItem
+              allowAriaLabel
+              key={item.id}
+              item={item}
+              active={!noActive && item.id === activeItem.id}
+              onClick={onItemSelect}
+              iconStyle={iconStyle}
+            />
+          ))}
       </div>
     </div>
   );

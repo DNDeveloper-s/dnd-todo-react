@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { removeItemByIdInArray } from "../helpers/utils";
 import { constants } from "../helpers/constants";
 import { isDefined } from "../helpers/utils";
 
@@ -9,8 +8,9 @@ export const taskSlice = createSlice({
     tasks: {
       "task-1": {
         id: "task-1",
-        schedule: {},
         priority: 0,
+        deleted: 0,
+        isFullDay: true,
         projectId: null,
         labelIds: ["label-1", "label-2"],
         elClasses: [],
@@ -30,6 +30,8 @@ export const taskSlice = createSlice({
       "task-2": {
         id: "task-2",
         priority: 0,
+        deleted: 0,
+        isFullDay: true,
         projectId: null,
         labelIds: ["label-3", "label-4"],
         elClasses: [],
@@ -45,6 +47,8 @@ export const taskSlice = createSlice({
       "task-3": {
         id: "task-3",
         priority: 0,
+        deleted: 0,
+        isFullDay: true,
         projectId: null,
         labelIds: [],
         elClasses: [],
@@ -60,6 +64,8 @@ export const taskSlice = createSlice({
       "task-4": {
         id: "task-4",
         priority: 0,
+        deleted: 0,
+        isFullDay: true,
         projectId: null,
         labelIds: [],
         elClasses: [],
@@ -75,6 +81,8 @@ export const taskSlice = createSlice({
       "task-5": {
         id: "task-5",
         priority: 0,
+        deleted: 0,
+        isFullDay: true,
         projectId: null,
         labelIds: [],
         elClasses: [],
@@ -90,6 +98,8 @@ export const taskSlice = createSlice({
       "task-6": {
         id: "task-6",
         priority: 0,
+        deleted: 0,
+        isFullDay: true,
         projectId: null,
         labelIds: [],
         elClasses: [],
@@ -105,6 +115,8 @@ export const taskSlice = createSlice({
       "task-7": {
         id: "task-7",
         priority: 0,
+        deleted: 0,
+        isFullDay: true,
         projectId: null,
         labelIds: [],
         elClasses: [],
@@ -120,6 +132,8 @@ export const taskSlice = createSlice({
       "task-8": {
         id: "task-8",
         priority: 0,
+        deleted: 0,
+        isFullDay: true,
         projectId: null,
         labelIds: [],
         elClasses: [],
@@ -135,6 +149,8 @@ export const taskSlice = createSlice({
       "task-9": {
         id: "task-9",
         priority: 0,
+        deleted: 0,
+        isFullDay: true,
         projectId: null,
         labelIds: [],
         elClasses: [],
@@ -150,6 +166,8 @@ export const taskSlice = createSlice({
       "task-10": {
         id: "task-10",
         priority: 0,
+        deleted: 0,
+        isFullDay: true,
         projectId: null,
         labelIds: [],
         elClasses: [],
@@ -165,6 +183,8 @@ export const taskSlice = createSlice({
       "task-11": {
         id: "task-11",
         priority: 0,
+        deleted: 0,
+        isFullDay: true,
         projectId: null,
         labelIds: [],
         elClasses: [],
@@ -180,6 +200,8 @@ export const taskSlice = createSlice({
       "task-12": {
         id: "task-12",
         priority: 0,
+        deleted: 0,
+        isFullDay: true,
         projectId: null,
         labelIds: [],
         elClasses: [],
@@ -195,6 +217,8 @@ export const taskSlice = createSlice({
       "task-13": {
         id: "task-13",
         priority: 0,
+        deleted: 0,
+        isFullDay: true,
         projectId: null,
         labelIds: [],
         elClasses: [],
@@ -210,6 +234,8 @@ export const taskSlice = createSlice({
       "task-14": {
         id: "task-14",
         priority: 0,
+        deleted: 0,
+        isFullDay: true,
         projectId: "project-2",
         labelIds: [],
         elClasses: [],
@@ -225,6 +251,8 @@ export const taskSlice = createSlice({
       "task-15": {
         id: "task-15",
         priority: 0,
+        deleted: 0,
+        isFullDay: true,
         projectId: null,
         labelIds: [],
         status: { completed: false, prevPath: null },
@@ -417,7 +445,16 @@ export const taskSlice = createSlice({
       curTask.items.splice(itemIndex, 1);
     },
     UPDATE_TASK: (state, action) => {
-      const { taskId, items, inItemMode, labelIds, content } = action.payload;
+      const {
+        taskId,
+        items,
+        inItemMode,
+        labelIds,
+        content,
+        deleted,
+        priority,
+        startDate,
+      } = action.payload;
       const curTask = state.tasks[taskId];
       curTask.content = isDefined(content) ? content : curTask.content;
       curTask.inItemMode =
@@ -426,6 +463,9 @@ export const taskSlice = createSlice({
           : curTask.inItemMode;
       curTask.items = items || curTask.items;
       curTask.labelIds = labelIds || curTask.labelIds;
+      curTask.priority = isDefined(priority) ? priority : curTask.priority;
+      curTask.deleted = isDefined(deleted) ? deleted : curTask.deleted;
+      curTask.startDate = startDate || curTask.startDate;
     },
     UPDATE_ITEM: (state, action) => {
       const { taskId, itemId, content, status } = action.payload;
@@ -666,17 +706,17 @@ export const {
   DELETE_TASK,
   CREATE_TASK_ITEM,
   DELETE_TASK_ITEM,
-  UPDATE_TASK,
-  UPDATE_WHOLE,
   DROP_ITEM,
   DROP_TASK,
-  UPDATE_DRAGGING_STATE,
   TOGGLE_EXPAND,
   TRIGGER_REMINDER,
   UPDATE_ACTIVE_TASK,
+  UPDATE_DRAGGING_STATE,
   UPDATE_ITEM,
+  UPDATE_TASK,
   UPDATE_TRIGGERS,
   UPDATE_STATUS,
+  UPDATE_WHOLE,
 } = taskSlice.actions;
 
 export const getAllTasks = (state) => state.task;

@@ -1,13 +1,8 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  getTasks,
-  UPDATE_DRAGGING_STATE,
-  UPDATE_STATUS,
-} from "../features/taskSlice";
+import { getTasks, UPDATE_DRAGGING_STATE } from "../features/taskSlice";
 import { UPDATE_TOGGLE_COLLAPSE } from "../features/globalSlice";
 import { isDefined } from "../helpers/utils";
-import { constants } from "../helpers/constants";
 import useGlobalState from "./useGlobalState";
 
 const useTreeDataUtils = (props) => {
@@ -49,11 +44,14 @@ const useTreeDataUtils = (props) => {
     return fullPath.length - 1 - originIndex - 1;
   };
 
-  const getExpandedTreeArr = (dragFrom, include = "all", config = {}) => {
+  const getExpandedTreeArr = (dragFrom, config = {}) => {
     // include = 'complete' or = 'incomplete'
     const treeArr = [];
-    const { forTaskId } = config;
+    const { forTaskId, filters = {} } = config;
     // console.log(config);
+    // grab the filters
+
+    const filterKeys = Object.keys(filters);
 
     if (!forTaskId) {
       taskState.taskOrder.map((taskId) => {
@@ -66,23 +64,12 @@ const useTreeDataUtils = (props) => {
     }
 
     function push(taskId) {
-      if (include !== "all") {
-        if (include === "complete" && curTask(taskId).status.completed)
-          treeArr.push(taskId);
-        else if (
-          include === "incomplete" &&
-          !curTask(taskId).status.completed
-        ) {
-          treeArr.push(taskId);
-        } else return;
-      } else if (include === "all") {
-        treeArr.push(taskId);
-      }
-      // if (taskState.tasks[taskId].expandCount > 0) {
-      //   taskState.tasks[taskId].childTasks.map((childTaskId) => {
-      //     push(childTaskId);
-      //   });
-      // }
+      const task = curTask(taskId);
+
+      let filtered = doIt(filters, filterKeys, task);
+      if (filtered) treeArr.push(taskId);
+      else return;
+
       if (fetchToggleCollapse(dragFrom, taskId)) {
         taskState.tasks[taskId].childTasks.map((childTaskId) => {
           push(childTaskId);
@@ -92,6 +79,32 @@ const useTreeDataUtils = (props) => {
 
     return treeArr;
   };
+
+  function doIt(obj, keys, task) {
+    let filtered = true;
+    const filterByKey = (obj, keys, task) => {
+      const providedKeys = Object.keys(obj);
+      keys.forEach((key) => {
+        if (!providedKeys.includes(key)) {
+          filtered = false;
+          return;
+        }
+        if (typeof obj[key] === "object") {
+          return filterByKey(obj[key], Object.keys(obj[key]), task[key]);
+        } else if (JSON.stringify(obj[key]) !== JSON.stringify(task[key])) {
+          // console.log(obj[key], task[key]);
+          filtered = false;
+        }
+      });
+    };
+    filterByKey(obj, keys, task);
+    return filtered;
+  }
+
+  // let testPass = filterKeys.every(
+  //   (filterKey) => task[filterKey] === filters[filterKey]
+  // );
+  // if (testPass) treeArr.push(taskId);
 
   const getPrevItemInExpandedTree = (taskId, dragFrom, originTask) => {
     const expandedTree = getExpandedTreeArr(dragFrom, "incomplete", {
@@ -106,25 +119,33 @@ const useTreeDataUtils = (props) => {
   /**
    *
    * @param taskId
-   * @param filter {String}
+   * @param filters {Object}
    * @returns {boolean}
    */
-  const hasChildTasks = (taskId, filter: ["all", "complete", "incomplete"]) => {
-    if (!filter || filter === "all") {
-      return Boolean(curTask(taskId).childTasks.length);
-    }
-    if (filter === "complete") {
-      const hasCompletedTask = curTask(taskId).childTasks.find(
-        (c) => curTask(c).status.completed
-      );
-      return Boolean(hasCompletedTask);
-    }
-    if (filter === "incomplete") {
-      const hasCompletedTask = curTask(taskId).childTasks.find(
-        (c) => !curTask(c).status.completed
-      );
-      return Boolean(hasCompletedTask);
-    }
+  const hasChildTasks = (taskId, filters) => {
+    const children = [];
+    curTask(taskId).childTasks.forEach((childTaskId) => {
+      if (!filters) return children.push(childTaskId);
+      if (doIt(filters, Object.keys(filters), curTask(childTaskId))) {
+        children.push(childTaskId);
+      }
+    });
+    return Boolean(children.length);
+    // if (!filter || filter === "all") {
+    //   return Boolean(curTask(taskId).childTasks.length);
+    // }
+    // if (filter === "complete") {
+    //   const hasCompletedTask = curTask(taskId).childTasks.find(
+    //     (c) => curTask(c).status.completed
+    //   );
+    //   return Boolean(hasCompletedTask);
+    // }
+    // if (filter === "incomplete") {
+    //   const hasCompletedTask = curTask(taskId).childTasks.find(
+    //     (c) => !curTask(c).status.completed
+    //   );
+    //   return Boolean(hasCompletedTask);
+    // }
   };
 
   const onExpandToggle = (dragFrom, taskId, expandIt) => (force) => {

@@ -1,27 +1,19 @@
 import React, { useEffect, useState } from "react";
-import moment from "moment";
-import { useDispatch, useSelector } from "react-redux";
-import { getAllTasks, UPDATE_TASK } from "../../../features/taskSlice";
 import "./dashboardDetailsBar.scss";
 import PriorityHighIcon from "../../../icons/PriorityHighIcon";
 import CheckBox from "../../UI/CheckBox/CheckBox";
 import CaretRightIcon from "../../../icons/CaretRightIcon";
 import ParagraphIcon from "../../../icons/ParagraphIcon";
 import DescriptionEditor from "./DescriptionEditor";
-import CheckListItemHandle from "./CheckListItemHandle";
 import LabelsWrapper from "./Labels/LabelsWrapper";
 import SubTaskIcon from "../../../icons/SubTaskIcon";
 import NoMatchedTask from "../Task/NoMatchedTask";
-import CalendarDropdown from "../../UI/CalendarDropdown/CalendarDropdown";
 import {
   convertTriggersToReminders,
-  decodeTaskDateForCalender,
   fromNow,
-  getCommonFormatDate,
-  getDayDifference,
-  isDefined,
+  classNames,
+  getPriorityByInd,
 } from "../../../helpers/utils";
-import { getToday } from "../../CalendarPicker/helpers";
 import CheckList from "./CheckListItems/CheckList";
 import ListIcon from "../../../icons/ListIcon";
 import { convertFromRaw, convertToRaw, EditorState } from "draft-js";
@@ -33,17 +25,18 @@ import ListItem from "../Task/TaskList/ListItem";
 import { constants } from "../../../helpers/constants";
 import useTreeDataUtils from "../../../hooks/useTreeDataUtils";
 import useFocus from "../../../hooks/useFocus";
+import DetailsBarCalendar from "./DetailsBarCalendar";
+import Dropdown from "../../UI/Dropdown/Dropdown";
+import { priorities } from "../../../helpers/data";
 
 const DetailsBar = (props) => {
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
   const { fetchLabelState } = useLabels();
   const { getExpandedTreeArr, setDragState } = useTreeDataUtils();
   const { focusId, setFocusId } = useFocus(null);
-  const [dateData, setDateData] = useState(null);
   const {
     curTask,
     fetchActiveTask,
-    fetchTaskState,
     parentTask,
     updateActiveTask,
     updateTask,
@@ -55,6 +48,7 @@ const DetailsBar = (props) => {
   } = props;
 
   useEffect(() => {
+    console.log(props);
     if (typeof params === "object") {
       // Updating the task
       updateActiveTask(params.taskId);
@@ -145,22 +139,9 @@ const DetailsBar = (props) => {
     updateStatus(fetchActiveTask(), isActive);
   }
 
-  function onCalendarModalClose(response, setDropDownVisibility) {
-    // Here, we are just hiding the dropdown and focusing the input element no matter what
-    setDropDownVisibility(false);
-    // Then checking if we are resetting
-    // so just returning by setting it to null
-    if (!isDefined(response)) return setDateData(null);
-    // If we are here,
-    // it means we have got some data to work with
-    const { date, time, reminders } = response;
-    const dayDiff = getDayDifference(date);
-    setDateData({
-      date: moment(date).toISOString(),
-      diff: dayDiff.momentDate,
-      time,
-      reminders,
-    });
+  function onPrioritySelect(priorityObj) {
+    console.log("Nice one");
+    updateTask({ taskId: fetchActiveTask(), priority: priorityObj.ind });
   }
 
   return curTask(fetchActiveTask()) ? (
@@ -169,21 +150,51 @@ const DetailsBar = (props) => {
         <CheckBox
           initialValue={curTask(fetchActiveTask()).status.completed}
           onChange={onToggleCheckBox}
+          priority={curTask(fetchActiveTask()).priority}
         />
         <div className="vertical_separator" />
         <div className="dashboard-detailsBar-header-title">
           <div className="dashboard-detailsBar-header-title-icon">
-            <CalendarDropdown
-              onCalendarModalClose={onCalendarModalClose}
-              dateData={decodeTaskDateForCalender(curTask(fetchActiveTask()))}
-            />
+            <DetailsBarCalendar task={curTask(fetchActiveTask())} />
           </div>
-          <div className="dashboard-detailsBar-header-title-label">
-            <p>{fromNow(curTask(fetchActiveTask())) || "Repeat first date"}</p>
+          <div
+            className={classNames("dashboard-detailsBar-header-title-label", {
+              empty: !fromNow(curTask(fetchActiveTask())),
+            })}
+          >
+            <p>{fromNow(curTask(fetchActiveTask())) || "Due Date"}</p>
           </div>
         </div>
         <div className="dashboard-detailsBar-header-icon">
-          <PriorityHighIcon />
+          <Dropdown
+            direction="bottomLeft"
+            handle={getPriorityByInd(
+              curTask(fetchActiveTask()).priority
+            ).IconComponent({})}
+            containerStyle={{ minWidth: "12rem" }}
+            ItemComponent={(setVisible) =>
+              priorities.map((priority) => (
+                <div
+                  className={
+                    "flexCentered justifyStart itemHoverEffect pointer pv-10 pl-10 pr-20"
+                  }
+                  onClick={() => onPrioritySelect(priority)}
+                >
+                  <div className="flexCentered mr-10" style={{ zoom: 0.8 }}>
+                    <priority.IconComponent />
+                  </div>
+                  <div
+                    className={classNames("black-70 heading_6 nowrap", {
+                      ["primary semiBold"]:
+                        priority.ind === curTask(fetchActiveTask()).priority,
+                    })}
+                  >
+                    {priority.label.split(" ")[0]}
+                  </div>
+                </div>
+              ))
+            }
+          />
         </div>
         <div className="dashboard-detailsBar-progress_bar">
           <ProgressBar progress={taskProgress(fetchActiveTask())} />
@@ -258,8 +269,9 @@ const DetailsBar = (props) => {
               transition: "height 0.3s cubic-bezier(0, 0.86, 0.61, 1.15) 0s",
             }}
           >
-            {getExpandedTreeArr(constants.DRAG_FROM.DETAIL, "all", {
+            {getExpandedTreeArr(constants.DRAG_FROM.DETAIL, {
               forTaskId: fetchActiveTask(),
+              filters: { deleted: 0 },
             }).map((taskId, index) => {
               return (
                 <ListItem

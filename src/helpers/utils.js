@@ -7,6 +7,11 @@ import {
   remindersWithShortTime,
   reminderWithLongTime,
 } from "../components/CalendarPicker/helpers/data";
+import PriorityNoneIcon from "../icons/PriorityNoneIcon";
+import PriorityLowIcon from "../icons/PriorityLowIcon";
+import PriorityMediumIcon from "../icons/PriorityMediumIcon";
+import PriorityHighIcon from "../icons/PriorityHighIcon";
+import { priorities } from "./data";
 
 /**
  *
@@ -67,34 +72,7 @@ export const wait = async (time) => {
  */
 
 export const getPriorityByInd = (ind) => {
-  const priorities = [
-    {
-      ind: 0,
-      color: "#C4C4C4",
-      label: "No Priority",
-      iconName: "PriorityNoneIcon",
-    },
-    {
-      ind: 1,
-      color: "#4B6FDE",
-      label: "Low Priority",
-      iconName: "PriorityLowIcon",
-    },
-    {
-      ind: 2,
-      color: "#FFC817",
-      label: "Medium Priority",
-      iconName: "PriorityMediumIcon",
-    },
-    {
-      ind: 3,
-      color: "#E13E39",
-      label: "High Priority",
-      iconName: "PriorityHighIcon",
-    },
-  ];
-
-  return priorities[ind];
+  return priorities.find((c) => c.ind === ind);
 };
 
 /**
@@ -156,8 +134,16 @@ export const spliceText = (str, start, end) => {
 export const fromNow = (task) => {
   if (!task?.startDate) return null;
 
+  const taskDate = moment(task.startDate);
+
   let a = moment(getMomentDateWithTime(task.startDate));
-  let b = moment().get();
+  let b = moment().set({ hour: 0, minute: 0 });
+  if (!task.isFullDay)
+    b = moment().set({
+      hour: taskDate.get("hour"),
+      minute: taskDate.get("minute"),
+    });
+
   let diff = b.to(a);
 
   if (diff.startsWith("in")) {
@@ -223,6 +209,8 @@ export const getDayDifference = (date) => {
  * @returns {boolean}
  */
 export const isDueOver = (dateData, isFullDay) => {
+  // console.log(dateData);
+  // return;
   let a = moment(getMomentDateWithTime(dateData)); // date from the data
   let b = moment().get(); // Today's date
   let unit = "minute"; // Comparing unit
@@ -258,6 +246,7 @@ export const getMomentDateWithTime = (dateData) => {
  * @param date {DateConstructor}
  * @param format {Object}
  * @param isFullDay {Boolean}
+ * @param noTimeOnToday {Boolean}
  * @returns {string}
  */
 
@@ -276,7 +265,7 @@ export const getCommonFormatDate = (
     : (sameElse = format.sameElse || "ddd, MMM D");
 
   // Checking if the date lies today
-  if (a.diff(b, "days") === 0 && !isFullDay && !noTimeOnToday) {
+  if (isToday(date) && !isFullDay && !noTimeOnToday) {
     return moment(date).format("HH:mm");
   }
 
@@ -288,6 +277,14 @@ export const getCommonFormatDate = (
     lastWeek: format.lastWeek || "[Last] dddd",
     sameElse,
   });
+};
+
+export const isToday = (date) => {
+  let a = moment(getMomentDateWithTime(date));
+  let b = moment().get();
+  if (a.diff(b, "days") !== 0) return false;
+  console.log(a.get("date"), b.get("date"));
+  return a.get("date") - b.get("date") === 0;
 };
 
 /**
@@ -472,10 +469,37 @@ export const isTriggerDuration = (date, trigger) => {
 };
 
 export const decodeTaskDateForCalender = (task) => {
+  if (!task.startDate) return null;
   const date = moment(task.startDate);
   return {
     date: date.toISOString(),
     time: task.isFullDay ? null : date.format("HH[:]mm"),
     reminders: convertTriggersToReminders(task.reminders, task.isFullDay),
   };
+};
+
+export const getBoundaryCoords = (e, ref) => {
+  let outOfBoundaryY = e.pageY + ref.current.clientHeight > window.innerHeight;
+  let outOfBoundaryX = e.pageX + ref.current.clientWidth > window.innerWidth;
+  return {
+    x: outOfBoundaryX ? e.pageX - ref.current.clientWidth : e.pageX,
+    y: outOfBoundaryY ? e.pageY - ref.current.clientHeight : e.pageY,
+  };
+};
+
+export const jumpToDate = (task, params) => {
+  if (task.isFullDay) {
+    if (!params) return moment();
+    return moment()
+      .add(...params)
+      .set({ hour: 0, minute: 0 });
+  }
+  const curDate = moment(task.startDate);
+  const taskTime = {
+    hours: curDate.get("hour"),
+    minutes: curDate.get("minute"),
+  };
+  let date = moment().set({ hour: taskTime.hours, minute: taskTime.minutes });
+  if (params) date = date.add(...params);
+  return date;
 };

@@ -1,5 +1,5 @@
 import React from "react";
-import "./dashboardSideBar.css";
+import "./dashboardSideBar.scss";
 import InboxIcon from "../../../icons/InboxIcon";
 import RgbCalendarIcon from "../../../icons/RgbCalendarIcon";
 import ProjectsIcon from "../../../icons/ProjectsIcon";
@@ -12,6 +12,7 @@ import { Link } from "react-router-dom";
 import useLabels from "../../../hooks/useLabels";
 import useProjects from "../../../hooks/useProjects";
 import CalendarIcon from "../../../icons/CalendarIcon";
+import DeleteIcon from "../../../icons/DeleteIcon";
 
 // Components Imports
 
@@ -24,7 +25,7 @@ const SideBar = (props) => {
 
   return (
     <div className="dashboard-sidebar">
-      <Link to={"/app/inbox"}>
+      <Link to={"/app/inbox/tasks"}>
         <div className="dashboard-sidebar-item">
           <div className="dashboard-sidebar-item-icon">
             <InboxIcon />
@@ -34,7 +35,7 @@ const SideBar = (props) => {
           </div>
         </div>
       </Link>
-      <Link to={"/app/today"}>
+      <Link to={"/app/all/today"}>
         <div className="dashboard-sidebar-item">
           <div className="dashboard-sidebar-item-icon">
             <CalendarWithDate
@@ -48,7 +49,7 @@ const SideBar = (props) => {
           </div>
         </div>
       </Link>
-      <Link to={"/app/calendar"}>
+      <Link to={"/app/all/calendar"}>
         <div className="dashboard-sidebar-item">
           <div className="dashboard-sidebar-item-icon">
             <CalendarIcon fill="#fff" />
@@ -58,7 +59,7 @@ const SideBar = (props) => {
           </div>
         </div>
       </Link>
-      <Link to={"/app/upcoming"}>
+      <Link to={"/app/all/week"}>
         <div className="dashboard-sidebar-item">
           <div className="dashboard-sidebar-item-icon">
             <RgbCalendarIcon />
@@ -114,6 +115,16 @@ const SideBar = (props) => {
           )}
         />
       </div>
+      <Link to={"/app/all/trash"}>
+        <div className="dashboard-sidebar-item">
+          <div className="dashboard-sidebar-item-icon">
+            <DeleteIcon fill="#fff" />
+          </div>
+          <div className="dashboard-sidebar-item-label">
+            <p>Trash</p>
+          </div>
+        </div>
+      </Link>
       {/*<div className="dashboard-sidebar-item dropdown">*/}
       {/*  <SideBarDropDown*/}
       {/*    items={filters}*/}

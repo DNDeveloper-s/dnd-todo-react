@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { dayData, monthData } from "./helpers/data";
 import zellerWeekDay from "./helpers/zeller";
 import { monthsAbbr } from "./helpers/abbr";
@@ -18,6 +18,8 @@ const CalendarPickerMain = ({
   onMonthChange,
   onDateChange,
 }) => {
+  const [innerActive, setInnerActive] = useState(activeDate);
+
   const calendarGridClass = classNames({
     "dnd_calendar-grid": true,
     fill: true,
@@ -96,7 +98,7 @@ const CalendarPickerMain = ({
     if (!date.data.cur) {
       onMonthChange(date.data.month);
     }
-    onDateChange({
+    let dateObj = {
       date: new Date(
         date.data.year,
         date.data.month - 1,
@@ -106,7 +108,9 @@ const CalendarPickerMain = ({
         0
       ),
       rawData: date,
-    });
+    };
+    setInnerActive(dateObj.date);
+    onDateChange(dateObj);
   }
 
   const dates = getGridDates(curMonth, curYear);
@@ -117,7 +121,7 @@ const CalendarPickerMain = ({
     gridItems = dates.map((date, ind) => {
       return (
         <CalendarPickerGridItem
-          {...{ activeDate }}
+          activeDate={innerActive}
           key={date.data.monthDay + ind + Math.random()}
           {...{ date }}
           onClick={onDateClick}
