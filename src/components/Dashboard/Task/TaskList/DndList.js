@@ -1,13 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { withRouter } from "react-router";
 import useTreeDataUtils from "../../../../hooks/useTreeDataUtils";
 import { constants } from "../../../../helpers/constants";
 import ListItem from "./ListItem";
 import DropTargetForTask from "./DropTargetForTask";
-import { classNames } from "../../../../helpers/utils";
+import { classNames, getDataViaParams } from "../../../../helpers/utils";
 import "./DNDList.scss";
 import useTasks from "../../../../hooks/useTasks";
 import useFocus from "../../../../hooks/useFocus";
+import useSortTasks from "../../../../hooks/useSortTasks";
 
 const DNDList = (props) => {
   const {
@@ -18,7 +19,11 @@ const DNDList = (props) => {
     setDragState,
   } = useTreeDataUtils();
   const { fetchActiveTask, updateStatus } = useTasks();
+  const { getAlLTasksUnderId } = useSortTasks();
   const { focusId, setFocusId } = useFocus(null);
+  const {
+    match: { params },
+  } = props;
 
   function onDropToCompleteSection(draggedItem) {
     updateStatus(draggedItem.id, true);
@@ -35,22 +40,28 @@ const DNDList = (props) => {
         style={{
           height:
             getExpandedTreeArr(constants.DRAG_FROM.MAIN, {
-              filters: { status: { completed: false }, deleted: 0 },
+              myTaskScope: getDataViaParams(params, getAlLTasksUnderId).data
+                .taskIds,
+              filters: getDataViaParams(params, getAlLTasksUnderId).filters,
             }).length * constants.ITEM_HEIGHT,
           transition: "height 0.3s cubic-bezier(0, 0.86, 0.61, 1.15) 0s",
         }}
       >
         {getExpandedTreeArr(constants.DRAG_FROM.MAIN, {
-          filters: { status: { completed: false }, deleted: 0 },
+          myTaskScope: getDataViaParams(params, getAlLTasksUnderId).data
+            .taskIds,
+          filters: getDataViaParams(params, getAlLTasksUnderId).filters,
+          noTreeStyle: params.scopeId === "trash",
         }).map((taskId, index) => (
           <ListItem
             config={{
               itemType: constants.ITEM_TYPES.TASK,
+              noTreeStyle: params.scopeId === "trash",
               dragFrom: constants.DRAG_FROM.MAIN,
             }}
             key={taskId}
             index={index}
-            filters={{ status: { completed: false }, deleted: 0 }}
+            filters={getDataViaParams(params, getAlLTasksUnderId).filters}
             active={fetchActiveTask() === taskId}
             item={taskState.tasks[taskId]}
             startsDragging={setDragState}

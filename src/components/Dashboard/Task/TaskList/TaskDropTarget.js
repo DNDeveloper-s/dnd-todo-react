@@ -16,7 +16,6 @@ function canDropFn(targetPath, monitor) {
 }
 
 function dropFn(onDrop, dropAs, monitor) {
-  console.log();
   if (monitor.didDrop()) {
     // If you want, you can check whether some nested
     // target already handled drop

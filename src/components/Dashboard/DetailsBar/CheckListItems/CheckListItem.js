@@ -27,7 +27,7 @@ const cardSource = {
       isDragging: true,
       dragItem: draggedItem,
     });
-    console.log(draggedItem);
+    // console.log(draggedItem);
     return draggedItem;
   },
 

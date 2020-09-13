@@ -1,24 +1,16 @@
 import React from "react";
 import LabelItem from "./LabelItem";
 import AddLabel from "./AddLabel";
-import { useDispatch, useSelector } from "react-redux";
-import { UPDATE_TASK } from "../../../../features/taskSlice";
 import { pushToArray, removeItemByIdInArray } from "../../../../helpers/utils";
 import useLabels from "../../../../hooks/useLabels";
+import useTasks from "../../../../hooks/useTasks";
 
 const LabelsWrapper = ({ taskId, taskLabels, labels }) => {
   const { createLabel, fetchLabelState } = useLabels();
-  const dispatch = useDispatch();
+  const { removeLabelFromTask, updateTask } = useTasks();
 
   function onCloseClick(labelId) {
-    const newTaskLabelIds = removeItemByIdInArray(taskLabels, labelId);
-
-    dispatch(
-      UPDATE_TASK({
-        taskId,
-        labelIds: newTaskLabelIds,
-      })
-    );
+    removeLabelFromTask(taskId, labelId);
   }
 
   function onAddLabel(labelItem) {
@@ -30,12 +22,10 @@ const LabelsWrapper = ({ taskId, taskLabels, labels }) => {
       allowDuplicates: false,
     });
 
-    dispatch(
-      UPDATE_TASK({
-        taskId,
-        labelIds: newTaskLabelIds,
-      })
-    );
+    updateTask({
+      taskId,
+      labelIds: newTaskLabelIds,
+    });
   }
 
   return (

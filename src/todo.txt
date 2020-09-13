@@ -34,9 +34,9 @@ IMPROVEMENTS - Active Tasks fix on focus and right click
 
 BUG - Label | on adding second label through description editor it is replacing the first one, added through the description editor -- Fixed`
 Work on Dates and Time			--- Done with dates and time and reminders
-TODO: Enhance Priority
-TODO: Integrate Context Menu		-- In Progress
-	a. UI work done
+Enhance Priority			-- Done
+Integrate Context Menu		-- Done
 
-TODO: Add Info display - Later on
+
+
 TODO: Work with the repeats [rrule.js]

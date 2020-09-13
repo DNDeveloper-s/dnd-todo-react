@@ -13,15 +13,19 @@ const AppModal = ({
   showIt,
   setShowIt,
 }) => {
-  const [visible, setVisible] = useState(true);
+  const [visible, setVisible] = useState(false);
   const modalRef = useRef(null);
   const backdropRef = useRef(null);
-  const [showEl, setShowEl] = useState(true);
+  const [showEl, setShowEl] = useState(false);
 
   useEffect(() => {
     if (!visible) {
       setShowIt && setShowIt(false);
-      hide();
+      if (modalRef.current) {
+        hide()
+          .then()
+          .catch((e) => console.error(e));
+      }
     }
     // else show();
   }, [visible]);
@@ -70,6 +74,7 @@ const AppModal = ({
 
 AppModal.propTypes = {
   children: PropTypes.func.isRequired,
+  onClose: PropTypes.func.isRequired,
 };
 
 export default AppModal;

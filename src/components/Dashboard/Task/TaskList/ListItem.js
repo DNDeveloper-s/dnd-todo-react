@@ -146,7 +146,7 @@ function ListItem({
     // but only if the action is happening in the main area
     // i.e, dragFrom = main
     if (config.dragFrom === constants.DRAG_FROM.MAIN)
-      otherProps.history.push(otherProps.match.path + "/" + newTaskId);
+      otherProps.history.push(otherProps.match.url + "/" + newTaskId);
 
     // If task has been added as child
     // then expanding the parent task

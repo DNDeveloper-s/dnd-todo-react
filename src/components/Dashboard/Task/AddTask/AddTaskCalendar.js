@@ -8,9 +8,7 @@ const AddTaskCalendar = ({ direction, dateData, onCalendarModalClose }) => {
   const [activeDate, setActiveDate] = useState(dateData);
 
   useEffect(() => {
-    if (dateData) {
-      setActiveDate(dateData);
-    }
+    setActiveDate(dateData);
   }, [dateData]);
 
   const memoizedOnClose = useCallback(() => {

@@ -9,7 +9,7 @@ const useDropUtils = (props) => {
 
   const onDropTask = ({ dragFrom, draggedId, droppedId, dropAsType }) => {
     // Handling the case for the highest level
-    console.log(getPath(draggedId), getPath(droppedId));
+    // console.log(getPath(draggedId), getPath(droppedId));
     // console.log(draggedId, droppedId);
 
     dispatch(

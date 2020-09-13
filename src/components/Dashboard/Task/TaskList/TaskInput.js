@@ -46,7 +46,6 @@ const TaskInput = ({
       return handleShiftReturn && handleShiftReturn(...params);
     if (e.key === "Enter") return handleReturn(...params);
     if (e.key === "Backspace") {
-      console.log("Hitting backspace");
       const curTitle = itemMode
         ? fetchItem(fetchActiveTask(), task.id)?.content
         : curTask(task.id)?.content;

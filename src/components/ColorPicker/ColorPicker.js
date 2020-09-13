@@ -44,60 +44,91 @@ const ColorPicker = () => {
   }
 
   function toggleMoreColors() {
-    console.log("[ColorPicker.js || Line no. 23 ....]", "Clicked");
+    // console.log("[ColorPicker.js || Line no. 23 ....]", "Clicked");
     setVisible(true);
   }
 
   return (
-    <div className="color_picker">
-      <div className="color_picker-header">
-        <div className="color_picker-header-label">
-          <p>Edit List</p>
-        </div>
-        <div className="color_picker-header-icon">
-          <CloseIcon />
-        </div>
+    <div className="color_picker-main">
+      <div
+        className={[
+          "color_picker-item null",
+          activeColor === null ? "active" : "",
+        ].join(" ")}
+        onClick={() => setActiveColor(null)}
+      >
+        <NoDropIcon />
       </div>
-      <div className="color_picker-main">
+      {colorItems}
+      {moreColor && (
+        <ColorPickerItem
+          key={moreColor}
+          active={activeColor === moreColor}
+          color={{ value: moreColor }}
+          onClick={setActiveColor}
+        />
+      )}
+      <div className="color_picker-item color_picker-item-dropdown" ref={ref}>
         <div
-          className={[
-            "color_picker-item null",
-            activeColor === null ? "active" : "",
-          ].join(" ")}
-          onClick={() => setActiveColor(null)}
+          className="color_picker-item-dropdown-toggle_menu"
+          onClick={toggleMoreColors}
         >
-          <NoDropIcon />
+          <DotsMenuHorizontal />
         </div>
-        {colorItems}
-        {moreColor && (
-          <ColorPickerItem
-            key={moreColor}
-            active={activeColor === moreColor}
-            color={{ value: moreColor }}
-            onClick={setActiveColor}
-          />
-        )}
-        <div className="color_picker-item color_picker-item-dropdown" ref={ref}>
-          <div
-            className="color_picker-item-dropdown-toggle_menu"
-            onClick={toggleMoreColors}
-          >
-            <DotsMenuHorizontal />
-          </div>
-          <div className="color_picker-item-dropdown-container">
-            {visible && (
-              <div className="color_picker-grid">{moreColorItems}</div>
-            )}
-          </div>
-        </div>
-      </div>
-      <div className="color_picker-footer">
-        <div className="color_picker-footer-action_buttons flex">
-          <AppButton label="Close" />
-          <AppButton label="Save" primary />
+        <div className="color_picker-item-dropdown-container">
+          {visible && <div className="color_picker-grid">{moreColorItems}</div>}
         </div>
       </div>
     </div>
+    // <div className="color_picker">
+    //   {/*<div className="color_picker-header">*/}
+    //   {/*  <div className="color_picker-header-label">*/}
+    //   {/*    <p>Edit List</p>*/}
+    //   {/*  </div>*/}
+    //   {/*  <div className="color_picker-header-icon">*/}
+    //   {/*    <CloseIcon />*/}
+    //   {/*  </div>*/}
+    //   {/*</div>*/}
+    //   // <div className="color_picker-main">
+    //   //   <div
+    //   //     className={[
+    //   //       "color_picker-item null",
+    //   //       activeColor === null ? "active" : "",
+    //   //     ].join(" ")}
+    //   //     onClick={() => setActiveColor(null)}
+    //   //   >
+    //   //     <NoDropIcon />
+    //   //   </div>
+    //   //   {colorItems}
+    //   //   {moreColor && (
+    //   //     <ColorPickerItem
+    //   //       key={moreColor}
+    //   //       active={activeColor === moreColor}
+    //   //       color={{ value: moreColor }}
+    //   //       onClick={setActiveColor}
+    //   //     />
+    //   //   )}
+    //   //   <div className="color_picker-item color_picker-item-dropdown" ref={ref}>
+    //   //     <div
+    //   //       className="color_picker-item-dropdown-toggle_menu"
+    //   //       onClick={toggleMoreColors}
+    //   //     >
+    //   //       <DotsMenuHorizontal />
+    //   //     </div>
+    //   //     <div className="color_picker-item-dropdown-container">
+    //   //       {visible && (
+    //   //         <div className="color_picker-grid">{moreColorItems}</div>
+    //   //       )}
+    //   {/*    </div>*/}
+    //   {/*  </div>*/}
+    //   {/*</div>*/}
+    //   {/*<div className="color_picker-footer">*/}
+    //   {/*  <div className="color_picker-footer-action_buttons flex">*/}
+    //   {/*    <AppButton label="Close" />*/}
+    //   {/*    <AppButton label="Save" primary />*/}
+    //   {/*  </div>*/}
+    //   {/*</div>*/}
+    // {/*</div>*/}
   );
 };
 

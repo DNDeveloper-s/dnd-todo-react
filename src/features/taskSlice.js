@@ -11,7 +11,7 @@ export const taskSlice = createSlice({
         priority: 0,
         deleted: 0,
         isFullDay: true,
-        projectId: null,
+        projectId: "inbox",
         labelIds: ["label-1", "label-2"],
         elClasses: [],
         status: { completed: false, prevPath: null },
@@ -32,7 +32,7 @@ export const taskSlice = createSlice({
         priority: 0,
         deleted: 0,
         isFullDay: true,
-        projectId: null,
+        projectId: "inbox",
         labelIds: ["label-3", "label-4"],
         elClasses: [],
         status: { completed: false, prevPath: null },
@@ -49,7 +49,7 @@ export const taskSlice = createSlice({
         priority: 0,
         deleted: 0,
         isFullDay: true,
-        projectId: null,
+        projectId: "inbox",
         labelIds: [],
         elClasses: [],
         status: { completed: false, prevPath: null },
@@ -66,7 +66,7 @@ export const taskSlice = createSlice({
         priority: 0,
         deleted: 0,
         isFullDay: true,
-        projectId: null,
+        projectId: "inbox",
         labelIds: [],
         elClasses: [],
         status: { completed: false, prevPath: null },
@@ -83,7 +83,7 @@ export const taskSlice = createSlice({
         priority: 0,
         deleted: 0,
         isFullDay: true,
-        projectId: null,
+        projectId: "inbox",
         labelIds: [],
         elClasses: [],
         status: { completed: false, prevPath: null },
@@ -100,7 +100,7 @@ export const taskSlice = createSlice({
         priority: 0,
         deleted: 0,
         isFullDay: true,
-        projectId: null,
+        projectId: "inbox",
         labelIds: [],
         elClasses: [],
         status: { completed: false, prevPath: null },
@@ -117,7 +117,7 @@ export const taskSlice = createSlice({
         priority: 0,
         deleted: 0,
         isFullDay: true,
-        projectId: null,
+        projectId: "inbox",
         labelIds: [],
         elClasses: [],
         status: { completed: false, prevPath: null },
@@ -134,7 +134,7 @@ export const taskSlice = createSlice({
         priority: 0,
         deleted: 0,
         isFullDay: true,
-        projectId: null,
+        projectId: "inbox",
         labelIds: [],
         elClasses: [],
         status: { completed: false, prevPath: null },
@@ -151,7 +151,7 @@ export const taskSlice = createSlice({
         priority: 0,
         deleted: 0,
         isFullDay: true,
-        projectId: null,
+        projectId: "inbox",
         labelIds: [],
         elClasses: [],
         status: { completed: false, prevPath: null },
@@ -168,7 +168,7 @@ export const taskSlice = createSlice({
         priority: 0,
         deleted: 0,
         isFullDay: true,
-        projectId: null,
+        projectId: "inbox",
         labelIds: [],
         elClasses: [],
         status: { completed: false, prevPath: null },
@@ -185,7 +185,7 @@ export const taskSlice = createSlice({
         priority: 0,
         deleted: 0,
         isFullDay: true,
-        projectId: null,
+        projectId: "inbox",
         labelIds: [],
         elClasses: [],
         status: { completed: false, prevPath: null },
@@ -202,7 +202,7 @@ export const taskSlice = createSlice({
         priority: 0,
         deleted: 0,
         isFullDay: true,
-        projectId: null,
+        projectId: "inbox",
         labelIds: [],
         elClasses: [],
         status: { completed: false, prevPath: null },
@@ -219,7 +219,7 @@ export const taskSlice = createSlice({
         priority: 0,
         deleted: 0,
         isFullDay: true,
-        projectId: null,
+        projectId: "inbox",
         labelIds: [],
         elClasses: [],
         status: { completed: false, prevPath: null },
@@ -253,7 +253,7 @@ export const taskSlice = createSlice({
         priority: 0,
         deleted: 0,
         isFullDay: true,
-        projectId: null,
+        projectId: "inbox",
         labelIds: [],
         status: { completed: false, prevPath: null },
         content: "This is my third tasks. I am improving",
@@ -287,6 +287,7 @@ export const taskSlice = createSlice({
         labelIds,
         projectId,
         createType,
+        createdAt,
         startDate,
         reminders,
         isFullDay,
@@ -306,7 +307,9 @@ export const taskSlice = createSlice({
         childTasks: [],
         startDate,
         reminders,
+        createdAt,
         isFullDay,
+        deleted: 0,
       };
 
       // Case 1. If task has been added without any reference
@@ -483,7 +486,7 @@ export const taskSlice = createSlice({
     },
     DROP_ITEM: (state, action) => {
       const { taskId, draggedId, droppedId } = action.payload;
-      console.log(draggedId, droppedId);
+      // console.log(draggedId, droppedId);
       const curTask = state.tasks[taskId];
       const curTaskItem = curTask.items.find((c) => c.id === draggedId);
       // Removing the dragged id from its initial position
@@ -682,12 +685,12 @@ export const taskSlice = createSlice({
         (c) => c.id === reminderId
       );
 
-      console.log("Before splicing", reminderIndex, curTask.reminders);
+      // console.log("Before splicing", reminderIndex, curTask.reminders);
 
       // and starts splicing the items after it
       curTask.reminders.splice(reminderIndex, curTask.reminders.length);
 
-      console.log("After splicing", reminderIndex, curTask.reminders);
+      // console.log("After splicing", reminderIndex, curTask.reminders);
 
       // and then push it to triggers
       state.actions.triggers.push(taskId);

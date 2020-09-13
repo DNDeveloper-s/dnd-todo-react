@@ -13,17 +13,47 @@ import {
   UPDATE_TRIGGERS,
 } from "../features/taskSlice";
 import useTreeDataUtils from "./useTreeDataUtils";
-import { filterArr, isDefined, isTriggerDuration } from "../helpers/utils";
+import {
+  filterArr,
+  isDefined,
+  isTriggerDuration,
+  removeItemByIdInArray,
+} from "../helpers/utils";
+import useLabels from "./useLabels";
+import useProjects from "./useProjects";
 
 const useTasks = () => {
   const dispatch = useDispatch();
   const taskState = useSelector(getTasks);
   const { getPath } = useTreeDataUtils();
+  const { addTaskToLabel, removeTaskFromLabel } = useLabels();
+  const { addTaskToProject } = useProjects();
 
   const fetchTriggers = () => taskState.actions.triggers;
 
   function updateTask(updatedObj) {
     dispatch(UPDATE_TASK({ ...updatedObj }));
+    // console.log(updatedObj);
+    if (updatedObj.labelIds) {
+      // adding task to labels
+      updatedObj.labelIds &&
+        updatedObj.labelIds.forEach((labelId) => {
+          addTaskToLabel(labelId, updatedObj.taskId);
+        });
+
+      // adding task to project
+      updatedObj.projectId &&
+        addTaskToProject(updatedObj.projectId, updatedObj.taskId);
+    }
+  }
+
+  function removeLabelFromTask(taskId, labelId) {
+    const newTaskLabelIds = removeItemByIdInArray(
+      curTask(taskId).labelIds,
+      labelId
+    );
+    removeTaskFromLabel(labelId, taskId);
+    dispatch(UPDATE_TASK({ taskId, labelIds: newTaskLabelIds }));
   }
 
   const updateActiveTask = (taskId) => {
@@ -131,7 +161,7 @@ const useTasks = () => {
   };
 
   const remindNow = (toRemindList) => {
-    console.log("toRemindList", toRemindList);
+    // console.log("toRemindList", toRemindList);
     toRemindList.forEach((reminderObj) => {
       // Checking if the reminder is already in the queue
       const isInQueue = fetchTriggers().some((c) => c === reminderObj.taskId);
@@ -172,6 +202,7 @@ const useTasks = () => {
   };
 
   return {
+    allTaskIds,
     createTask,
     createTaskItem,
     curTask,
@@ -184,6 +215,7 @@ const useTasks = () => {
     parentTask,
     taskProgress,
     triggerReminder,
+    removeLabelFromTask,
     updateActiveTask,
     updateItem,
     updateStatus,

@@ -47,28 +47,37 @@ const useTreeDataUtils = (props) => {
   const getExpandedTreeArr = (dragFrom, config = {}) => {
     // include = 'complete' or = 'incomplete'
     const treeArr = [];
-    const { forTaskId, filters = {} } = config;
+    const { forTaskId, myTaskScope, filters = {}, noTreeStyle } = config;
     // console.log(config);
     // grab the filters
 
     const filterKeys = Object.keys(filters);
 
-    if (!forTaskId) {
-      taskState.taskOrder.map((taskId) => {
+    if (!myTaskScope) {
+      if (!forTaskId) {
+        taskState.taskOrder.forEach((taskId) => {
+          push(taskId);
+        });
+      } else {
+        taskState.tasks[forTaskId].childTasks.forEach((childTaskId) =>
+          push(childTaskId)
+        );
+      }
+    } else {
+      myTaskScope.forEach((taskId) => {
         push(taskId);
       });
-    } else {
-      taskState.tasks[forTaskId].childTasks.map((childTaskId) =>
-        push(childTaskId)
-      );
     }
 
     function push(taskId) {
       const task = curTask(taskId);
 
+      // if (!myTaskScope) {
       let filtered = doIt(filters, filterKeys, task);
       if (filtered) treeArr.push(taskId);
       else return;
+      // } else treeArr.push(taskId);
+      if (noTreeStyle) return;
 
       if (fetchToggleCollapse(dragFrom, taskId)) {
         taskState.tasks[taskId].childTasks.map((childTaskId) => {

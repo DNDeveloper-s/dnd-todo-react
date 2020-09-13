@@ -1,25 +1,15 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import CommentsFillIcon from "../../icons/CommentsFillIcon";
 import DotsMenuHorizontal from "../../icons/DotsMenuHorizontal";
-import { constants } from "../../helpers/constants";
+import useSortTasks from "../../hooks/useSortTasks";
+import { getDataViaParams } from "../../helpers/utils";
 
 // Components Imports
 
 // Images Imports
-const dataAccToParams = {
-  ["all-today"]: { header: "Today" },
-  ["all-calendar"]: { header: "Calendar" },
-  ["all-week"]: { header: "Next 7 days" },
-  ["all-trash"]: { header: "Trash" },
-};
-
-const getDataViaParams = ({ typeId, scopeId }) => {
-  if (typeId === "all")
-    return dataAccToParams[typeId + constants.SEPARATOR + scopeId].header;
-  return "Damn";
-};
 
 const DashboardHeader = (props) => {
+  const { getAlLTasksUnderId } = useSortTasks();
   const {
     match: { params },
   } = props;
@@ -28,7 +18,7 @@ const DashboardHeader = (props) => {
     <div className="dashboard-header">
       <div className="dashboard-header-group">
         <div className="dashboard-header-title">
-          <p>{getDataViaParams(params)}</p>
+          <p>{getDataViaParams(params, getAlLTasksUnderId).data.content}</p>
         </div>
       </div>
       <div className="dashboard-header-group">

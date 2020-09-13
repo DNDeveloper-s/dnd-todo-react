@@ -8,7 +8,7 @@ const useTriggers = (props) => {
   const globalState = fetchGlobalState();
 
   useEffect(() => {
-    console.log("Minute changed");
+    // console.log("Minute changed");
     triggerReminder();
   }, [globalState.minute]);
 };

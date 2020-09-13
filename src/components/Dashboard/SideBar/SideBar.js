@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import { Link, withRouter } from "react-router-dom";
 import "./dashboardSideBar.scss";
 import InboxIcon from "../../../icons/InboxIcon";
 import RgbCalendarIcon from "../../../icons/RgbCalendarIcon";
@@ -8,11 +9,13 @@ import LabelsIcon from "../../../icons/LabelsIcon";
 import SideBarDropDown from "./SideBarDropDown";
 import CalendarWithDate from "../../UI/CalendarWithDate/CalendarWithDate";
 import { getToday } from "../../CalendarPicker/helpers";
-import { Link } from "react-router-dom";
 import useLabels from "../../../hooks/useLabels";
 import useProjects from "../../../hooks/useProjects";
 import CalendarIcon from "../../../icons/CalendarIcon";
 import DeleteIcon from "../../../icons/DeleteIcon";
+import AppModal from "../../UI/AppModal/AppModal";
+import AppButton from "../../UI/AppButton";
+import ColorPicker from "../../ColorPicker/ColorPicker";
 
 // Components Imports
 
@@ -21,7 +24,21 @@ import DeleteIcon from "../../../icons/DeleteIcon";
 const SideBar = (props) => {
   const { fetchLabelState } = useLabels();
   const { fetchProjectState } = useProjects();
+  const [showModal, setShowModal] = useState(false);
   // const [filters] = useFilters();
+
+  function onListItemClick(item) {
+    props.history.push("/app/" + item.id + "/tasks");
+  }
+
+  function addLabelHandler() {
+    console.log("Label add");
+    setShowModal(true);
+  }
+
+  function addProjectHandler() {
+    console.log("Project add");
+  }
 
   return (
     <div className="dashboard-sidebar">
@@ -65,13 +82,18 @@ const SideBar = (props) => {
             <RgbCalendarIcon />
           </div>
           <div className="dashboard-sidebar-item-label">
-            <p>Upcoming</p>
+            <p>Next 7 days</p>
           </div>
         </div>
       </Link>
       <div className="dashboard-sidebar-item dropdown">
         <SideBarDropDown
           items={fetchProjectState().projects}
+          onItemClick={onListItemClick}
+          footer={{
+            content: "Add Project",
+            onClick: addProjectHandler,
+          }}
           toggle_menu={(visible) => (
             <>
               <div className="dashboard-sidebar-item-icon white">
@@ -95,6 +117,11 @@ const SideBar = (props) => {
       <div className="dashboard-sidebar-item dropdown">
         <SideBarDropDown
           items={fetchLabelState().labels}
+          onItemClick={onListItemClick}
+          footer={{
+            content: "Add Label",
+            onClick: addLabelHandler,
+          }}
           toggle_menu={(visible) => (
             <>
               <div className="dashboard-sidebar-item-icon">
@@ -125,6 +152,31 @@ const SideBar = (props) => {
           </div>
         </div>
       </Link>
+      <AppModal
+        showIt={showModal}
+        setShowIt={setShowModal}
+        onClose={() => null}
+      >
+        {() => (
+          <div className="nothing but modal">
+            <div className="heading_4">
+              <p>Add Project</p>
+            </div>
+            <div className="generic_input lightFont mv-20">
+              <input type="text" placeholder="Project Name" />
+            </div>
+            <ColorPicker />
+            <div className="flex mt-40">
+              <AppButton
+                primary
+                label="Create"
+                style={{ marginRight: "10px" }}
+              />
+              <AppButton label="Cancel" />
+            </div>
+          </div>
+        )}
+      </AppModal>
       {/*<div className="dashboard-sidebar-item dropdown">*/}
       {/*  <SideBarDropDown*/}
       {/*    items={filters}*/}
@@ -152,4 +204,4 @@ const SideBar = (props) => {
   );
 };
 
-export default SideBar;
+export default withRouter(SideBar);

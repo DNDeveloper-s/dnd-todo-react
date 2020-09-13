@@ -228,7 +228,7 @@
   transition: $generic-transition;
 
   &:hover {
-    background-color: $pale_blue;
+    background-color: $very_light_blue;
   }
 }
 
@@ -373,7 +373,6 @@
 .generic_input {
   position: relative;
   width: 100%;
-  border-bottom: 1px solid $black-30;
 
   label {
     font-size: 1.6rem;
@@ -394,13 +393,33 @@
     font-weight: 600;
     font-family: $Lato_Regular;
     color: $primary;
+    border-bottom: 1px solid $black-30;
+    transition: $generic-transition;
+
+    &:focus {
+      border-bottom: 1px solid $purple;
+    }
 
     &:focus,
     &:valid {
-
       ~ label {
         top: -6px;
       }
+    }
+  }
+}
+
+.lightFont {
+
+  input {
+    font-weight: 400;
+    color: $black-70;
+    font-family: $Lato_Regular;
+
+    &::-webkit-input-placeholder {
+      font-weight: 400;
+      color: $black-40;
+      font-family: $Lato_Regular;
     }
   }
 }

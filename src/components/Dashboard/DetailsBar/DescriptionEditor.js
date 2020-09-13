@@ -12,6 +12,7 @@ import LabelItemComponent from "../../UI/TagInput/LabelItemComponent";
 import { UPDATE_TASK } from "../../../features/taskSlice";
 import { useDispatch } from "react-redux";
 import useLabels from "../../../hooks/useLabels";
+import useTasks from "../../../hooks/useTasks";
 
 // const {hasCommandModifier} = KeyBindingUtil;
 
@@ -31,8 +32,8 @@ const DescriptionEditor = ({
 }) => {
   const [labelSuggestions, setLabelSuggestions] = useState(labelsData);
   const plugins = [mentionPlugin];
-  const dispatch = useDispatch();
   const { createLabel } = useLabels();
+  const { updateTask } = useTasks();
 
   function onChange(editorState) {
     setEditorState(editorState);
@@ -61,7 +62,7 @@ const DescriptionEditor = ({
           contentBlock.entityRanges[0].length
         ) + " ";
 
-      console.log(contentBlock.text);
+      // console.log(contentBlock.text);
 
       // Adding label to the task
       addLabelToTask(content.entityMap[0].data);
@@ -104,12 +105,10 @@ const DescriptionEditor = ({
       allowDuplicates: false,
     });
 
-    dispatch(
-      UPDATE_TASK({
-        taskId: task.id,
-        labelIds: newTaskLabelIds,
-      })
-    );
+    updateTask({
+      taskId: task.id,
+      labelIds: newTaskLabelIds,
+    });
   }
 
   return (

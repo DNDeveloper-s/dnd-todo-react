@@ -12,6 +12,7 @@ import PriorityLowIcon from "../icons/PriorityLowIcon";
 import PriorityMediumIcon from "../icons/PriorityMediumIcon";
 import PriorityHighIcon from "../icons/PriorityHighIcon";
 import { priorities } from "./data";
+import { constants } from "./constants";
 
 /**
  *
@@ -283,8 +284,16 @@ export const isToday = (date) => {
   let a = moment(getMomentDateWithTime(date));
   let b = moment().get();
   if (a.diff(b, "days") !== 0) return false;
-  console.log(a.get("date"), b.get("date"));
   return a.get("date") - b.get("date") === 0;
+};
+
+export const withinWeek = (date, isFullDay) => {
+  let a = moment(getMomentDateWithTime(date));
+  let b = moment().set({ hour: 0, minute: 0 });
+  if (!isFullDay) {
+    b = moment().set({ hour: a.get("hour"), minute: a.get("minute") });
+  }
+  return a.diff(b, "days") <= 7 && a.diff(b, "days") >= 0;
 };
 
 /**
@@ -502,4 +511,24 @@ export const jumpToDate = (task, params) => {
   let date = moment().set({ hour: taskTime.hours, minute: taskTime.minutes });
   if (params) date = date.add(...params);
   return date;
+};
+/**
+ *
+ * @param typeId
+ * @param scopeId
+ * @param tasksUnderIdFn
+ * @returns {string|React.DetailedHTMLFactory<React.HTMLAttributes<HTMLElement>, HTMLElement>|React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>|string|*}
+ */
+export const getDataViaParams = ({ typeId, scopeId }, tasksUnderIdFn) => {
+  const dataAccToParams = {
+    "all-today": { header: "Today", filter: "today" },
+    "all-calendar": { header: "Calendar" },
+    "all-week": { header: "Next 7 days", filter: "week" },
+    "all-trash": { header: "Trash", filter: "trash" },
+  };
+  if (typeId === "all") {
+    const data = dataAccToParams[typeId + constants.SEPARATOR + scopeId];
+    return tasksUnderIdFn(typeId, scopeId, data);
+  }
+  return tasksUnderIdFn(typeId, scopeId);
 };

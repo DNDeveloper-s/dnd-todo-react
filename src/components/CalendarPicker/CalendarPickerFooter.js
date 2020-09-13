@@ -64,7 +64,7 @@ const CalendarPickerFooter = ({
       // Else
       // Adding it
       else {
-        console.log(updatedReminder);
+        // console.log(updatedReminder);
         updatedReminder.push(reminderList[reminderIndex]);
       }
       updatedReminder.sort((a, b) => {

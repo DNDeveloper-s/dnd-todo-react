@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { v4 as uuidV4 } from "uuid";
+import { useParams } from "react-router";
 import DoubleAddIcon from "../../../../icons/DoubleAddIcon";
 import TagInput from "../../../UI/TagInput/TagInput";
 import {
@@ -11,33 +12,46 @@ import {
 } from "../../../../helpers/utils";
 import AddTaskOptions from "./AddTaskOptions";
 import { priorities } from "../../../../helpers/data";
-import CalendarDropdown from "../../../UI/CalendarDropdown/CalendarDropdown";
 import useLabels from "../../../../hooks/useLabels";
 import useProjects from "../../../../hooks/useProjects";
 import useTasks from "../../../../hooks/useTasks";
 import useMoment from "../../../../hooks/useMoment";
 import AddTaskCalendar from "./AddTaskCalendar";
+import useSortTasks from "../../../../hooks/useSortTasks";
 
 const AddTask = () => {
+  const params = useParams();
   const { moment } = useMoment();
   const { fetchLabelState } = useLabels();
   const { createTask } = useTasks();
-  const { curProject } = useProjects();
-  const { addTaskToLabel, createLabel } = useLabels();
+  const { curProject, addTaskToProject } = useProjects();
+  const { createLabel, addTaskToLabel } = useLabels();
   const [selectedProjectId, setSelectedProjectId] = useState("inbox");
   const [priority, setPriority] = useState(priorities[3]);
   const [dateData, setDateData] = useState(null);
   const [focusInput, setFocusInput] = useState(true);
+  const { typeById } = useSortTasks();
   const editorRef = useRef(null);
+
+  useEffect(() => {
+    console.log(params);
+    const { typeId, scopeId } = params;
+    const { type } = typeById(typeId);
+    if (type === "project") {
+      setSelectedProjectId(typeId);
+      setDateData(null);
+    }
+    if (scopeId === "today" || scopeId === "week") {
+      setSelectedProjectId("inbox");
+      setDateData({ date: moment().toISOString() });
+    }
+  }, [params]);
 
   // const todayDate = {
   //   date: moment().get().set({ hour: 0, minute: 0, second: 0 }).toString(),
   //   dueOver: false,
   //   diff: "Today",
   // }
-  useEffect(() => {
-    console.log(dateData);
-  }, [dateData]);
 
   function parseTextFromRaw(entityRanges, text) {
     const parsedTextArr = [];
@@ -86,11 +100,6 @@ const AddTask = () => {
     // Label Content
     const labelIds = parseEntities(content, taskId);
 
-    // Updating Label tasks
-    labelIds.forEach((labelId) => {
-      addTaskToLabel(labelId, taskId);
-    });
-
     // Project Content
     const projectId = selectedProjectId;
 
@@ -110,13 +119,19 @@ const AddTask = () => {
       projectId,
       priority: priority.ind,
       startDate,
+      createdAt: moment().toISOString(),
       reminders: convertRemindersToTriggers(dateData?.reminders),
       isFullDay,
     });
 
+    // Adding the task to labels
+    labelIds.forEach((labelId) => addTaskToLabel(labelId, taskId));
+
+    // Adding the task to projects
+    addTaskToProject(projectId, taskId);
+
     // Setting dateData to null for the calendar actions
     setDateData(null);
-    setSelectedProjectId("inbox");
     setPriority(priorities[3]);
 
     cb();

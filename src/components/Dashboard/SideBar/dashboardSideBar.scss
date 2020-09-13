@@ -113,6 +113,16 @@ $SIDEBAR_DROPDOWN_ITEM_HEIGHT: 45px;
         @include butLast(border-bottom, 1px solid $white-10);
         user-select: none;
 
+        &.footer {
+          //border: 1px solid white;
+          background-color: $black-70;
+
+          .dashboard-sidebar-dropdown-item-label {
+            color: #ffd966;
+            font-family: $Lato_Bold;
+          }
+        }
+
         &:hover {
           background-color: $black-30;
         }

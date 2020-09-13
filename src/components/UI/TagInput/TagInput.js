@@ -1,5 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
-import { convertToRaw, EditorState } from "draft-js";
+import React, { useEffect, useState } from "react";
+import {
+  convertToRaw,
+  convertFromRaw,
+  Modifier,
+  SelectionState,
+  EditorState,
+} from "draft-js";
 import Editor from "draft-js-plugins-editor";
 import createSingleLinePlugin from "draft-js-single-line-plugin";
 import createMentionPlugin, {
@@ -13,7 +19,6 @@ import { getFilteredLabels } from "../../../helpers/utils";
 import ProjectItemComponent from "./ProjectItemComponent";
 
 const mentionPlugin = createMentionPlugin({
-  entityMutability: "IMMUTABLE",
   mentionPrefix: "#",
   mentionTrigger: "#",
   mentionComponent: LabelItemComponent,
@@ -57,6 +62,39 @@ const TagInput = ({
   // const plugins = [mentionPlugin, projectsPlugin, priorityPlugin, singleLinePlugin];
   const plugins = [mentionPlugin, singleLinePlugin];
 
+  useEffect(() => {
+    // const entityObj = {
+    //   avatar: "",
+    //   color: "red",
+    //   icon: "LabelIcon",
+    //   id: "my-label",
+    //   name: "MyLabel",
+    //   type: "label",
+    // };
+    // const rawContent = {
+    //   blocks: [
+    //     {
+    //       text: "MyLabel ",
+    //       type: "unstyled",
+    //       entityRanges: [{ offset: 0, length: 6, key: "MyLabel" }],
+    //     },
+    //   ],
+    //   entityMap: {
+    //     0: {
+    //       data: { mention: entityObj },
+    //       mutability: "IMMUTABLE",
+    //       type: "#mention",
+    //     },
+    //   },
+    // };
+    //
+    // const contentState = convertFromRaw(rawContent);
+    //
+    // console.log(convertToRaw(contentState));
+    //
+    // setEditorState(EditorState.createWithContent(contentState));
+  }, []);
+
   function handleReturn() {
     const contentState = editorState.getCurrentContent();
     const raw = convertToRaw(contentState);
@@ -85,6 +123,9 @@ const TagInput = ({
   }
 
   function onAddLabel(entry) {
+    const contentState = editorState.getCurrentContent();
+    const raw = convertToRaw(contentState);
+    console.log(raw);
     console.log("Mention added!", entry);
   }
 

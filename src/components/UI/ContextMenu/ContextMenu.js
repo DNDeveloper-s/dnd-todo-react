@@ -68,7 +68,6 @@ const ContextMenu = ({ item, listenerRef, onClose = () => null }) => {
   }
 
   function onRecurrenceSelect(recurrenceObj) {
-    console.log(recurrenceObj);
     updateTask({
       taskId: item.id,
       startDate: jumpToDate(item, recurrenceObj.params).toISOString(),

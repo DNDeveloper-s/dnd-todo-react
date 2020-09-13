@@ -48,7 +48,7 @@ const DetailsBar = (props) => {
   } = props;
 
   useEffect(() => {
-    console.log(props);
+    // console.log(props);
     if (typeof params === "object") {
       // Updating the task
       updateActiveTask(params.taskId);
@@ -94,7 +94,7 @@ const DetailsBar = (props) => {
         status: 0,
         content: block.text,
       }));
-      setEditorState(EditorState.createEmpty());
+      setEditorState(require("draftjs-utils").clearEditorContent(editorState));
     } else {
       content.blocks.push(
         ...curTask(fetchActiveTask()).items.map((item) => ({
@@ -139,9 +139,10 @@ const DetailsBar = (props) => {
     updateStatus(fetchActiveTask(), isActive);
   }
 
-  function onPrioritySelect(priorityObj) {
-    console.log("Nice one");
+  function onPrioritySelect(priorityObj, setVisible) {
+    // console.log("Nice one");
     updateTask({ taskId: fetchActiveTask(), priority: priorityObj.ind });
+    setVisible(false);
   }
 
   return curTask(fetchActiveTask()) ? (
@@ -178,7 +179,7 @@ const DetailsBar = (props) => {
                   className={
                     "flexCentered justifyStart itemHoverEffect pointer pv-10 pl-10 pr-20"
                   }
-                  onClick={() => onPrioritySelect(priority)}
+                  onClick={() => onPrioritySelect(priority, setVisible)}
                 >
                   <div className="flexCentered mr-10" style={{ zoom: 0.8 }}>
                     <priority.IconComponent />

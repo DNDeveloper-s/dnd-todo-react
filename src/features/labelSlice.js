@@ -10,7 +10,7 @@ export const labelSlice = createSlice({
         "label-1": {
           id: "label-1",
           type: "label",
-          taskIds: [],
+          taskIds: ["task-1"],
           icon: "LabelIcon",
           color: colors[0].value,
           content: "5 minutes",
@@ -18,7 +18,7 @@ export const labelSlice = createSlice({
         "label-2": {
           id: "label-2",
           type: "label",
-          taskIds: [],
+          taskIds: ["task-1"],
           icon: "LabelIcon",
           color: colors[1].value,
           content: "Daily basis",
@@ -26,7 +26,7 @@ export const labelSlice = createSlice({
         "label-3": {
           id: "label-3",
           type: "label",
-          taskIds: [],
+          taskIds: ["task-2"],
           icon: "LabelIcon",
           color: colors[2].value,
           content: "Work",
@@ -34,7 +34,7 @@ export const labelSlice = createSlice({
         "label-4": {
           id: "label-4",
           type: "label",
-          taskIds: [],
+          taskIds: ["task-2"],
           icon: "LabelIcon",
           color: colors[3].value,
           content: "Upcoming",
@@ -81,14 +81,20 @@ export const labelSlice = createSlice({
     },
     ADD_LABEL_TASK: (state, action) => {
       const { taskId, labelId } = action.payload;
-      state.labels.data[labelId].taskIds.push(taskId);
+      const taskIds = state.labels.data[labelId].taskIds;
+      const doesExist = taskIds.some((id) => id === taskId);
+      if (!doesExist) state.labels.data[labelId].taskIds.push(taskId);
     },
     REMOVE_LABEL_TASK: (state, action) => {
       const { taskId, labelId } = action.payload;
-      state.labels.data[labelId].taskIds = removeItemByIdInArray(
-        state.labels.data[labelId].taskIds,
-        taskId
-      );
+      const taskIds = state.labels.data[labelId].taskIds;
+      const doesExist = taskIds.some((id) => id === taskId);
+      if (doesExist) {
+        state.labels.data[labelId].taskIds = removeItemByIdInArray(
+          state.labels.data[labelId].taskIds,
+          taskId
+        );
+      }
     },
   },
 });

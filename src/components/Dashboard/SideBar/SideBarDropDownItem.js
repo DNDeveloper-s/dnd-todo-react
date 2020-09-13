@@ -6,9 +6,12 @@ import ProjectsIcon from "../../../icons/ProjectsIcon";
 
 // Images Imports
 
-const SideBarDropDownItem = ({ item }) => {
+const SideBarDropDownItem = ({ item, onClick }) => {
   return (
-    <div className="dashboard-sidebar-dropdown-item">
+    <div
+      className="dashboard-sidebar-dropdown-item"
+      onClick={() => onClick(item)}
+    >
       {item.type === "label" && (
         <div className="dashboard-sidebar-dropdown-item-icon">
           <LabelIcon fill={item.color} />
