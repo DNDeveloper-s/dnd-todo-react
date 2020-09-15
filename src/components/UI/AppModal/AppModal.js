@@ -12,6 +12,7 @@ const AppModal = ({
   style,
   showIt,
   setShowIt,
+  innerRef,
 }) => {
   const [visible, setVisible] = useState(false);
   const modalRef = useRef(null);
@@ -31,10 +32,8 @@ const AppModal = ({
   }, [visible]);
 
   useEffect(() => {
-    if (showIt) {
-      setVisible(true);
-      setShowEl(true);
-    }
+    setVisible(Boolean(showIt));
+    if (showIt) setShowEl(true);
   }, [showIt]);
 
   async function hide() {
@@ -64,7 +63,7 @@ const AppModal = ({
           />
         )}
         <div className="app-modal" style={style} ref={modalRef}>
-          {children(setVisible)}
+          {children(setVisible, innerRef)}
         </div>
       </>,
       document.getElementById("modal-root")

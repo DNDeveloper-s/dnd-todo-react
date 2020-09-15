@@ -93,6 +93,12 @@ export const projectSlice = createSlice({
       };
       state.projects.entities.push(id);
     },
+    UPDATE_PROJECT: (state, action) => {
+      const { projectId, color, content } = action.payload;
+      const curProject = state.projects.data[projectId];
+      curProject.color = color || curProject.color;
+      curProject.content = content || curProject.content;
+    },
     ADD_PROJECT_TASK: (state, action) => {
       const { taskId, projectId } = action.payload;
       const taskIds = state.projects.data[projectId].taskIds;
@@ -104,7 +110,11 @@ export const projectSlice = createSlice({
   },
 });
 
-export const { ADD_PROJECT_TASK, CREATE_PROJECT } = projectSlice.actions;
+export const {
+  ADD_PROJECT_TASK,
+  CREATE_PROJECT,
+  UPDATE_PROJECT,
+} = projectSlice.actions;
 
 // Selectors
 export const getAllProjects = (store) => store.project.projects;

@@ -19,7 +19,7 @@ const DNDList = (props) => {
     setDragState,
   } = useTreeDataUtils();
   const { fetchActiveTask, updateStatus } = useTasks();
-  const { getAlLTasksUnderId } = useSortTasks();
+  const { getAlLTasksUnderId, typeByParams } = useSortTasks();
   const { focusId, setFocusId } = useFocus(null);
   const {
     match: { params },

@@ -4,6 +4,22 @@ import useOutsideAlerter from "../../../hooks/useOutsideAlerter";
 import DropdownItem from "./DropdownItem";
 import PropTypes from "prop-types";
 
+/**
+ * @deprecated
+ * @param handle
+ * @param direction
+ * @param initialValue
+ * @param containerStyle
+ * @param items
+ * @param onItemSelect
+ * @param ItemComponent
+ * @param ItemHeader
+ * @param ItemFooter
+ * @param onClose
+ * @returns {JSX.Element}
+ * @constructor
+ */
+
 const Dropdown = ({
   handle,
   direction,

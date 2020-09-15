@@ -7,8 +7,8 @@ import { isToday, withinWeek } from "../helpers/utils";
 
 const useSortTasks = () => {
   const { allTaskIds, curTask, fetchTaskState } = useTasks();
-  const { fetchAllProjectIds, curProject } = useProjects();
-  const { fetchAllLabelIds, curLabel } = useLabels();
+  const { fetchAllProjectIds, curProject, projectTaskIds } = useProjects();
+  const { fetchAllLabelIds, curLabel, labelTaskIds } = useLabels();
   const getAlLTasksUnderId = (id, scopeId, dataAccToParams) => {
     if (id === "all") {
       let filters = { status: { completed: false }, deleted: 0 };
@@ -30,7 +30,7 @@ const useSortTasks = () => {
         type: "project",
         data: {
           ...curProject(id),
-          taskIds: customSort(convertItToTaskOrder(curProject(id).taskIds)),
+          taskIds: projectTaskIds(id),
           // taskIds: convertItToTaskOrder(curProject(id).taskIds).reverse(),
         },
         filters: { status: { completed: false }, deleted: 0 },
@@ -42,7 +42,7 @@ const useSortTasks = () => {
         type: "label",
         data: {
           ...curLabel(id),
-          taskIds: curLabel(id).taskIds,
+          taskIds: labelTaskIds(id),
         },
         filters: { status: { completed: false }, deleted: 0 },
       };
@@ -52,10 +52,16 @@ const useSortTasks = () => {
 
   const typeById = (id) => {
     let isProject = fetchAllProjectIds(true).find((c) => c === id);
-    if (isProject) return { type: "project" };
+    if (isProject) return { type: "project", id };
     let isLabel = fetchAllLabelIds().find((c) => c === id);
-    if (isLabel) return { type: "label" };
+    if (isLabel) return { type: "label", id };
     return { type: null };
+  };
+
+  const typeByParams = (params) => {
+    const { typeId, scopeId } = params;
+    if (typeId === "all") return { type: "all", id: scopeId };
+    return typeById(typeId);
   };
 
   const convertItToTaskOrder = (taskIds) =>
@@ -117,6 +123,7 @@ const useSortTasks = () => {
     sortViaTrash,
     sortViaWithinWeek,
     typeById,
+    typeByParams,
   };
 };
 

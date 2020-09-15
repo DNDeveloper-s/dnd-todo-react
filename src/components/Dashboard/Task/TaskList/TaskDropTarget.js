@@ -24,7 +24,6 @@ function dropFn(onDrop, dropAs, monitor) {
 
   // Obtain the dragged item
   const item = monitor.getItem();
-
   // You can do something with it
   onDrop(item, dropAs);
 

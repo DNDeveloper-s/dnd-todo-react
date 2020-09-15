@@ -22,6 +22,7 @@ import {
   getCommonFormatDate,
   isDueOver,
 } from "../../../../helpers/utils";
+import ListItemContextMenu from "./ListItemContextMenu";
 
 /**
  * Specifies the drag source contract.
@@ -114,6 +115,7 @@ function ListItem({
       droppedId: item.id,
       dropAsType: dropAsType,
       dragFrom: droppedItem.dragFrom,
+      tab: droppedItem.tab,
     });
   }
 
@@ -318,7 +320,9 @@ function ListItem({
             ))}
         </div>
       )}
-      {contextRef && <ContextMenu item={item} listenerRef={contextRef} />}
+      {contextRef && (
+        <ListItemContextMenu item={item} listenerRef={contextRef} />
+      )}
     </>
   );
 }

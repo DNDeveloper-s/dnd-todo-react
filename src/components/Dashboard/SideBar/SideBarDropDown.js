@@ -9,6 +9,7 @@ import AddCircularIcon from "../../../icons/AddCircularIcon";
 const SIDEBAR_DROPDOWN_ITEM_HEIGHT = 45;
 
 const SideBarDropDown = ({
+  contextMenu,
   toggle_menu,
   items = { entities: [] },
   onItemClick,
@@ -22,6 +23,7 @@ const SideBarDropDown = ({
 
   const dropdownItems = items.entities.map((item) => (
     <SideBarDropDownItem
+      contextMenu={contextMenu}
       item={items.data[item]}
       key={item}
       onClick={onItemClick}

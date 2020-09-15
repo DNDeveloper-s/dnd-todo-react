@@ -5,10 +5,12 @@ import {
   getLabelState,
 } from "../features/labelSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { getTasks } from "../features/taskSlice";
 
 const useLabels = () => {
   const dispatch = useDispatch();
   const labelState = useSelector(getLabelState);
+  const taskState = useSelector(getTasks);
 
   const fetchLabelState = () => labelState;
 
@@ -32,6 +34,11 @@ const useLabels = () => {
     dispatch(REMOVE_LABEL_TASK({ labelId, taskId }));
   }
 
+  const labelTaskIds = (labelId) =>
+    taskState.taskOrder.filter((taskId) =>
+      taskState.tasks[taskId].labelIds.includes(labelId)
+    );
+
   const curLabel = (labelId) => labelState.labels.data[labelId];
 
   const fetchAllLabelIds = () => [...fetchLabelState().labels.entities];
@@ -42,6 +49,7 @@ const useLabels = () => {
     curLabel,
     fetchLabelState,
     fetchAllLabelIds,
+    labelTaskIds,
     removeTaskFromLabel,
   };
 };

@@ -34,7 +34,6 @@ const AddTask = () => {
   const editorRef = useRef(null);
 
   useEffect(() => {
-    console.log(params);
     const { typeId, scopeId } = params;
     const { type } = typeById(typeId);
     if (type === "project") {

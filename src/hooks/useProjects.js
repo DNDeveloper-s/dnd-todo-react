@@ -1,12 +1,32 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { ADD_PROJECT_TASK, getProjectState } from "../features/projectSlice";
+import {
+  ADD_PROJECT_TASK,
+  CREATE_PROJECT,
+  UPDATE_PROJECT,
+  getProjectState,
+} from "../features/projectSlice";
+import { getTasks } from "../features/taskSlice";
 
 const useProjects = () => {
   const projectState = useSelector(getProjectState);
+  const taskState = useSelector(getTasks);
   const dispatch = useDispatch();
 
   const fetchProjectState = () => projectState;
+
+  const createProject = (projectObj) => {
+    dispatch(CREATE_PROJECT(projectObj));
+  };
+
+  const updateProject = (projectObj) => {
+    dispatch(UPDATE_PROJECT(projectObj));
+  };
+
+  const projectTaskIds = (projectId) =>
+    taskState.taskOrder.filter(
+      (taskId) => taskState.tasks[taskId].projectId === projectId
+    );
 
   const curProject = (projectId) => projectState.projects.data[projectId];
 
@@ -27,7 +47,10 @@ const useProjects = () => {
     addTaskToProject,
     fetchAllProjectIds,
     fetchProjectState,
+    projectTaskIds,
     curProject,
+    createProject,
+    updateProject,
   };
 };
 

@@ -8,9 +8,8 @@ import AppButton from "../UI/AppButton";
 import DotsMenuHorizontal from "../../icons/DotsMenuHorizontal";
 import useOutsideAlerter from "../../hooks/useOutsideAlerter";
 
-const ColorPicker = () => {
+const ColorPicker = ({ activeColor, setActiveColor }) => {
   const { visible, setVisible, ref } = useOutsideAlerter(false);
-  const [activeColor, setActiveColor] = useState(null);
   const [moreColor, setMoreColor] = useState(null);
 
   const colorItems = colors.map((color) => (

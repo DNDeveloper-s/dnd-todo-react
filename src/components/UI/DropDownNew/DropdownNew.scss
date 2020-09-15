@@ -1,0 +1,33 @@
+#dropdown-root {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.dropdown {
+
+  &-holder {
+    position: absolute;
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.14), 0 0 10px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-5px);
+    animation: showContextMenu .2s cubic-bezier(.66, .14, .19, 1.02) forwards;
+    min-width: 20rem;
+  }
+}
+
+@keyframes showContextMenu {
+  0% {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-5px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0px);
+    pointer-events: auto;
+  }
+}

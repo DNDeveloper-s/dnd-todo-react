@@ -1,5 +1,4 @@
-import React, { useEffect } from "react";
-// import CalendarPicker from "./components/CalendarPicker/CalendarPicker";
+import React from "react";
 import NavBar from "./components/Dashboard/NavBar/NavBar";
 import "./styles/helpers/main.scss";
 import Dashboard from "./components/Dashboard/Dashboard";
@@ -29,7 +28,7 @@ function App() {
                 </>
               )}
             />
-            <Redirect to="/app/inbox" />
+            <Redirect to="/app/inbox/tasks" />
           </Switch>
         </DndProvider>
       </Provider>
