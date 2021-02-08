@@ -1,0 +1,64 @@
+@import "../../../styles/utilities/mixins";
+@import "../../../styles/utilities/variables";
+
+.ActiveTaskLabel {
+  width: 100%;
+  //background-color: $black-10;
+  background-color: $primary;
+  border-radius: 4px;
+  padding: 10px 15px;
+  //color: #626262;
+  color: #d6d5d5;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+
+  &.leftBorder {
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      transform: translateY(-50%);
+      width: 4px;
+      height: 100%;
+      border-radius: 20px 0 0 20px;
+      background: $purple;
+    }
+  }
+}
+
+.ActivityMessage {
+  align-self: flex-start;
+  max-width: 330px;
+}
+
+.ActivityUpdatedData {
+  color: #7cc97b;
+  font-size: 14px;
+  background-color: #1d1d1d8a;
+  display: inline-block;
+  padding: 2px 4px;
+  border-radius: 3px;
+  margin-left: 5px;
+  //overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.ActivityOldData {
+  color: #e48585;
+  font-size: 14px;
+  text-decoration: line-through;
+  background-color: #1d1d1d8a;
+  display: inline-block;
+  padding: 2px 4px;
+  border-radius: 3px;
+  margin-left: 5px;
+  margin-top: 2px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 250px;
+}

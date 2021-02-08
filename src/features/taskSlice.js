@@ -1,271 +1,273 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { constants } from "../helpers/constants";
 import { isDefined } from "../helpers/utils";
+import moment from "moment";
 
 export const taskSlice = createSlice({
   name: "task",
   initialState: {
     tasks: {
-      "task-1": {
-        id: "task-1",
-        priority: 0,
-        deleted: 0,
-        isFullDay: true,
-        projectId: "inbox",
-        labelIds: ["label-1", "label-2"],
-        elClasses: [],
-        status: { completed: false, prevPath: null },
-        content: "This is my first task. Be Gentle",
-        repeatFirstDate: JSON.stringify(new Date(2020, 8, 25)),
-        inItemMode: true,
-        items: [
-          { id: "1", content: "First Item", status: 0 },
-          { id: "2", content: "Second Item", status: 0 },
-          { id: "3", content: "Third Item", status: 0 },
-        ],
-        childTasks: ["task-2", "task-3"],
-        parentTask: null,
-        expandCount: 3,
-      },
-      "task-2": {
-        id: "task-2",
-        priority: 0,
-        deleted: 0,
-        isFullDay: true,
-        projectId: "inbox",
-        labelIds: ["label-3", "label-4"],
-        elClasses: [],
-        status: { completed: false, prevPath: null },
-        content: "This is my second task. Never mind",
-        repeatFirstDate: JSON.stringify(new Date(2020, 8, 25)),
-        inItemMode: false,
-        items: [],
-        childTasks: ["task-4"],
-        parentTask: "task-1",
-        expandCount: 1,
-      },
-      "task-3": {
-        id: "task-3",
-        priority: 0,
-        deleted: 0,
-        isFullDay: true,
-        projectId: "inbox",
-        labelIds: [],
-        elClasses: [],
-        status: { completed: false, prevPath: null },
-        content: "This is my third task. I am improving",
-        repeatFirstDate: JSON.stringify(new Date(2020, 8, 25)),
-        inItemMode: false,
-        items: [],
-        childTasks: [],
-        parentTask: "task-1",
-        expandCount: 0,
-      },
-      "task-4": {
-        id: "task-4",
-        priority: 0,
-        deleted: 0,
-        isFullDay: true,
-        projectId: "inbox",
-        labelIds: [],
-        elClasses: [],
-        status: { completed: false, prevPath: null },
-        content: "This is my forth task. I feel confident now",
-        repeatFirstDate: JSON.stringify(new Date(2020, 8, 25)),
-        inItemMode: false,
-        items: [],
-        childTasks: [],
-        parentTask: "task-2",
-        expandCount: 0,
-      },
-      "task-5": {
-        id: "task-5",
-        priority: 0,
-        deleted: 0,
-        isFullDay: true,
-        projectId: "inbox",
-        labelIds: [],
-        elClasses: [],
-        status: { completed: false, prevPath: null },
-        content: "This is my fifth task. I can control this anyhow",
-        repeatFirstDate: JSON.stringify(new Date(2020, 8, 25)),
-        inItemMode: false,
-        items: [],
-        childTasks: ["task-6", "task-7", "task-8"],
-        parentTask: null,
-        expandCount: 0,
-      },
-      "task-6": {
-        id: "task-6",
-        priority: 0,
-        deleted: 0,
-        isFullDay: true,
-        projectId: "inbox",
-        labelIds: [],
-        elClasses: [],
-        status: { completed: false, prevPath: null },
-        content: "This is my sixth task, i guess. But does't matter now",
-        repeatFirstDate: JSON.stringify(new Date(2020, 8, 25)),
-        inItemMode: false,
-        items: [],
-        childTasks: [],
-        parentTask: "task-5",
-        expandCount: 0,
-      },
-      "task-7": {
-        id: "task-7",
-        priority: 0,
-        deleted: 0,
-        isFullDay: true,
-        projectId: "inbox",
-        labelIds: [],
-        elClasses: [],
-        status: { completed: false, prevPath: null },
-        content: "This is my forth tasks. I feel confident now",
-        repeatFirstDate: JSON.stringify(new Date(2020, 8, 25)),
-        inItemMode: false,
-        items: [],
-        childTasks: [],
-        parentTask: "task-5",
-        expandCount: 0,
-      },
-      "task-8": {
-        id: "task-8",
-        priority: 0,
-        deleted: 0,
-        isFullDay: true,
-        projectId: "inbox",
-        labelIds: [],
-        elClasses: [],
-        status: { completed: false, prevPath: null },
-        content: "This is my fifth tasks. I can control this anyhow",
-        repeatFirstDate: JSON.stringify(new Date(2020, 8, 25)),
-        inItemMode: false,
-        items: [],
-        childTasks: [],
-        parentTask: "task-5",
-        expandCount: 0,
-      },
-      "task-9": {
-        id: "task-9",
-        priority: 0,
-        deleted: 0,
-        isFullDay: true,
-        projectId: "inbox",
-        labelIds: [],
-        elClasses: [],
-        status: { completed: false, prevPath: null },
-        content: "This is my sixth tasks, i guess. But does't matter now",
-        repeatFirstDate: JSON.stringify(new Date(2020, 8, 25)),
-        inItemMode: false,
-        items: [],
-        childTasks: ["task-10", "task-11", "task-12"],
-        parentTask: null,
-        expandCount: 0,
-      },
-      "task-10": {
-        id: "task-10",
-        priority: 0,
-        deleted: 0,
-        isFullDay: true,
-        projectId: "inbox",
-        labelIds: [],
-        elClasses: [],
-        status: { completed: false, prevPath: null },
-        content: "This is my first tasks. Be Gentle",
-        repeatFirstDate: JSON.stringify(new Date(2020, 8, 25)),
-        inItemMode: false,
-        items: [],
-        childTasks: [],
-        parentTask: "task-9",
-        expandCount: 0,
-      },
-      "task-11": {
-        id: "task-11",
-        priority: 0,
-        deleted: 0,
-        isFullDay: true,
-        projectId: "inbox",
-        labelIds: [],
-        elClasses: [],
-        status: { completed: false, prevPath: null },
-        content: "This is my second tasks. Never mind",
-        repeatFirstDate: JSON.stringify(new Date(2020, 8, 25)),
-        inItemMode: false,
-        items: [],
-        childTasks: [],
-        parentTask: "task-9",
-        expandCount: 0,
-      },
-      "task-12": {
-        id: "task-12",
-        priority: 0,
-        deleted: 0,
-        isFullDay: true,
-        projectId: "inbox",
-        labelIds: [],
-        elClasses: [],
-        status: { completed: false, prevPath: null },
-        content: "This is my third tasks. I am improving",
-        repeatFirstDate: JSON.stringify(new Date(2020, 8, 25)),
-        inItemMode: false,
-        items: [],
-        childTasks: [],
-        parentTask: "task-9",
-        expandCount: 0,
-      },
-      "task-13": {
-        id: "task-13",
-        priority: 0,
-        deleted: 0,
-        isFullDay: true,
-        projectId: "inbox",
-        labelIds: [],
-        elClasses: [],
-        status: { completed: false, prevPath: null },
-        content: "This is my first tasks. Be Gentle",
-        repeatFirstDate: JSON.stringify(new Date(2020, 8, 25)),
-        inItemMode: false,
-        items: [],
-        childTasks: [],
-        parentTask: null,
-        expandCount: 0,
-      },
-      "task-14": {
-        id: "task-14",
-        priority: 0,
-        deleted: 0,
-        isFullDay: true,
-        projectId: "project-2",
-        labelIds: [],
-        elClasses: [],
-        status: { completed: false, prevPath: null },
-        content: "This is my second tasks. Never mind",
-        repeatFirstDate: JSON.stringify(new Date(2020, 8, 25)),
-        inItemMode: false,
-        items: [],
-        childTasks: [],
-        parentTask: null,
-        expandCount: 0,
-      },
-      "task-15": {
-        id: "task-15",
-        priority: 0,
-        deleted: 0,
-        isFullDay: true,
-        projectId: "inbox",
-        labelIds: [],
-        status: { completed: false, prevPath: null },
-        content: "This is my third tasks. I am improving",
-        repeatFirstDate: JSON.stringify(new Date(2020, 8, 25)),
-        inItemMode: false,
-        items: [],
-        childTasks: [],
-        parentTask: null,
-        expandCount: 0,
-      },
+      // "task-1": {
+      //   id: "task-1",
+      //   priority: 0,
+      //   deleted: 0,
+      //   isFullDay: true,
+      //   projectId: "inbox",
+      //   labelIds: ["label-1", "label-2"],
+      //   elClasses: [],
+      //   status: { completed: false, prevPath: null },
+      //   content: "This is my first task. Be Gentle",
+      //   repeatFirstDate: JSON.stringify(new Date(2020, 8, 25)),
+      //   inItemMode: true,
+      //   items: [
+      //     { id: "1", content: "First Item", status: 0 },
+      //     { id: "2", content: "Second Item", status: 0 },
+      //     { id: "3", content: "Third Item", status: 0 },
+      //   ],
+      //   childTasks: ["task-2", "task-3"],
+      //   parentTask: null,
+      //   expandCount: 3,
+      // },
+      // "task-2": {
+      //   id: "task-2",
+      //   priority: 0,
+      //   deleted: 0,
+      //   isFullDay: true,
+      //   projectId: "inbox",
+      //   labelIds: ["label-3", "label-4"],
+      //   elClasses: [],
+      //   status: { completed: false, prevPath: null },
+      //   content: "This is my second task. Never mind",
+      //   repeatFirstDate: JSON.stringify(new Date(2020, 8, 25)),
+      //   inItemMode: false,
+      //   items: [],
+      //   childTasks: ["task-4"],
+      //   parentTask: "task-1",
+      //   expandCount: 1,
+      // },
+      // "task-3": {
+      //   id: "task-3",
+      //   priority: 0,
+      //   deleted: 0,
+      //   isFullDay: true,
+      //   projectId: "inbox",
+      //   labelIds: [],
+      //   elClasses: [],
+      //   status: { completed: false, prevPath: null },
+      //   content: "This is my third task. I am improving",
+      //   repeatFirstDate: JSON.stringify(new Date(2020, 8, 25)),
+      //   inItemMode: false,
+      //   items: [],
+      //   childTasks: [],
+      //   parentTask: "task-1",
+      //   expandCount: 0,
+      // },
+      // "task-4": {
+      //   id: "task-4",
+      //   priority: 0,
+      //   deleted: 0,
+      //   isFullDay: true,
+      //   projectId: "inbox",
+      //   labelIds: [],
+      //   elClasses: [],
+      //   status: { completed: false, prevPath: null },
+      //   content: "This is my forth task. I feel confident now",
+      //   repeatFirstDate: JSON.stringify(new Date(2020, 8, 25)),
+      //   inItemMode: false,
+      //   items: [],
+      //   childTasks: [],
+      //   parentTask: "task-2",
+      //   expandCount: 0,
+      // },
+      // "task-5": {
+      //   id: "task-5",
+      //   priority: 0,
+      //   deleted: 0,
+      //   isFullDay: true,
+      //   projectId: "inbox",
+      //   labelIds: [],
+      //   elClasses: [],
+      //   status: { completed: false, prevPath: null },
+      //   content: "This is my fifth task. I can control this anyhow",
+      //   repeatFirstDate: JSON.stringify(new Date(2020, 8, 25)),
+      //   inItemMode: false,
+      //   items: [],
+      //   childTasks: ["task-6", "task-7", "task-8"],
+      //   parentTask: null,
+      //   expandCount: 0,
+      // },
+      // "task-6": {
+      //   id: "task-6",
+      //   priority: 0,
+      //   deleted: 0,
+      //   isFullDay: true,
+      //   projectId: "inbox",
+      //   labelIds: [],
+      //   elClasses: [],
+      //   status: { completed: false, prevPath: null },
+      //   content: "This is my sixth task, i guess. But does't matter now",
+      //   repeatFirstDate: JSON.stringify(new Date(2020, 8, 25)),
+      //   inItemMode: false,
+      //   items: [],
+      //   childTasks: [],
+      //   parentTask: "task-5",
+      //   expandCount: 0,
+      // },
+      // "task-7": {
+      //   id: "task-7",
+      //   priority: 0,
+      //   deleted: 0,
+      //   isFullDay: true,
+      //   projectId: "inbox",
+      //   labelIds: [],
+      //   elClasses: [],
+      //   status: { completed: false, prevPath: null },
+      //   content: "This is my forth tasks. I feel confident now",
+      //   repeatFirstDate: JSON.stringify(new Date(2020, 8, 25)),
+      //   inItemMode: false,
+      //   items: [],
+      //   childTasks: [],
+      //   parentTask: "task-5",
+      //   expandCount: 0,
+      // },
+      // "task-8": {
+      //   id: "task-8",
+      //   priority: 0,
+      //   deleted: 0,
+      //   isFullDay: true,
+      //   projectId: "inbox",
+      //   labelIds: [],
+      //   elClasses: [],
+      //   status: { completed: false, prevPath: null },
+      //   content: "This is my fifth tasks. I can control this anyhow",
+      //   repeatFirstDate: JSON.stringify(new Date(2020, 8, 25)),
+      //   inItemMode: false,
+      //   items: [],
+      //   childTasks: [],
+      //   parentTask: "task-5",
+      //   expandCount: 0,
+      // },
+      // "task-9": {
+      //   id: "task-9",
+      //   priority: 0,
+      //   deleted: 0,
+      //   isFullDay: true,
+      //   projectId: "inbox",
+      //   labelIds: [],
+      //   elClasses: [],
+      //   status: { completed: false, prevPath: null },
+      //   content: "This is my sixth tasks, i guess. But does't matter now",
+      //   repeatFirstDate: JSON.stringify(new Date(2020, 8, 25)),
+      //   inItemMode: false,
+      //   items: [],
+      //   childTasks: ["task-10", "task-11", "task-12"],
+      //   parentTask: null,
+      //   expandCount: 0,
+      // },
+      // "task-10": {
+      //   id: "task-10",
+      //   priority: 0,
+      //   deleted: 0,
+      //   isFullDay: true,
+      //   projectId: "inbox",
+      //   labelIds: [],
+      //   elClasses: [],
+      //   status: { completed: false, prevPath: null },
+      //   content: "This is my first tasks. Be Gentle",
+      //   repeatFirstDate: JSON.stringify(new Date(2020, 8, 25)),
+      //   inItemMode: false,
+      //   items: [],
+      //   childTasks: [],
+      //   parentTask: "task-9",
+      //   expandCount: 0,
+      // },
+      // "task-11": {
+      //   id: "task-11",
+      //   priority: 0,
+      //   deleted: 0,
+      //   isFullDay: true,
+      //   projectId: "inbox",
+      //   labelIds: [],
+      //   elClasses: [],
+      //   status: { completed: false, prevPath: null },
+      //   content: "This is my second tasks. Never mind",
+      //   repeatFirstDate: JSON.stringify(new Date(2020, 8, 25)),
+      //   inItemMode: false,
+      //   items: [],
+      //   childTasks: [],
+      //   parentTask: "task-9",
+      //   expandCount: 0,
+      // },
+      // "task-12": {
+      //   id: "task-12",
+      //   priority: 0,
+      //   deleted: 0,
+      //   isFullDay: true,
+      //   projectId: "inbox",
+      //   labelIds: [],
+      //   elClasses: [],
+      //   status: { completed: false, prevPath: null },
+      //   content: "This is my third tasks. I am improving",
+      //   repeatFirstDate: JSON.stringify(new Date(2020, 8, 25)),
+      //   inItemMode: false,
+      //   items: [],
+      //   childTasks: [],
+      //   parentTask: "task-9",
+      //   expandCount: 0,
+      // },
+      // "task-13": {
+      //   id: "task-13",
+      //   priority: 0,
+      //   deleted: 0,
+      //   isFullDay: true,
+      //   projectId: "inbox",
+      //   labelIds: [],
+      //   elClasses: [],
+      //   status: { completed: false, prevPath: null },
+      //   content: "This is my first tasks. Be Gentle",
+      //   repeatFirstDate: JSON.stringify(new Date(2020, 8, 25)),
+      //   inItemMode: false,
+      //   items: [],
+      //   childTasks: [],
+      //   parentTask: null,
+      //   expandCount: 0,
+      // },
+      // "task-14": {
+      //   id: "task-14",
+      //   priority: 0,
+      //   deleted: 0,
+      //   isFullDay: true,
+      //   projectId: "project-2",
+      //   labelIds: [],
+      //   elClasses: [],
+      //   status: { completed: false, prevPath: null },
+      //   content: "This is my second tasks. Never mind",
+      //   repeatFirstDate: JSON.stringify(new Date(2020, 8, 25)),
+      //   inItemMode: false,
+      //   items: [],
+      //   childTasks: [],
+      //   parentTask: null,
+      //   expandCount: 0,
+      // },
+      // "task-15": {
+      //   id: "task-15",
+      //   priority: 0,
+      //   deleted: 0,
+      //   isFullDay: true,
+      //   projectId: "inbox",
+      //   labelIds: [],
+      //   status: { completed: false, prevPath: null },
+      //   content: "This is my third tasks. I am improving",
+      //   repeatFirstDate: JSON.stringify(new Date(2020, 8, 25)),
+      //   inItemMode: false,
+      //   items: [],
+      //   childTasks: [],
+      //   parentTask: null,
+      //   expandCount: 0,
+      // },
     },
-    taskOrder: ["task-1", "task-5", "task-9", "task-13", "task-14", "task-15"],
+    // taskOrder: ["task-1", "task-5", "task-9", "task-13", "task-14", "task-15"],
+    taskOrder: [],
     actions: {
       dragState: {
         isDragging: false,
@@ -291,6 +293,7 @@ export const taskSlice = createSlice({
         startDate,
         reminders,
         isFullDay,
+        temporary
       } = action.payload;
       const newTaskObj = {
         id,
@@ -305,11 +308,13 @@ export const taskSlice = createSlice({
         inItemMode: false,
         items: [],
         childTasks: [],
+        activities: [],
         startDate,
         reminders,
         createdAt,
         isFullDay,
         deleted: 0,
+        temporary
       };
 
       // Case 1. If task has been added without any reference
@@ -447,16 +452,54 @@ export const taskSlice = createSlice({
       const itemIndex = curTask.items.findIndex((c) => c.id === itemId);
       curTask.items.splice(itemIndex, 1);
     },
+    MOVE_TO_PROJECT: (state, action) => {
+      const { taskId, projectId, path } = action.payload;
+      const curTask = state.tasks[taskId];
+      // Case 1. Moving from the highest level taskOrder
+      // In this case we don't need to anything special
+      // Case 2. Moving from the lower level
+      if (path.length > 1) {
+        // Here, We need to do one thing before moving to new project
+        // TODO 1. Add the task to taskOrder
+        state.taskOrder.splice(0, 0, taskId);
+
+        // TODO 2. Remove the task from the parent's childTasks array
+        const parentTask = state.tasks[curTask.parentTask];
+        // a. firstly getting the index of taskId in the parentTask's childTasks  Array
+        const indexOfTask = parentTask.childTasks.findIndex(
+          (c) => c === taskId
+        );
+        // b. now, its time to splice [remove] from the array
+        parentTask.childTasks.splice(indexOfTask, 1);
+
+        // TODO 3. Update the parentTask of the task
+        curTask.parentTask = null;
+      }
+
+      // This will happen no matter what eventually
+      moveToProjectRecursively(taskId);
+      function moveToProjectRecursively(taskId) {
+        const curTask = state.tasks[taskId];
+        curTask.projectId = projectId;
+
+        curTask.childTasks.forEach((childId) =>
+          moveToProjectRecursively(childId)
+        );
+      }
+    },
     UPDATE_TASK: (state, action) => {
       const {
         taskId,
+        contentIsUnsaved,
         items,
         inItemMode,
         labelIds,
         content,
+        projectId,
         deleted,
         priority,
         startDate,
+        temporary
       } = action.payload;
       const curTask = state.tasks[taskId];
       curTask.content = isDefined(content) ? content : curTask.content;
@@ -465,19 +508,23 @@ export const taskSlice = createSlice({
           ? inItemMode
           : curTask.inItemMode;
       curTask.items = items || curTask.items;
+      curTask.projectId = projectId || curTask.projectId;
       curTask.labelIds = labelIds || curTask.labelIds;
       curTask.priority = isDefined(priority) ? priority : curTask.priority;
       curTask.deleted = isDefined(deleted) ? deleted : curTask.deleted;
       curTask.startDate = startDate || curTask.startDate;
+      curTask.temporary = isDefined(temporary) ? temporary : curTask.temporary;
+      curTask.contentIsUnsaved = isDefined(contentIsUnsaved) ? contentIsUnsaved : curTask.contentIsUnsaved;
     },
     UPDATE_ITEM: (state, action) => {
-      const { taskId, itemId, content, status } = action.payload;
+      const { taskId, itemId, contentIsUnsaved, content, status } = action.payload;
       const itemIndex = state.tasks[taskId].items.findIndex(
         (i) => i.id === itemId
       );
       const curItem = state.tasks[taskId].items[itemIndex];
       curItem.content = isDefined(content) ? content : curItem.content;
       curItem.status = isDefined(status) ? status : curItem.status;
+      curItem.contentIsUnsaved = isDefined(contentIsUnsaved) ? contentIsUnsaved : curItem.contentIsUnsaved;
       curItem.completedAt = status === 1 ? new Date().toISOString() : null;
     },
     TOGGLE_EXPAND: (state, action) => {
@@ -518,8 +565,7 @@ export const taskSlice = createSlice({
       function addToInnerLevel() {
         // Adding to Inner Level
         // 1. Adding to Child Tasks
-        const droppedToParentId =
-          state.tasks[dest.path[dest.path.length - 2]].id;
+        const droppedToParentId = dest.path[dest.path.length - 2];
         const droppedIndex = state.tasks[
           droppedToParentId
         ].childTasks.findIndex((c) => c.toString() === dest.id);
@@ -643,6 +689,7 @@ export const taskSlice = createSlice({
       const { taskId, completed, curPath } = action.payload;
 
       if (completed) {
+        state.tasks[taskId].status.completedAt = moment().toISOString();
         state.tasks[taskId].status.completed = true;
       }
 
@@ -665,6 +712,7 @@ export const taskSlice = createSlice({
         for (let i = firstCompletedTask; i < curPath.length; i++) {
           state.tasks[curPath[i]].status.completed = false;
           state.tasks[curPath[i]].status.prevPath = null;
+          state.tasks[taskId].status.completedAt = null;
         }
       }
     },
@@ -701,6 +749,29 @@ export const taskSlice = createSlice({
         (c) => c !== taskId
       );
     },
+    LOAD_TASKS: (state, action) => {
+      const {tasks,taskOrder} = action.payload;
+      const taskObj = {};
+      tasks.forEach(task => {
+        taskObj[task._id] = task;
+        if(task.projectId === null) {
+          task.projectId = 'inbox';
+        }
+        taskObj[task._id].id = task._id;
+        task.status = {completed: false};
+      });
+      state.tasks = taskObj;
+      state.taskOrder = taskOrder;
+    },
+    DELETE_TASK_NEW: (state, action) => {
+      const {taskId} = action.payload;
+      state.tasks[taskId].deleted = 1;
+    },
+    LOAD_SINGLE_TASK: (state, action) => {
+      const {task} = action.payload;
+      state.tasks[task._id] = task;
+      state.tasks[task._id].id = task._id;
+    }
   },
 });
 
@@ -709,8 +780,13 @@ export const {
   DELETE_TASK,
   CREATE_TASK_ITEM,
   DELETE_TASK_ITEM,
+  DELETE_TASK_NEW,
   DROP_ITEM,
   DROP_TASK,
+  LOAD_SINGLE_TASK,
+  LOAD_TASKS,
+  MOVE_TO_PROJECT,
+  POST_ID_TO_TASK,
   TOGGLE_EXPAND,
   TRIGGER_REMINDER,
   UPDATE_ACTIVE_TASK,

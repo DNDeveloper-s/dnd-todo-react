@@ -1,4 +1,4 @@
-import React, { createRef, useRef, useState } from "react";
+import React, { createRef, useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import ColorPicker from "../ColorPicker/ColorPicker";
 import AppButton from "../UI/AppButton";
@@ -6,15 +6,20 @@ import AppModal from "../UI/AppModal/AppModal";
 import AppInput from "../UI/AppInput";
 
 const LabelModal = ({
-  initialData: { name: initialName, color: initialColor } = {},
+  initialData = {},
   onCancel,
   onSave,
   showModal,
   setShowModal,
 }) => {
-  const inputRef = createRef();
+  const { name: initialName, color: initialColor } = initialData;
   const [name, setName] = useState(initialName || "");
   const [color, setColor] = useState(initialColor || null);
+
+  useEffect(() => {
+    setName(initialData.name);
+    setColor(initialData.color);
+  }, [initialData]);
 
   function handleSave() {
     onSave({ name, color });
@@ -33,12 +38,13 @@ const LabelModal = ({
           </div>
           <AppInput
             onChange={setName}
-            value={name}
+            value={name || ""}
             containerClassNames={["lightFont", "mv-20"]}
             placeholder="Label Name"
+            handleReturn={handleSave}
           />
           <ColorPicker activeColor={color} setActiveColor={setColor} />
-          <div className="flex mt-40">
+          <div className="flex mt-40 relative">
             <AppButton
               label="Cancel"
               style={{ marginRight: "10px" }}

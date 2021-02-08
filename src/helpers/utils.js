@@ -1,18 +1,16 @@
 import produce from "immer";
 import moment from "moment";
-import { defaultSuggestionsFilter } from "draft-js-mention-plugin";
-import { v4 as uuidV4 } from "uuid";
-import { colors } from "../components/ColorPicker/helpers/colors";
-import {
-  remindersWithShortTime,
-  reminderWithLongTime,
-} from "../components/CalendarPicker/helpers/data";
+import {defaultSuggestionsFilter} from "draft-js-mention-plugin";
+import {ObjectID} from 'bson';
+import {colors} from "../components/ColorPicker/helpers/colors";
+import {remindersWithShortTime, reminderWithLongTime,} from "../components/CalendarPicker/helpers/data";
 import PriorityNoneIcon from "../icons/PriorityNoneIcon";
 import PriorityLowIcon from "../icons/PriorityLowIcon";
 import PriorityMediumIcon from "../icons/PriorityMediumIcon";
 import PriorityHighIcon from "../icons/PriorityHighIcon";
-import { priorities } from "./data";
-import { constants } from "./constants";
+import {priorities} from "./data";
+import {constants} from "./constants";
+import {spliceAt} from "./extends";
 
 /**
  *
@@ -321,7 +319,7 @@ export const getFilteredLabels = (value, labelsData) => {
   function addCreateLabel(suggestions, value) {
     const newSuggestionArr = Array.from(suggestions);
     const lastObj = {
-      id: uuidV4(),
+      id: new ObjectID().toString(),
       name: value.trim(),
       color: colors[getRandomInt(0, 15)].value,
       icon: "LabelIcon",
@@ -444,7 +442,7 @@ export const convertRemindersToTriggers = (rawReminders) => {
   // We are ready to loop through
   // and generate durations via moment
   return rawReminders.map((reminderObj) => {
-    const reminderId = uuidV4();
+    const reminderId = new ObjectID().toString();
     return { id: reminderId, trigger: reminderObj.duration };
   });
 };
@@ -487,12 +485,13 @@ export const decodeTaskDateForCalender = (task) => {
   };
 };
 
-export const getBoundaryCoords = (e, ref) => {
+export const getBoundaryData = (e, ref) => {
   let outOfBoundaryY = e.pageY + ref.current.clientHeight > window.innerHeight;
   let outOfBoundaryX = e.pageX + ref.current.clientWidth > window.innerWidth;
   return {
     x: outOfBoundaryX ? e.pageX - ref.current.clientWidth : e.pageX,
     y: outOfBoundaryY ? e.pageY - ref.current.clientHeight : e.pageY,
+    isOverflown: { x: outOfBoundaryX, y: outOfBoundaryY },
   };
 };
 
@@ -531,4 +530,134 @@ export const getDataViaParams = ({ typeId, scopeId }, tasksUnderIdFn) => {
     return tasksUnderIdFn(typeId, scopeId, data);
   }
   return tasksUnderIdFn(typeId, scopeId);
+};
+
+
+/**
+ *
+ * @description Generates unique identifier in Mongodb id format
+ * @returns {ObjectId}
+ */
+export const generateId = () => {
+  return new ObjectID().toString();
+};
+
+/**
+ *
+ * @param data
+ */
+export const formData = (data) => {
+  const form = {};
+  for(let key in data) {
+    if(data.hasOwnProperty(key))
+      form[key] = data[key].value;
+  }
+  return form;
+};
+
+/**
+ *
+ * @param arr
+ * @param key
+ * @returns {this}
+ */
+export const sortByDate = (arr, key) => {
+  let array = [...arr];
+  return array.sort((a, b) => {
+    if(a[key] < b[key]) return 1;
+    if(a[key] > b[key]) return -1;
+    return 0;
+  });
+};
+
+/**
+ *
+ * @param message
+ */
+
+export const createEntityString = (message) => {
+  // const message = {
+  //   text: " has been invited you to the project ",
+  //   entity: [
+  //     {id: '1', index: 0, el: 'span', classes: ["highlight"], data: {ref: 'User', id: 'currentUserId'}},
+  //     {id: '2', index: -1, el: 'span', classes: ["highlight"], data: {ref: 'Project', id: 'projectId'}},
+  //   ]
+  // };
+
+  let string = message.text;
+  let extendedLength = 0;
+  message.entity.forEach(entity => {
+    // Storing the data provided
+    const key = Object.keys(entity.data)[0];
+    const {fullName, content} = entity.data[key];
+    // Forming the string with html element and tags
+    const str = `<${entity.el} class="${entity.classes.join(' ')}">${fullName ? fullName : content}</${entity.el}>`;
+    // Updating the index according to update string
+    const index = entity.index >= 0 ? entity.index + extendedLength : string.length;
+    // Updating the string by slicing it
+    string = spliceAt(string, index, 0, str);
+    // Storing the updated length of the string
+    extendedLength += str.length;
+  });
+  return string;
+};
+
+/**
+ *
+ * @param users
+ * @param userStatus
+ */
+export const sortOnlineUsers = (users, userStatus) => {
+  function sortUsersViaStatus(users, userStatus) {
+
+    const arr = produce(users, (draftArr) => {
+      draftArr.sort((a, b) => {
+        if (!userStatus[a.user._id]) return 1;
+        if (userStatus[a.user._id].status === "offline") return 1;
+        if (userStatus[a.user._id].status === "online") return -1;
+        return 0;
+      });
+    });
+
+    return { arr, userStatus };
+  }
+
+  function sortUsersViaRole({ arr: users, userStatus }) {
+    // sorting edits and views
+    const arr1 = produce(users, (draftArr) => {
+      draftArr.sort((a, b) => {
+        if (!userStatus[a.user._id]) return 1;
+        if (userStatus[a.user._id].status === "offline") return 1;
+        if (userStatus[a.user._id].status === "online") {
+          if (a.role === "can_view") return 1;
+          if (a.role === "can_edit") return -1;
+        }
+        return 0;
+      });
+    });
+    // sorting owner
+    return produce(arr1, (draftArr) => {
+      draftArr.sort((a, b) => {
+        if (!userStatus[a.user._id]) return 1;
+        if (userStatus[a.user._id].status === "offline") return 1;
+        if (userStatus[a.user._id].status === "online") {
+          if (a.role !== "owner") return 1;
+          if (a.role === "owner") return -1;
+        }
+        return 0;
+      });
+    });
+  }
+
+  return sortUsersViaRole(sortUsersViaStatus(users, userStatus));
+};
+
+/**
+ *
+ * @param message
+ * @param item
+ * @param isError
+ */
+export const logMessage = (message, item, isError) => {
+  console.log("%c:: " + message + " ::", `background:${isError ? '#bf3d15' : '#15bf59'}; color:#fff`, item);
 };

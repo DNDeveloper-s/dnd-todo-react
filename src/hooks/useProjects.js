@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   ADD_PROJECT_TASK,
   CREATE_PROJECT,
+  DELETE_PROJECT,
   UPDATE_PROJECT,
   getProjectState,
 } from "../features/projectSlice";
@@ -17,6 +18,11 @@ const useProjects = () => {
 
   const createProject = (projectObj) => {
     dispatch(CREATE_PROJECT(projectObj));
+  };
+
+  const deleteProject = (projectId) => {
+    console.log('[useProjects.js || Line no. 24 ....]', projectId);
+    dispatch(DELETE_PROJECT({projectId}));
   };
 
   const updateProject = (projectObj) => {
@@ -50,6 +56,7 @@ const useProjects = () => {
     projectTaskIds,
     curProject,
     createProject,
+    deleteProject,
     updateProject,
   };
 };

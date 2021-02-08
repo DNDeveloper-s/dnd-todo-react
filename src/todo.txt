@@ -36,7 +36,6 @@ BUG - Label | on adding second label through description editor it is replacing 
 Work on Dates and Time			--- Done with dates and time and reminders
 Enhance Priority			-- Done
 Integrate Context Menu		-- Done
-
-
+Implement move to functionality -- Done
 
 TODO: Work with the repeats [rrule.js]

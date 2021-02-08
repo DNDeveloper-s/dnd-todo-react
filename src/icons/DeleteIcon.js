@@ -2,7 +2,7 @@ import * as React from "react";
 
 function DeleteIcon(props) {
   return (
-    <svg width={10} height={12} viewBox="0 0 10 12" fill="none" {...props}>
+    <svg width={10} height={12} viewBox="0 0 10 12" {...props}>
       <path
         fillRule="evenodd"
         clipRule="evenodd"

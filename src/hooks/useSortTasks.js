@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useCallback} from "react";
 import useProjects from "./useProjects";
 import useLabels from "./useLabels";
 import useTasks from "./useTasks";
@@ -9,7 +9,38 @@ const useSortTasks = () => {
   const { allTaskIds, curTask, fetchTaskState } = useTasks();
   const { fetchAllProjectIds, curProject, projectTaskIds } = useProjects();
   const { fetchAllLabelIds, curLabel, labelTaskIds } = useLabels();
-  const getAlLTasksUnderId = (id, scopeId, dataAccToParams) => {
+
+  const sortViaToday = useCallback((tasksArr) =>
+    // customSort(
+    tasksArr.filter((taskId) => {
+      const task = curTask(taskId);
+      if (!task.startDate) return false;
+      return isToday(task.startDate);
+    }), [curTask]);
+  // );
+
+  const sortViaWithinWeek = useCallback((tasksArr, excludeToday) =>
+    tasksArr.filter((taskId) => {
+      const task = curTask(taskId);
+      if (!task.startDate) return null;
+      if (excludeToday && isToday(task.startDate)) return false;
+      return withinWeek(task.startDate, task.isFullDay);
+    }), [curTask]);
+
+  const sortViaTrash = useCallback((tasksArr) =>
+    tasksArr.filter((taskId) => {
+      const task = curTask(taskId);
+      return task.deleted === 1;
+    }), [curTask]);
+
+  const sortViaFilter = useCallback((filter) => {
+    const tasksArr = fetchTaskState().taskOrder;
+    if (filter === "today") return sortViaToday(tasksArr);
+    if (filter === "week") return sortViaWithinWeek(tasksArr);
+    if (filter === "trash") return sortViaTrash(allTaskIds());
+  }, [allTaskIds, fetchTaskState, sortViaToday, sortViaTrash, sortViaWithinWeek]);
+
+  const getAlLTasksUnderId = useCallback((id, scopeId, dataAccToParams) => {
     if (id === "all") {
       let filters = { status: { completed: false }, deleted: 0 };
       if (scopeId === "trash") {
@@ -48,7 +79,7 @@ const useSortTasks = () => {
       };
     }
     return "nothing";
-  };
+  }, [curLabel, curProject, fetchAllLabelIds, fetchAllProjectIds, labelTaskIds, projectTaskIds, sortViaFilter]);
 
   const typeById = (id) => {
     let isProject = fetchAllProjectIds(true).find((c) => c === id);
@@ -67,13 +98,6 @@ const useSortTasks = () => {
   const convertItToTaskOrder = (taskIds) =>
     taskIds.filter((taskId) => fetchTaskState().taskOrder.includes(taskId));
 
-  const sortViaFilter = (filter) => {
-    const tasksArr = fetchTaskState().taskOrder;
-    if (filter === "today") return sortViaToday(tasksArr);
-    if (filter === "week") return sortViaWithinWeek(tasksArr, true);
-    if (filter === "trash") return sortViaTrash(allTaskIds());
-  };
-
   const customSort = (arr) =>
     arr.sort((a, b) => {
       if (!curTask(a).createdAt) return 1;
@@ -85,27 +109,15 @@ const useSortTasks = () => {
       return 0;
     });
 
-  const sortViaToday = (tasksArr) =>
-    // customSort(
-    tasksArr.filter((taskId) => {
-      const task = curTask(taskId);
-      if (!task.startDate) return false;
-      return isToday(task.startDate);
-    });
-  // );
-
-  const sortViaWithinWeek = (tasksArr, excludeToday) =>
-    tasksArr.filter((taskId) => {
-      const task = curTask(taskId);
-      if (!task.startDate) return null;
-      if (excludeToday && isToday(task.startDate)) return false;
-      return withinWeek(task.startDate, task.isFullDay);
-    });
-
-  const sortViaTrash = (tasksArr) =>
-    tasksArr.filter((taskId) => {
-      const task = curTask(taskId);
-      return task.deleted === 1;
+  const sortTasksByDate = (arr, datePropertyOnTask) =>
+    arr.sort((a, b) => {
+      if (!curTask(a).status.completedAt) return 1;
+      if (!curTask(b).status.completedAt) return -1;
+      let momentA = moment(curTask(a).status.completedAt);
+      let momentB = moment(curTask(b).status.completedAt);
+      if (momentA.diff(momentB) > 0) return -1;
+      if (momentA.diff(momentB) < 0) return 1;
+      return 0;
     });
 
   const filterDeleted = (taskIds) =>
@@ -118,6 +130,7 @@ const useSortTasks = () => {
     filterCompleted,
     filterDeleted,
     getAlLTasksUnderId,
+    sortTasksByDate,
     sortViaFilter,
     sortViaToday,
     sortViaTrash,

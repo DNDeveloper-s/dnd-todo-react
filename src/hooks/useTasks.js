@@ -5,6 +5,7 @@ import {
   CREATE_TASK_ITEM,
   DELETE_TASK,
   DELETE_TASK_ITEM,
+  MOVE_TO_PROJECT,
   TRIGGER_REMINDER,
   UPDATE_ACTIVE_TASK,
   UPDATE_ITEM,
@@ -14,25 +15,42 @@ import {
 } from "../features/taskSlice";
 import useTreeDataUtils from "./useTreeDataUtils";
 import {
+  convertRemindersToTriggers,
   filterArr,
   isDefined,
-  isTriggerDuration,
+  isTriggerDuration, logMessage,
   removeItemByIdInArray,
 } from "../helpers/utils";
 import useLabels from "./useLabels";
-import useProjects from "./useProjects";
+import {useCallback} from "react";
+import {constants} from "../helpers/constants";
+import useApi from "../api/useApi";
 
 const useTasks = () => {
   const dispatch = useDispatch();
   const taskState = useSelector(getTasks);
   const { getPath } = useTreeDataUtils();
   const { addTaskToLabel, removeTaskFromLabel } = useLabels();
-  const { addTaskToProject } = useProjects();
+  const {postWithAuthToken} = useApi();
 
   const fetchTriggers = () => taskState.actions.triggers;
 
-  function updateTask(updatedObj) {
+  const updateTask = useCallback((updatedObj) => {
     dispatch(UPDATE_TASK({ ...updatedObj }));
+    if(!updatedObj.temp && !updatedObj.inItemMode) {
+      postWithAuthToken(constants.ENDPOINTS.UPDATE_TASK, updatedObj)
+        .then(res => {
+          logMessage('Fetched successfully', res);
+        })
+        .catch(e => console.log(e));
+    }
+    if(updatedObj.inItemMode) {
+      postWithAuthToken(constants.ENDPOINTS.CREATE_TASK_ITEM, updatedObj)
+        .then(res => {
+          logMessage('Fetched successfully', res);
+        })
+        .catch(e => console.log(e));
+    }
     // console.log(updatedObj);
     if (updatedObj.labelIds) {
       // adding task to labels
@@ -40,12 +58,17 @@ const useTasks = () => {
         updatedObj.labelIds.forEach((labelId) => {
           addTaskToLabel(labelId, updatedObj.taskId);
         });
-
-      // adding task to project
-      updatedObj.projectId &&
-        addTaskToProject(updatedObj.projectId, updatedObj.taskId);
     }
-  }
+  }, [addTaskToLabel, dispatch]);
+
+  const moveToProject = (taskId, projectId) => {
+    dispatch(MOVE_TO_PROJECT({ taskId, projectId, path: getPath(taskId) }));
+    postWithAuthToken(constants.ENDPOINTS.UPDATE_TASK, {taskId, projectId})
+      .then(res => {
+        logMessage('Fetched successfully', res);
+      })
+      .catch(e => console.log(e));
+  };
 
   function removeLabelFromTask(taskId, labelId) {
     const newTaskLabelIds = removeItemByIdInArray(
@@ -73,14 +96,29 @@ const useTasks = () => {
 
   const fetchActiveTask = () => taskState.actions.activeTask;
 
-  const curTask = (taskId) => taskState.tasks[taskId];
+  const curTask = useCallback((taskId) => taskState.tasks[taskId], [taskState.tasks]);
 
-  const parentTask = (taskId) =>
-    taskState.tasks[taskState.tasks[taskId].parentTask];
+  const parentTask = useCallback((taskId) =>
+    taskState.tasks[taskState.tasks[taskId].parentTask], [taskState.tasks]);
 
-  const createTask = (taskObj) => {
+  const createTask = useCallback((taskObj) => {
     dispatch(CREATE_TASK(taskObj));
-  };
+
+    postWithAuthToken(constants.ENDPOINTS.CREATE_TASK, {
+      ...taskObj,
+      projectId: taskObj.projectId !== 'inbox' ? taskObj.projectId : null
+    })
+      .then(res => {
+        logMessage('Fetched successfully', res);
+        if(res.data.type === 'success') {
+          updateTask({taskId: res.data.taskId, temporary: false, temp: true});
+        }
+      })
+      .catch(e => {
+        console.log('[AddTask.js || Line no. 142 ....]', e);
+      });
+
+  }, [dispatch, postWithAuthToken, updateTask]);
 
   const deleteTask = (taskId) => {
     const taskArr = getTaskArrObjRecursive(taskId, { deleted: 1 });
@@ -96,6 +134,13 @@ const useTasks = () => {
         ...itemObj,
       })
     );
+    if(!itemObj.temp) {
+      postWithAuthToken(constants.ENDPOINTS.UPDATE_TASK_ITEM, {taskId, ...itemObj,})
+        .then(res => {
+          logMessage('Fetched Successfully!', res);
+        })
+        .catch(e => logMessage(e.message, e, true));
+    }
   };
 
   const getTaskArrObjRecursive = (taskId, obj) => {
@@ -128,6 +173,8 @@ const useTasks = () => {
         })
       );
     }
+
+
   };
 
   const taskProgress = (taskId) => {
@@ -147,6 +194,11 @@ const useTasks = () => {
     createAfterItemId: String,
   }) => {
     dispatch(CREATE_TASK_ITEM(itemObj));
+    postWithAuthToken(constants.ENDPOINTS.CREATE_TASK_ITEM, {...itemObj, itemId: itemObj.id})
+      .then(res => {
+        logMessage('Fetched Successfully!', res);
+      })
+      .catch(e => logMessage(e.message, e, true));
   };
 
   const deleteTaskItem = (obj: { taskId: String, itemId: String }) => {
@@ -212,6 +264,7 @@ const useTasks = () => {
     fetchItem,
     fetchTaskState,
     fetchTriggers,
+    moveToProject,
     parentTask,
     taskProgress,
     triggerReminder,

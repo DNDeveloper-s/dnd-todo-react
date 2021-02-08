@@ -38,12 +38,13 @@ const ProjectModal = ({
           </div>
           <AppInput
             onChange={setName}
-            value={name}
+            value={name || ""}
             containerClassNames={["lightFont", "mv-20"]}
             placeholder="Project Name"
+            handleReturn={handleSave}
           />
           <ColorPicker activeColor={color} setActiveColor={setColor} />
-          <div className="flex mt-40">
+          <div className="flex mt-40 relative">
             <AppButton
               label="Cancel"
               style={{ marginRight: "10px" }}

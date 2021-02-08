@@ -93,6 +93,13 @@ export const projectSlice = createSlice({
       };
       state.projects.entities.push(id);
     },
+    DELETE_PROJECT: (state, action) => {
+      const { projectId } = action.payload;
+      console.log('[projectSlice.js || Line no. 98 ....]', projectId);
+      state.projects.data[projectId] = null;
+      const curInd = state.projects.entities.findIndex(c => c === projectId);
+      state.projects.entities.splice(curInd, 1);
+    },
     UPDATE_PROJECT: (state, action) => {
       const { projectId, color, content } = action.payload;
       const curProject = state.projects.data[projectId];
@@ -100,19 +107,40 @@ export const projectSlice = createSlice({
       curProject.content = content || curProject.content;
     },
     ADD_PROJECT_TASK: (state, action) => {
-      const { taskId, projectId } = action.payload;
-      const taskIds = state.projects.data[projectId].taskIds;
-      const doesExist = taskIds.some((id) => id === taskId);
-      if (!doesExist) {
-        taskIds.push(taskId);
-      }
+      // const { taskId, projectId } = action.payload;
+      // const taskIds = state.projects.data[projectId].taskIds;
+      // const doesExist = taskIds.some((id) => id === taskId);
+      // if (!doesExist) {
+      //   taskIds.push(taskId);
+      // }
     },
+    LOAD_PROJECTS: (state, action) => {
+      const {projects, inbox} = action.payload;
+      const projectObj = {};
+      state.projects.entities = [];
+      projects.forEach(project => {
+        projectObj[project._id] = project;
+        projectObj[project._id].type = 'project';
+        projectObj[project._id].id = project._id;
+        state.projects.entities.push(project._id);
+      });
+      state.projects.data = projectObj;
+      state.projects.data.inbox = {
+        id: "inbox",
+        type: "project",
+        color: colors[12].value,
+        taskIds: inbox,
+        content: "Inbox",
+      };
+    }
   },
 });
 
 export const {
   ADD_PROJECT_TASK,
   CREATE_PROJECT,
+  DELETE_PROJECT,
+  LOAD_PROJECTS,
   UPDATE_PROJECT,
 } = projectSlice.actions;
 

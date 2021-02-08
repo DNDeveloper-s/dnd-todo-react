@@ -1,0 +1,70 @@
+@import "../../../styles/utilities/mixins";
+@import "../../../styles/utilities/variables";
+
+.Count {
+  @include flexCentered();
+
+  position: absolute;
+  top: 21px;
+  right: -3px;
+  width: 15px;
+  height: 15px;
+  font-size: 10px;
+  background-color: red;
+  color: $white;
+  border-radius: 20px;
+  user-select: none;
+  padding-bottom: 2px;
+  pointer-events: none;
+}
+
+.NotificationItem {
+  position: relative;
+  user-select: none;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 0;
+    width: 3px;
+    height: 44%;
+    border-radius: 0 20px 20px 0;
+    background-color: #94adee;
+  }
+}
+
+.NotificationImage {
+  width: 60px;
+  height: 60px;
+  border-radius: 20px;
+  margin-right: 10px;
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.NotificationMessage {
+  font-size: 15px;
+  user-select: none;
+  line-height: 1.4;
+}
+
+.NotificationTimeStamp {
+  margin-top: 6px;
+  color: $purple;
+  user-select: none;
+}
+
+.NotificationEmpty {
+  margin: 20px auto 40px;
+  width: 60%;
+  @include flexCentered();
+  flex-direction: column;
+  text-align: center;
+  user-select: none;
+
+  p {
+    color: $black-40;
+  }
+}

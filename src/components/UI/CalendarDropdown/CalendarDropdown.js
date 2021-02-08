@@ -49,7 +49,7 @@ const CalendarDropdown = ({
         ) : (
           <ResetCalendarIcon
             style={{ height: "2.5rem" }}
-            pathStyle={{ fill: "#a7a7a7" }}
+            // pathStyle={{ fill: "#a7a7a7" }}
           />
         )
       }

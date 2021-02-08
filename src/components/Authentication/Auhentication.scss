@@ -1,0 +1,156 @@
+@import "../../styles/utilities/mixins";
+@import "../../styles/utilities/variables";
+
+body {
+  background-color: $light_pink;
+}
+
+.auth_modal {
+  @include absCentered();
+  @include flexCentered();
+
+  width: 95%;
+  max-width: $WRAPPER_MAX_WIDTH;
+  height: 80vh;
+  overflow: hidden;
+  border-radius: $generic-border-radius;
+  box-shadow: 0 0 5px rgba(0,0,0, 0.17), 0 15px 30px 1px rgba(0,0,0,0.5), 0 10px 20px rgba(0,0,0,0.3);
+
+  &-side_bar {
+    position: relative;
+    width: 35%;
+    min-width: 30rem;
+    height: 100%;
+
+    &-slider {
+      width: 100%;
+      height: 100%;
+
+      &-images {
+        position: relative;
+        width: 100%;
+        height: 100%;
+
+        &::before {
+          @include absoluteFill();
+
+          content: '';
+          background-color: rgba(0,0,0,0.5);
+          z-index: 1;
+        }
+      }
+
+      &-image {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+
+        img {
+          width: auto;
+          height: 100%;
+        }
+      }
+
+      &-pagination {
+        @include flexCentered();
+
+        width: 100%;
+        position: absolute;
+        bottom: 7rem;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 2;
+
+        &-item {
+          @include butLast(margin-right, .6rem);
+
+          width: 1rem;
+          height: 1rem;
+          border-radius: 2rem;
+          background-color: rgba(255, 255, 255, 0.64);
+
+          &.active {
+            background-color: $primary_text;
+            width: 1.6rem;
+            height: 1.6rem;
+          }
+        }
+      }
+    }
+
+    &-content {
+      @include absoluteFill();
+      color: $primary_text;
+      z-index: 1;
+
+      &-desc {
+        font-size: 1.34rem;
+      }
+
+      &-action {
+        margin-top: 20rem;
+      }
+    }
+  }
+
+  &-main {
+    flex: 1;
+    background-color: $primary_text;
+    height: 100%;
+
+    &-wrapper {
+      width: 100%;
+      margin: 0 4rem;
+    }
+
+    &-error_msg {
+        position: absolute;
+        font-size: 1.3rem;
+        margin-top: -15px;
+        color: $failed;
+        left: 50%;
+        transform: translateX(-50%);
+        font-family: $Lato_SemiBold;
+        transition: $generic-transition;
+    }
+
+    .account-separator {
+      font-family: $Maiandra_GD_Regular;
+    }
+
+    .heading_1 {
+      font-family: $Maiandra_GD_Regular;
+      color: $darkish_pink;
+      font-size: 5rem;
+    }
+
+    .social_media-icon {
+      width: 3rem;
+      height: 3rem;
+
+      svg {
+        width: 100%;
+        height: 100%;
+      }
+    }
+
+    .logo {
+
+      &-img {
+        width: 2.7rem;
+        height: 2.7rem;
+        margin-right: 1rem;
+      }
+
+      &-label {
+        font-size: 2.2rem;
+        font-family: $Maiandra_GD_Regular;
+        font-weight: 500;
+        color: $brown;
+      }
+    }
+  }
+}

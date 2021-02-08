@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
 import useOutsideAlerter from "../../../hooks/useOutsideAlerter";
 import "./ContextMenu.scss";
-import { getBoundaryCoords } from "../../../helpers/utils";
+import { getBoundaryData } from "../../../helpers/utils";
 
 const ContextMenu = ({
   children,
@@ -14,12 +14,20 @@ const ContextMenu = ({
   const { visible, setVisible, ref } = useOutsideAlerter(false, onClose);
   const [coords, setCoords] = useState(null);
 
+  useEffect(() => {
+    if (visible) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+  }, [visible]);
+
   const contextMenuHandler = useCallback(
     (e) => {
       e.preventDefault();
       setVisible(true);
       if (ref.current) {
-        const boundaryCoords = getBoundaryCoords(e, ref);
+        const boundaryCoords = getBoundaryData(e, ref);
         setCoords(boundaryCoords);
       }
     },

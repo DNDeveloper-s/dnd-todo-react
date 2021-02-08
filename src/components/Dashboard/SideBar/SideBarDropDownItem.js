@@ -1,5 +1,4 @@
 import React, { useRef } from "react";
-import PropTypes from "prop-types";
 import LabelIcon from "../../../icons/LabelIcon";
 import ProjectsIcon from "../../../icons/ProjectsIcon";
 import ContextMenu from "../../UI/ContextMenu/ContextMenu";
@@ -28,7 +27,7 @@ const SideBarDropDownItem = ({ item, onClick, contextMenu }) => {
           </div>
         )}
         <div className="dashboard-sidebar-dropdown-item-label">
-          <p>{item.content}</p>
+          <p style={{width: '168px', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden'}}>{item.content}</p>
         </div>
       </div>
       {contextMenu && (
@@ -41,10 +40,6 @@ const SideBarDropDownItem = ({ item, onClick, contextMenu }) => {
       )}
     </>
   );
-};
-
-SideBarDropDownItem.propTypes = {
-  contextMenu: PropTypes.func,
 };
 
 export default SideBarDropDownItem;

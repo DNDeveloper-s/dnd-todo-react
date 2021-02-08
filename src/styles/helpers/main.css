@@ -170,6 +170,10 @@
   color: #363636;
 }
 
+.primary {
+  color: #676af0;
+}
+
 .white {
   color: #ffffff;
 }
@@ -182,9 +186,19 @@
   padding: 0 !important;
 }
 
+.pv-5 {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
 .pv-10 {
   padding-top: 1rem;
   padding-bottom: 1rem;
+}
+
+.pv-15 {
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
 }
 
 .pv-20 {
@@ -232,9 +246,19 @@
   padding-bottom: 10rem;
 }
 
+.mv-5 {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
 .mv-10 {
   margin-top: 1rem;
   margin-bottom: 1rem;
+}
+
+.mv-15 {
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
 }
 
 .mv-20 {
@@ -282,9 +306,19 @@
   margin-bottom: 10rem;
 }
 
+.ph-5 {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
 .ph-10 {
   padding-left: 1rem;
   padding-right: 1rem;
+}
+
+.ph-15 {
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
 }
 
 .ph-20 {
@@ -330,6 +364,21 @@
 .ph-100 {
   padding-left: 10rem;
   padding-right: 10rem;
+}
+
+.mh-5 {
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}
+
+.mh-10 {
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
+.mh-15 {
+  margin-left: 1.5rem;
+  margin-right: 1.5rem;
 }
 
 .mh-10 {
@@ -714,6 +763,43 @@
   cursor: pointer;
 }
 
+.relative {
+  position: relative;
+}
+
+.itemHoverEffect {
+  transition: 0.15s ease-in-out;
+}
+.itemHoverEffect:hover {
+  background-color: rgba(221, 233, 255, 0.53);
+}
+
+.ariaLabel {
+  position: relative;
+}
+.ariaLabel:hover::before {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0px);
+}
+.ariaLabel::before {
+  content: attr(aria-label);
+  position: absolute;
+  top: 110%;
+  left: 50%;
+  padding: 0.4rem 1rem;
+  background-color: #363636;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.22);
+  border-radius: 4px;
+  transition: 0.1s ease-out;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-50%) translateY(-2px);
+  color: #ffffff;
+  font-size: 1.2rem;
+  white-space: nowrap;
+}
+
 .flex {
   display: flex;
 }
@@ -735,8 +821,16 @@
   justify-content: flex-end !important;
 }
 
+.justifyStart {
+  justify-content: flex-start !important;
+}
+
 .spaceBetween {
   justify-content: space-between !important;
+}
+
+.alignCenter {
+  align-items: center !important;
 }
 
 .flexCentered {
@@ -753,6 +847,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
   width: 100%;
   padding: 0.55rem 0;
   border: 1px solid rgba(38, 38, 38, 0.1);
@@ -770,6 +865,22 @@
 }
 .app_btn.primary:hover {
   background-color: rgba(98, 100, 233, 0.89);
+}
+.app_btn.orange {
+  background-color: #f08067;
+  color: #ffffff;
+  border: 1px solid #c57557;
+}
+.app_btn.orange:hover {
+  background-color: rgba(240, 128, 103, 0.89);
+}
+.app_btn.green {
+  background-color: #67f08b;
+  color: rgba(38, 38, 38, 0.8);
+  border: 1px solid #57c579;
+}
+.app_btn.green:hover {
+  background-color: rgba(103, 240, 139, 0.89);
 }
 .app_btn:hover {
   background-color: #dae8ef;
@@ -834,7 +945,7 @@
 .generic_separator {
   height: 1px;
   width: 100%;
-  background-color: rgba(38, 38, 38, 0.2);
+  background-color: rgba(38, 38, 38, 0.1);
 }
 
 .vertical_separator {
@@ -846,7 +957,16 @@
 .generic_input {
   position: relative;
   width: 100%;
-  border-bottom: 1px solid rgba(38, 38, 38, 0.3);
+}
+.generic_input.error input {
+  border-bottom: 1px solid #ff1400;
+}
+.generic_input.error input:focus {
+  border-bottom: 1px solid #ff1400;
+}
+.generic_input.error label {
+  font-family: "Lato_Regular";
+  color: #EF6E6E;
 }
 .generic_input label {
   font-size: 1.6rem;
@@ -866,9 +986,25 @@
   font-weight: 600;
   font-family: "Lato_Regular";
   color: #363636;
+  border-bottom: 1px solid rgba(38, 38, 38, 0.3);
+  transition: 0.15s ease-in-out;
+}
+.generic_input input:focus {
+  border-bottom: 1px solid #676af0;
 }
 .generic_input input:focus ~ label, .generic_input input:valid ~ label {
   top: -6px;
+}
+
+.lightFont input {
+  font-weight: 400;
+  color: rgba(38, 38, 38, 0.7);
+  font-family: "Lato_Regular";
+}
+.lightFont input::-webkit-input-placeholder {
+  font-weight: 400;
+  color: rgba(38, 38, 38, 0.4);
+  font-family: "Lato_Regular";
 }
 
 .dnd-progress_bar {
@@ -970,7 +1106,6 @@ textarea {
 }
 input:disabled,
 textarea:disabled {
-/*  background-color: rgba(38, 38, 38, 0.2) !important;*/
   cursor: not-allowed !important;
 }
 
@@ -983,6 +1118,20 @@ svg {
   max-width: 1200px;
   padding: 0 4rem;
   margin: 0 auto;
+}
+
+#info-display {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.highlight {
+  font-weight: bold;
 }
 
 /*# sourceMappingURL=main.css.map */

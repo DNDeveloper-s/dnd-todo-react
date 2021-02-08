@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
 import useOutsideAlerter from "../../../hooks/useOutsideAlerter";
 import "./DropdownNew.scss";
-import { getBoundaryCoords } from "../../../helpers/utils";
+import { getBoundaryData } from "../../../helpers/utils";
 
 const DropdownNew = ({
   children,
@@ -17,10 +17,9 @@ const DropdownNew = ({
   const onClickHandler = useCallback(
     (e) => {
       e.preventDefault();
-      console.log(e);
       setVisible(true);
       if (ref.current) {
-        const boundaryCoords = getBoundaryCoords(e, ref);
+        const boundaryCoords = getBoundaryData(e, ref);
         setCoords(boundaryCoords);
       }
     },

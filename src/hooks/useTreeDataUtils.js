@@ -1,18 +1,22 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getTasks, UPDATE_DRAGGING_STATE } from "../features/taskSlice";
-import { UPDATE_TOGGLE_COLLAPSE } from "../features/globalSlice";
+import {getGlobalState, UPDATE_TOGGLE_COLLAPSE} from "../features/globalSlice";
 import { isDefined } from "../helpers/utils";
 import useGlobalState from "./useGlobalState";
+import useApi from "../api/useApi";
+import {constants} from "../helpers/constants";
 
 const useTreeDataUtils = (props) => {
   const taskState = useSelector(getTasks);
+  const globalState = useSelector(getGlobalState);
   const dispatch = useDispatch();
-  const { fetchToggleCollapse } = useGlobalState();
+  const { fetchGlobalState, fetchToggleCollapse } = useGlobalState();
+  const {postWithAuthToken} = useApi();
 
   const getDragState = () => taskState.actions.dragState;
 
-  const getPath = (taskId) => {
+  const getPath = (taskId, baseTaskIdsArr = false) => {
     const path = [];
 
     // Recursive Function
@@ -20,8 +24,10 @@ const useTreeDataUtils = (props) => {
 
     function push(taskId) {
       path.splice(0, 0, taskId);
-      if (taskState.tasks[taskId].parentTask) {
-        push(taskState.tasks[taskId].parentTask);
+      if(!baseTaskIdsArr || baseTaskIdsArr.includes(taskState.tasks[taskId].parentTask)) {
+        if (taskState.tasks[taskId].parentTask) {
+          push(taskState.tasks[taskId].parentTask);
+        }
       }
     }
     return path;
@@ -47,24 +53,39 @@ const useTreeDataUtils = (props) => {
   const getExpandedTreeArr = (dragFrom, config = {}) => {
     // include = 'complete' or = 'incomplete'
     const treeArr = [];
-    const { forTaskId, myTaskScope, filters = {}, noTreeStyle } = config;
+    const {
+      forTaskId,
+      myTaskScope,
+      filters = {},
+      noTreeStyle,
+      noChildTasks,
+    } = config;
     // console.log(config);
     // grab the filters
 
     const filterKeys = Object.keys(filters);
+    let baseItemsArr = [];
 
     if (!myTaskScope) {
       if (!forTaskId) {
         taskState.taskOrder.forEach((taskId) => {
+          baseItemsArr.push(taskId);
           push(taskId);
         });
       } else {
-        taskState.tasks[forTaskId].childTasks.forEach((childTaskId) =>
-          push(childTaskId)
-        );
+        taskState.tasks[forTaskId].childTasks.forEach((childTaskId) => {
+          baseItemsArr.push(childTaskId);
+          push(childTaskId);
+        });
       }
+    } else if(noChildTasks) {
+      allTaskIds().forEach((taskId) => {
+        baseItemsArr.push(taskId);
+        push(taskId);
+      });
     } else {
       myTaskScope.forEach((taskId) => {
+        baseItemsArr.push(taskId);
         push(taskId);
       });
     }
@@ -79,14 +100,14 @@ const useTreeDataUtils = (props) => {
       // } else treeArr.push(taskId);
       if (noTreeStyle) return;
 
-      if (fetchToggleCollapse(dragFrom, taskId)) {
+      if (!noChildTasks && fetchToggleCollapse(dragFrom, taskId)) {
         taskState.tasks[taskId].childTasks.map((childTaskId) => {
           push(childTaskId);
         });
       }
     }
 
-    return treeArr;
+    return {treeArr, baseItemsArr};
   };
 
   function doIt(obj, keys, task) {
@@ -116,9 +137,10 @@ const useTreeDataUtils = (props) => {
   // if (testPass) treeArr.push(taskId);
 
   const getPrevItemInExpandedTree = (taskId, dragFrom, originTask) => {
-    const expandedTree = getExpandedTreeArr(dragFrom, "incomplete", {
+    const expandedTree = getExpandedTreeArr(dragFrom, {
       forTaskId: originTask,
-    });
+      filters: {status: {completed: false}}
+    }).treeArr;
     const targetIndex = expandedTree.findIndex((c) => c === taskId);
     return expandedTree[targetIndex - 1];
   };
@@ -172,6 +194,18 @@ const useTreeDataUtils = (props) => {
         expanded,
       })
     );
+
+    postWithAuthToken(constants.ENDPOINTS.POST_APP_GLOBAL_DATA, {
+        global: globalState,
+        toggleCollapse: {dragFrom,
+          taskId,
+          expanded},
+      })
+      .then(res => {
+        console.log(res);
+      })
+      .catch(e => console.log(e));
+
   };
 
   const allTaskIds = () => Object.keys(taskState.tasks);

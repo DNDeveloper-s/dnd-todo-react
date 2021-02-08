@@ -79,6 +79,11 @@ export const labelSlice = createSlice({
       };
       state.labels.entities.push(id);
     },
+    UPDATE_LABEL: (state, action) => {
+      const {labelId, color, content} = action.payload;
+      state.labels.data[labelId].color = color || state.labels.data[labelId].color;
+      state.labels.data[labelId].content = content || state.labels.data[labelId].content;
+    },
     ADD_LABEL_TASK: (state, action) => {
       const { taskId, labelId } = action.payload;
       const taskIds = state.labels.data[labelId].taskIds;
@@ -96,13 +101,29 @@ export const labelSlice = createSlice({
         );
       }
     },
+    LOAD_LABELS: (state, action) => {
+      const {labels} = action.payload;
+      const labelObj = {};
+      state.labels.entities = [];
+      console.log(labels);
+      labels.forEach(label => {
+        labelObj[label._id] = label;
+        labelObj[label._id].type = 'label';
+        labelObj[label._id].id = label._id;
+        labelObj[label._id].taskIds = label.taskIds || [];
+        state.labels.entities.push(label._id);
+      });
+      state.labels.data = labelObj;
+    }
   },
 });
 
 export const {
   ADD_LABEL_TASK,
   CREATE_LABEL,
+  LOAD_LABELS,
   REMOVE_LABEL_TASK,
+  UPDATE_LABEL
 } = labelSlice.actions;
 
 // Selectors

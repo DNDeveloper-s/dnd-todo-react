@@ -74,7 +74,7 @@ const ColorPicker = ({ activeColor, setActiveColor }) => {
         >
           <DotsMenuHorizontal />
         </div>
-        <div className="color_picker-item-dropdown-container">
+        <div className="color_picker-item-dropdown-container" style={{zIndex: 1}}>
           {visible && <div className="color_picker-grid">{moreColorItems}</div>}
         </div>
       </div>

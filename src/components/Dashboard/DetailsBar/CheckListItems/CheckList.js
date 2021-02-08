@@ -4,13 +4,15 @@ import useTasks from "../../../../hooks/useTasks";
 import { constants } from "../../../../helpers/constants";
 import useTreeDataUtils from "../../../../hooks/useTreeDataUtils";
 import CheckListItem from "./CheckListItem";
-import { filterArr } from "../../../../helpers/utils";
+import {filterArr, logMessage} from "../../../../helpers/utils";
 import useFocus from "../../../../hooks/useFocus";
+import useApi from "../../../../api/useApi";
 
 const CheckList = () => {
   const dispatch = useDispatch();
+  const {postWithAuthToken} = useApi();
   const { focusId, setFocusId } = useFocus(null);
-  const { curTask, fetchActiveTask } = useTasks();
+  const { curTask, fetchActiveTask, updateItem } = useTasks();
   const { setDragState } = useTreeDataUtils();
 
   function handleReturn(taskItem) {
@@ -61,6 +63,22 @@ const CheckList = () => {
     // })
   }
 
+  function onTitleBlur(itemId, taskId, value) {
+    const item = curTask(taskId).items.find(c => c.id === itemId);
+    if(item && item.contentIsUnsaved) {
+      postWithAuthToken(constants.ENDPOINTS.UPDATE_TASK_ITEM, {itemId, taskId, content: value})
+        .then(res => {
+          logMessage('Fetched Successfully!', res);
+          updateItem(taskId, {
+            itemId,
+            contentIsUnsaved: false,
+            temp: true
+          });
+        })
+        .catch(e => logMessage(e.message, e, true));
+    }
+  }
+
   return (
     <div
       style={{
@@ -76,6 +94,7 @@ const CheckList = () => {
           index={index}
           handleBackspace={handleBackspace}
           handleReturn={handleReturn}
+          onTitleBlur={onTitleBlur}
           item={item}
           elementStyle={{
             paddingLeft: 0,

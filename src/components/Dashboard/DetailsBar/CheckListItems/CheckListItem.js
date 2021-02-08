@@ -9,7 +9,7 @@ import MoveIcon from "../../../../icons/MoveIcon";
 import useTasks from "../../../../hooks/useTasks";
 import TaskInput from "../../Task/TaskList/TaskInput";
 import TaskDropTarget from "../../Task/TaskList/TaskDropTarget";
-import { v4 as uuidV4 } from "uuid";
+import {ObjectId} from "bson";
 
 /**
  * Specifies the drag source contract.
@@ -69,6 +69,7 @@ function CheckListItem({
   item,
   config = {},
   onTitleClick,
+  onTitleBlur,
   originTask,
   elementStyle,
   expandBtnStyle,
@@ -93,7 +94,6 @@ function CheckListItem({
   const { connectDragSource, connectDragPreview } = otherProps;
 
   function onDropItem(droppedItem, dropAsType) {
-    // TODO: ondropitem to taskItem
     onDropItemUtil({
       taskId: fetchActiveTask(),
       droppedId: item.id,
@@ -109,7 +109,7 @@ function CheckListItem({
   }
 
   function handleReturn(taskId, itemId) {
-    const newItemId = uuidV4();
+    const newItemId = new ObjectId().toString();
     createTaskItem({
       taskId: fetchActiveTask(),
       id: newItemId,
@@ -160,9 +160,11 @@ function CheckListItem({
           itemMode
           handleReturn={handleReturn}
           handleBackspace={handleBackspace}
+          onBlur={e => onTitleBlur(item.id, fetchActiveTask(), e.target.value)}
           onClick={onTitleClick}
           task={item}
           focusIt={focusId === item.id}
+          placeholder={"Hit Enter to create new item..."}
         />
         <TaskDropTarget
           itemType={itemType}

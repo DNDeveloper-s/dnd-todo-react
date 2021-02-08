@@ -87,7 +87,9 @@
 .noMarginBottom {margin-bottom: 0 !important;}
 .noPadding { padding: 0 !important; }
 
+.pv-5 { padding-top: .5rem; padding-bottom: .5rem; }
 .pv-10 { padding-top: 1rem; padding-bottom: 1rem; }
+.pv-15 { padding-top: 1.5rem; padding-bottom: 1.5rem; }
 .pv-20 { padding-top: 2rem; padding-bottom: 2rem;}
 .pv-30 { padding-top: 3rem; padding-bottom: 3rem;}
 .pv-40 { padding-top: 4rem; padding-bottom: 4rem;}
@@ -98,7 +100,9 @@
 .pv-90 { padding-top: 9rem; padding-bottom: 9rem;}
 .pv-100 { padding-top: 10rem; padding-bottom: 10rem;}
 
+.mv-5 { margin-top: .5rem; margin-bottom: .5rem; }
 .mv-10 { margin-top: 1rem; margin-bottom: 1rem; }
+.mv-15 { padding-top: 1.5rem; padding-bottom: 1.5rem; }
 .mv-20 { margin-top: 2rem; margin-bottom: 2rem;}
 .mv-30 { margin-top: 3rem; margin-bottom: 3rem;}
 .mv-40 { margin-top: 4rem; margin-bottom: 4rem;}
@@ -110,7 +114,9 @@
 .mv-100 { margin-top: 10rem; margin-bottom: 10rem;}
 
 
+.ph-5 { padding-left: .5rem; padding-right: .5rem; }
 .ph-10 { padding-left: 1rem; padding-right: 1rem; }
+.ph-15 { padding-left: 1.5rem; padding-right: 1.5rem; }
 .ph-20 { padding-left: 2rem; padding-right: 2rem;}
 .ph-30 { padding-left: 3rem; padding-right: 3rem;}
 .ph-40 { padding-left: 4rem; padding-right: 4rem;}
@@ -121,6 +127,9 @@
 .ph-90 { padding-left: 9rem; padding-right: 9rem;}
 .ph-100 { padding-left: 10rem; padding-right: 10rem;}
 
+.mh-5 { margin-left: .5rem; margin-right: .5rem; }
+.mh-10 { margin-left: 1rem; margin-right: 1rem; }
+.mh-15 { margin-left: 1.5rem; margin-right: 1.5rem; }
 .mh-10 { margin-left: 1rem; margin-right: 1rem; }
 .mh-20 { margin-left: 2rem; margin-right: 2rem;}
 .mh-30 { margin-left: 3rem; margin-right: 3rem;}
@@ -187,6 +196,7 @@
 .pl-90 { padding-left: 9rem;}
 .pl-100 { padding-left: 10rem;}
 
+.ml-5 { margin-left: .5rem; }
 .ml-10 { margin-left: 1rem; }
 .ml-20 { margin-left: 2rem;}
 .ml-30 { margin-left: 3rem;}
@@ -223,6 +233,7 @@
 .hide { display: none; }
 .uppercase { text-transform: uppercase }
 .pointer { cursor: pointer }
+.relative {position: relative}
 
 .itemHoverEffect {
   transition: $generic-transition;
@@ -246,7 +257,7 @@
   &::before {
     content: attr(aria-label);
     position: absolute;
-    top: 100%;
+    top: 110%;
     left: 50%;
     padding: .4rem 1rem;
     background-color: $primary;
@@ -271,6 +282,7 @@
 .justifyEnd { justify-content: flex-end !important; }
 .justifyStart { justify-content: flex-start !important; }
 .spaceBetween { justify-content: space-between !important; }
+.alignCenter { align-items: center !important; }
 .flexCentered {
   @include flexCentered();
 }
@@ -280,7 +292,7 @@
 
 .app_btn {
   @include flexCentered();
-
+  position: relative;
   width: 100%;
   padding: .45rem + .1rem 0;
   border: 1px solid $black-10;
@@ -300,6 +312,27 @@
       background-color: rgba(98, 100, 233, 0.89);
     }
   }
+
+  &.orange {
+    background-color: $orange;
+    color: $primary_text;
+    border: 1px solid #c57557;
+
+    &:hover {
+      background-color: rgba(240, 128, 103, 0.89);
+    }
+  }
+
+  &.green {
+    background-color: $green;
+    color: $black-80;
+    border: 1px solid #57c579;
+
+    &:hover {
+      background-color: rgba(103, 240, 139, 0.89);
+    }
+  }
+
 
   &:hover {
     background-color: $pale_blue;
@@ -374,6 +407,20 @@
   position: relative;
   width: 100%;
 
+  &.error {
+    input {
+      border-bottom: 1px solid $failed;
+
+      &:focus {
+        border-bottom: 1px solid $failed;
+      }
+    }
+    label {
+      font-family: $Lato_Regular;
+      color: $darkish_pink;
+    }
+  }
+
   label {
     font-size: 1.6rem;
     color: $black-40;
@@ -407,6 +454,14 @@
       }
     }
   }
+
+  //.error_msg {
+  //  position: absolute;
+  //  font-size: 1.3rem;
+  //  margin-top: 5px;
+  //  color: $failed;
+  //  font-family: $Lato_SemiBold;
+  //}
 }
 
 .lightFont {

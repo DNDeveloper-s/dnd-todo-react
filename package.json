@@ -8,13 +8,18 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
+    "axios": "^0.21.1",
+    "bson": "^4.2.2",
     "classnames": "^2.2.6",
     "draft-js": "^0.11.7",
     "draft-js-mention-plugin": "^3.1.5",
     "draft-js-plugins-editor": "^3.0.0",
     "draft-js-single-line-plugin": "^2.0.5",
     "draftjs-utils": "^0.10.2",
-    "immer": "^7.0.7",
+    "express": "^4.17.1",
+    "filesize": "^6.1.0",
+    "html-react-parser": "^1.2.1",
+    "immer": "^7.0.15",
     "moment": "^2.27.0",
     "node-sass": "^4.14.1",
     "react": "^16.13.1",
@@ -25,14 +30,17 @@
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
+    "redux-persist": "^6.0.0",
     "smooth-scrollbar": "^8.5.2",
+    "socket.io-client": "^3.1.0",
     "uuid": "^8.3.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "prod": "node server.js"
   },
   "eslintConfig": {
     "extends": "react-app"

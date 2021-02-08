@@ -23,10 +23,22 @@
     box-shadow: 0 8px 20px $black-20, 0 0 5px $black-10;
     opacity: 0;
     transform: translateY(-5px);
+    pointer-events: none;
     transition: background-color $fashioned-transition, transform $fashioned-transition;
+
+    &.horCenter {
+      left: 50%;
+      transform: translateX(-50%) translateY(-5px);
+      &.visible {
+        pointer-events: auto;
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+    }
 
     &.visible {
       opacity: 1;
+      pointer-events: auto;
       transform: translateY(0);
     }
 
@@ -41,6 +53,7 @@
 
       &.visible {
         opacity: 1;
+        pointer-events: auto;
         transform: translateX(-50%) translateY(0);
       }
     }
@@ -55,6 +68,7 @@
 
       &.visible {
         opacity: 1;
+        pointer-events: auto;
         transform: translateY(-50%) translateY(0);
       }
     }
@@ -69,6 +83,7 @@
 
       &.visible {
         opacity: 1;
+        pointer-events: auto;
         transform: translateX(-50%) translateY(0);
       }
     }
@@ -83,6 +98,7 @@
 
       &.visible {
         opacity: 1;
+        pointer-events: auto;
         transform: translateY(-50%) translateY(0);
       }
     }

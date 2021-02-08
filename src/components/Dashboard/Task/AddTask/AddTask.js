@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { v4 as uuidV4 } from "uuid";
+import {ObjectID} from 'bson';
 import { useParams } from "react-router";
 import DoubleAddIcon from "../../../../icons/DoubleAddIcon";
 import TagInput from "../../../UI/TagInput/TagInput";
@@ -18,12 +18,15 @@ import useTasks from "../../../../hooks/useTasks";
 import useMoment from "../../../../hooks/useMoment";
 import AddTaskCalendar from "./AddTaskCalendar";
 import useSortTasks from "../../../../hooks/useSortTasks";
+import useApi from "../../../../api/useApi";
+import {constants} from "../../../../helpers/constants";
 
 const AddTask = () => {
   const params = useParams();
   const { moment } = useMoment();
   const { fetchLabelState } = useLabels();
-  const { createTask } = useTasks();
+  const { createTask, updateTask } = useTasks();
+  const {postWithAuthToken, get} = useApi();
   const { curProject, addTaskToProject } = useProjects();
   const { createLabel, addTaskToLabel } = useLabels();
   const [selectedProjectId, setSelectedProjectId] = useState("inbox");
@@ -94,7 +97,7 @@ const AddTask = () => {
 
     // Task Content
     const taskContent = parseTextFromRaw(entityRanges, text);
-    const taskId = uuidV4();
+    const taskId = new ObjectID();
 
     // Label Content
     const labelIds = parseEntities(content, taskId);
@@ -111,8 +114,10 @@ const AddTask = () => {
     // Task is full day or what
     const isFullDay = !Boolean(dateData?.time);
 
+    console.log('This is my generated id ' + taskId.toString());
+
     createTask({
-      id: taskId,
+      id: taskId.toString(),
       content: taskContent,
       labelIds,
       projectId,
@@ -121,13 +126,37 @@ const AddTask = () => {
       createdAt: moment().toISOString(),
       reminders: convertRemindersToTriggers(dateData?.reminders),
       isFullDay,
+      status: {completed: false},
+      deleted: 0,
+      temporary: true
     });
 
+    // postWithAuthToken(constants.ENDPOINTS.CREATE_TASK, {
+    //   id: taskId.toString(),
+    //   content: taskContent,
+    //   labelIds,
+    //   projectId: projectId !== 'inbox' ? projectId : null,
+    //   priority: priority.ind,
+    //   status: {completed: false},
+    //   deleted: 0,
+    //   startDate,
+    //   reminders: convertRemindersToTriggers(dateData?.reminders),
+    //   isFullDay})
+    //   .then(res => {
+    //     console.log('[AddTask.js || Line no. 139 ....]', res);
+    //     if(res.data.type === 'success') {
+    //       updateTask({taskId: res.data.taskId, temporary: false});
+    //     }
+    //   })
+    //   .catch(e => {
+    //     console.log('[AddTask.js || Line no. 142 ....]', e);
+    //   });
+
     // Adding the task to labels
-    labelIds.forEach((labelId) => addTaskToLabel(labelId, taskId));
+    labelIds.forEach((labelId) => addTaskToLabel(labelId, taskId.toString()));
 
     // Adding the task to projects
-    addTaskToProject(projectId, taskId);
+    addTaskToProject(projectId, taskId.toString());
 
     // Setting dateData to null for the calendar actions
     setDateData(null);

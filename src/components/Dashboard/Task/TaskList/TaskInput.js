@@ -8,6 +8,7 @@ const TaskInput = ({
   handleReturn,
   itemMode,
   task,
+  onBlur,
   onClick,
   focusIt,
   ...otherProps
@@ -32,11 +33,15 @@ const TaskInput = ({
       return updateItem(fetchActiveTask(), {
         itemId: task.id,
         content: e.target.value,
+        contentIsUnsaved: true,
+        temp: true
       });
     }
     updateTask({
       taskId: task.id,
       content: e.target.value,
+      contentIsUnsaved: true,
+      temp: true
     });
   }
 
@@ -71,6 +76,7 @@ const TaskInput = ({
             ? fetchItem(fetchActiveTask(), task.id)?.content
             : curTask(task.id)?.content
         }
+        onBlur={onBlur}
         onChange={onChange}
         spellCheck={false}
         {...otherProps}

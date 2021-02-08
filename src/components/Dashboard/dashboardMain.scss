@@ -6,6 +6,7 @@ $TASK_ITEM_HEIGHT: 5rem;
 
 .dashboard {
   display: flex;
+  background-color: $white;
 
   &-main {
     flex: 1;
@@ -54,6 +55,53 @@ $TASK_ITEM_HEIGHT: 5rem;
       cursor: pointer;
     }
 
+    &-image {
+      position: relative;
+      width: 31px;
+      height: 31px;
+      //border: 2px solid $green;
+      //border: 2px solid $black-20;
+      //border: 2px solid $orange;
+      border-radius: 200px;
+      box-shadow: 0 0 2px rgba(0,0,0,.15);
+      border: 2px solid $black-10;
+
+      &-status {
+        position: absolute;
+        bottom: -1px;
+        right: -2px;
+        width: 11px;
+        height: 11px;
+        border-radius: 10px;
+        background-color: #b1abab;
+        border: 2px solid $black-10;
+
+
+        &[data-status="online"] {
+          background-color: $green;
+        }
+
+        &[data-status="offline"] {
+          background-color: #b1abab;
+        }
+
+      }
+
+      &-more {
+        width: 28px;
+        height: 28px;
+        border: none;
+        background-color: #eaeaea;
+        box-shadow: 0 0 2px rgba(0,0,0,.3);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #a4a2a2;
+        font-weight: 600;
+        font-size: 13px;
+      }
+    }
+
     &-title {
       font-size: 2.2rem;
       font-family: $Lato_Bold;
@@ -70,7 +118,7 @@ $TASK_ITEM_HEIGHT: 5rem;
   @include flexCentered();
   padding: 0 2rem;
   border-radius: $generic-border-radius;
-  margin-top: 4rem;
+  margin: 4rem 0;
 
   .vertical_separator {
     height: 30%;

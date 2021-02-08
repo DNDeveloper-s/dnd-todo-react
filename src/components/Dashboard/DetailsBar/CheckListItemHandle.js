@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import CheckListItem from "./CheckListItem";
-import { v4 as uuidV4 } from "uuid";
+import {ObjectId} from "bson";
 
 const CheckListItemHandle = (props) => {
   const [items, setItems] = useState([
@@ -32,7 +32,7 @@ const CheckListItemHandle = (props) => {
     const newItems = [...items];
     const indexOfItem = newItems.findIndex((c) => c.id === item.id);
     newItems.splice(indexOfItem + 1, 0, {
-      id: uuidV4(),
+      id: new ObjectId().toString(),
       title: "",
     });
     setItems(newItems);

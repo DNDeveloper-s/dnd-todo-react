@@ -1,7 +1,8 @@
 import React, { useRef } from "react";
 import { DragSource } from "react-dnd";
 import PropTypes from "prop-types";
-import { v4 as uuidV4 } from "uuid";
+import moment from 'moment';
+import {ObjectID} from 'bson';
 import { withRouter } from "react-router";
 import { constants } from "../../../../helpers/constants";
 import TaskDropTarget from "./TaskDropTarget";
@@ -16,9 +17,8 @@ import useProjects from "../../../../hooks/useProjects";
 import useGlobalState from "../../../../hooks/useGlobalState";
 import useTasks from "../../../../hooks/useTasks";
 import ReminderIcon from "../../../../icons/ReminderIcon";
-import ContextMenu from "../../../UI/ContextMenu/ContextMenu";
 import {
-  classNames,
+  classNames, convertRemindersToTriggers,
   getCommonFormatDate,
   isDueOver,
 } from "../../../../helpers/utils";
@@ -82,8 +82,10 @@ function ListItem({
   item,
   config = {},
   onTitleClick,
+  onTitleBlur,
   originTask,
   elementStyle,
+  baseTaskIdsArr,
   expandBtnStyle,
   handleStyle,
   bgStyle,
@@ -120,6 +122,7 @@ function ListItem({
   }
 
   function onToggleCheckBox(isActive) {
+    console.log('[ListItem.js || Line no. 125 ....]', item);
     updateStatus(item.id, isActive);
   }
 
@@ -129,17 +132,35 @@ function ListItem({
    * @param as {String}
    */
   function handleReturn(taskId, as) {
-    const newTaskId = uuidV4();
+    const newTaskId = new ObjectID().toString();
+
+    // id: taskId.toString(),
+    //   content: taskContent,
+    //   labelIds,
+    //   projectId,
+    //   priority: priority.ind,
+    //   startDate,
+    //   createdAt: moment().toISOString(),
+    //   reminders: convertRemindersToTriggers(dateData?.reminders),
+    //   isFullDay,
+    //   status: {completed: false},
+    // deleted: 0,
+    //   temporary: true
     createTask({
       id: newTaskId,
       content: "",
       labelIds: [],
-      projectId: null,
+      projectId: curTask(taskId).projectId,
       priority: 0,
       createType: {
         path: getPath(taskId),
         as,
       },
+      createdAt: moment().toISOString(),
+      deleted: 0,
+      status: {completed: false},
+      isFullDay: false,
+      temporary: true,
     });
     // Focusing the newly created task
     setFocusId(newTaskId);
@@ -176,7 +197,7 @@ function ListItem({
     // but only if the action is happening in the main area
     // i.e, dragFrom = main
     if (config.dragFrom === constants.DRAG_FROM.MAIN)
-      otherProps.history.push(otherProps.match.path + "/" + prevItemId);
+      otherProps.history.push(otherProps.match.url + "/" + prevItemId);
   }
 
   return (
@@ -200,7 +221,7 @@ function ListItem({
               marginLeft: noTreeStyle
                 ? "0px"
                 : `${
-                    levelInTree(item.id, originTask) * constants.SCAFFOLD_WIDTH
+                    levelInTree(item.id, originTask, false, baseTaskIdsArr) * constants.SCAFFOLD_WIDTH
                   }px`,
               ...elementStyle,
             }}
@@ -245,6 +266,7 @@ function ListItem({
               task={item}
               focusIt={focusId === item.id}
               disabled={item.status.completed}
+              onBlur={(e) => onTitleBlur(item.id, e)}
             />
             <div className="dnd_list-item-element--group">
               {item.labelIds.map((labelId) => (
@@ -266,7 +288,7 @@ function ListItem({
               </div>
             )}
             {/*Rendering this only when reminder is present*/}
-            {item.reminders && (
+            {item.reminders && item.reminders.length > 0 && (
               <div className="dnd_list-item-element--group">
                 <ReminderIcon style={{ zoom: 0.8 }} fill="#c7c7c7" />
               </div>
@@ -294,13 +316,20 @@ function ListItem({
               </div>
             )}
             <span className="dnd_list-item-element--line" />
+            <span className="dnd_list-item-element--line" style={{
+              transition: 'backgroundColor .15s ease-in-out, transform .4s ease-out',
+              transform: `scaleX(${curTask(item.id).temporary ? '1' : '0'})`,
+              transformOrigin: 'right',
+              right: 0,
+              backgroundColor: '#ff9797db'
+            }} />
           </div>
           {!noTreeStyle &&
             [constants.AS_SIBLING, constants.AS_CHILD].map((dropAs) => (
               <TaskDropTarget
                 style={{
                   transform: `translateX(${
-                    levelInTree(item.id, originTask) *
+                    levelInTree(item.id, originTask, false, baseTaskIdsArr) *
                       constants.SCAFFOLD_WIDTH +
                     30
                   }px)`,

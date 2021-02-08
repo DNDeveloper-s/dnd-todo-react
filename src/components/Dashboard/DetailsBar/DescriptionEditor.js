@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Editor from "draft-js-plugins-editor";
-import { EditorState, convertFromRaw, convertToRaw } from "draft-js";
+import { EditorState, convertFromRaw, convertToRaw, SelectionState } from "draft-js";
 import createMentionPlugin from "draft-js-mention-plugin";
 import EntryComponent from "../../UI/TagInput/EntryComponent";
 import {
@@ -9,12 +9,9 @@ import {
   spliceText,
 } from "../../../helpers/utils";
 import LabelItemComponent from "../../UI/TagInput/LabelItemComponent";
-import { UPDATE_TASK } from "../../../features/taskSlice";
-import { useDispatch } from "react-redux";
 import useLabels from "../../../hooks/useLabels";
 import useTasks from "../../../hooks/useTasks";
 
-// const {hasCommandModifier} = KeyBindingUtil;
 
 const mentionPlugin = createMentionPlugin({
   entityMutability: "IMMUTABLE",
@@ -35,7 +32,37 @@ const DescriptionEditor = ({
   const { createLabel } = useLabels();
   const { updateTask } = useTasks();
 
+  // const moveSelectionToEnd = (editorState) => {
+  //   const content = editorState.getCurrentContent();
+  //   const blockMap = content.getBlockMap();
+  //   const key = blockMap.last().getKey();
+  //   const length = blockMap.last().getLength();
+  //   const selection = new SelectionState({
+  //     anchorKey: key,
+  //     anchorOffset: length,
+  //     focusKey: key,
+  //     focusOffset: length,
+  //   });
+  //   return EditorState.acceptSelection(editorState, selection);
+  // };
+
   function onChange(editorState) {
+    // const rawContent = {
+    //   "blocks": [{
+    //     "text": "asdf asdf asdfa sdfw",
+    //   }, {
+    //     "text": "asdf asdfg",
+    //   }, {
+    //     "text": "fda",
+    //   }],
+    //   "entityMap": {}
+    // };
+
+
+
+    // const parsedEditorState = convertFromRaw(rawContent);
+    // const editState = EditorState.createWithContent(editorState);
+    // const selectedState = moveSelectionToEnd(editorState);
     setEditorState(editorState);
   }
 
